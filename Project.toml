@@ -3,6 +3,9 @@ uuid = "af0b7596-9bb0-472a-a012-63904f2b4c55"
 authors = ["Guillaume Dalle"]
 version = "0.1.0"
 
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+
 [compat]
 julia = "1.6"
 
