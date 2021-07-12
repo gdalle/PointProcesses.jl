@@ -12,6 +12,9 @@ export simulate
 include("poisson.jl")
 export PoissonProcess
 
+include("learning.jl")
+export logpdf, learn_poisson
+
 include("plot.jl")
 export plot
 

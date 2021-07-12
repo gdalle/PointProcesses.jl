@@ -1,22 +1,19 @@
 using Distributions
 import Distributions: rand
 
-function extend_ogata!(
-    pointprocess::PointProcess{MarkType},
-    history::History{MarkType},
-    tmax,
-) where {MarkType}
-    t = history.tmax
+function rand(pp::PointProcess{M}, tmin, tmax) where {M}
+    history = History(Float64[], M[], tmin, tmax)
+    t = tmin
     while t < tmax
-        M = ground_intensity_bound(pointprocess, history, t)
-        L = ground_intensity_bound_validity_duration(pointprocess, history, t)
-        T = M > 0 ? rand(Exponential(1 / M)) : Inf
+        B = ground_intensity_bound(pp, history, t)
+        L = ground_intensity_bound_validity(pp, history, t)
+        T = B > 0 ? rand(Exponential(1 / B)) : Inf
         if T > L
             t = t + L
         elseif T <= L
             U = rand(Uniform(0, 1))
-            if U < ground_intensity(pointprocess, history, t + T) / M
-                m = rand(mark_distribution(pointprocess, history, t + T))
+            if U < ground_intensity(pp, history, t + T) / B
+                m = rand(mark_distribution(pp, history, t + T))
                 if t + T < tmax
                     push!(history, t + T, m)
                 end
@@ -24,12 +21,5 @@ function extend_ogata!(
             t = t + T
         end
     end
-    history.tmax = tmax
-    return nothing
-end
-
-function simulate(pointprocess::PointProcess{MarkType}; tmin, tmax) where {MarkType}
-    history = History(Float64[], MarkType[], tmin, tmin)
-    extend_ogata!(pointprocess, history, tmax)
     return history
 end

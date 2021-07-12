@@ -1,25 +1,27 @@
-abstract type PointProcess{MarkType} end
+import Distributions: logpdf
 
-function ground_intensity(pointprocess::PointProcess, history, t)
+abstract type PointProcess{M} end
+
+function ground_intensity(pp::PointProcess{M}, history::History{M}, t) where {M}
     error("not implemented")
 end
 
-function ground_intensity_bound(pointprocess::PointProcess, history, t)
+function intensity(pp::PointProcess{M}, history::History{M}, t, m::M) where {M}
     error("not implemented")
 end
 
-function ground_intensity_bound_validity_duration(pointprocess::PointProcess, history, t)
+function mark_distribution(pp::PointProcess{M}, history::History{M}, t) where {M}
     error("not implemented")
 end
 
-function mark_distribution(pointprocess::PointProcess, history, t)
+function ground_intensity_bound(pp::PointProcess{M}, history::History{M}, t) where {M}
     error("not implemented")
 end
 
-function mark_density(pointprocess::PointProcess, history, t, m)
-    return pdf(mark_distribution(pointprocess, history, t), m)
-end
-
-function intensity(pointprocess::PointProcess, history, t, m)
-    return ground_intensity(pointprocess, history, t) * mark_density(pointprocess, history, t, m)
+function ground_intensity_bound_validity(
+    pp::PointProcess{M},
+    history::History{M},
+    t,
+) where {M}
+    error("not implemented")
 end

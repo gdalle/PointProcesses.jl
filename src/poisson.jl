@@ -1,20 +1,29 @@
+using Distributions
+
 struct PoissonProcess <: PointProcess{Int}
-    λ::Float64
-    mark_distribution::Categorical
+    λ::Vector{Float64}
 end
 
-function ground_intensity(poissonprocess::PoissonProcess, history, t)
-    return poissonprocess.λ
+function ground_intensity(pp::PoissonProcess, history::History{Int}, t)
+    return sum(pp.λ)
 end
 
-function ground_intensity_bound(poissonprocess::PoissonProcess, history, t)
-    return poissonprocess.λ
+function intensity(pp::PoissonProcess, history::History{Int}, t, m::Int)
+    return pp.λ[m]
 end
 
-function ground_intensity_bound_validity_duration(poissonprocess::PoissonProcess, history, t)
+function mark_distribution(pp::PoissonProcess, history::History{Int}, t)
+    return Categorical(pp.λ / sum(pp.λ))
+end
+
+function integrated_ground_intensity(pp::PoissonProcess, history::History{Int})
+    return sum(pp.λ) * (get_tmax(history) - get_tmin(history))
+end
+
+function ground_intensity_bound(pp::PoissonProcess, history::History{Int}, t)
+    return sum(pp.λ)
+end
+
+function ground_intensity_bound_validity(pp::PoissonProcess, history::History{Int}, t)
     return Inf
-end
-
-function mark_distribution(poissonprocess::PoissonProcess, history, t)
-    return poissonprocess.mark_distribution
 end

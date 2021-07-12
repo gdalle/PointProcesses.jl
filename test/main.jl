@@ -1,8 +1,6 @@
 using PointProcesses
-using Distributions
 
-poissonprocess = PoissonProcess(1., Categorical([0.1, 0.9]))
-
-history = simulate(poissonprocess; tmin=0, tmax=100)
-
-plot(history)
+λ0 = [1.0, 2.0, 0.5]
+pp = PoissonProcess(λ0)
+history = rand(pp, 0.0, 100.0)
+λ_est = learn_poisson(history)
