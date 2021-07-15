@@ -7,11 +7,6 @@ mutable struct History{M}
     tmax::Float64
 end
 
-function push!(history::History{M}, t::Float64, m::M) where {M}
-    push!(history.times, t)
-    push!(history.marks, m)
-end
-
 function get_times(history)
     return history.times
 end
@@ -34,6 +29,11 @@ end
 
 function set_tmax!(history, tmax)
     history.tmax = tmax
+end
+
+function push!(history::History{M}, t::Float64, m::M) where {M}
+    push!(history.times, t)
+    push!(history.marks, m)
 end
 
 function append!(history1::History{M}, history2::History{M}) where {M}

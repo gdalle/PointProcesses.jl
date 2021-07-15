@@ -1,5 +1,3 @@
-import Distributions: logpdf
-
 abstract type PointProcess{M} end
 
 function ground_intensity(pp::PointProcess{M}, history::History{M}, t) where {M}
