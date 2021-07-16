@@ -13,7 +13,7 @@ include("poisson.jl")
 export PoissonProcess, default_param
 
 include("learning.jl")
-export integrated_ground_intensity, logpdf, fit
+export integrated_ground_intensity, integrated_ground_intensity2, logpdf, fit
 
 include("plot.jl")
 export plot

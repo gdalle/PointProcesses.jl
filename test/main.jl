@@ -8,11 +8,12 @@ using Quadrature
 pp = PoissonProcess(λ0)
 history = rand(pp, 0.0, 10.0)
 
-integrated_ground_intensity(pp, history)
+integrated_ground_intensity2(λ0, history)
+integrated_ground_intensity(PoissonProcess(λ0), history)
+
 logpdf(pp, history)
 
-pptype = PoissonProcess
-x0 = default_param(pptype, history)
-Zygote.gradient(x -> integrated_ground_intensity(pptype(x), history), ones(3))
+Zygote.gradient(λ -> integrated_ground_intensity2(λ, history), ones(3))
+Zygote.gradient(λ -> integrated_ground_intensity(PoissonProcess(λ), history), ones(3))
 
 fit(PoissonProcess, history)

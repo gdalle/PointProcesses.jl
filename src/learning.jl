@@ -1,4 +1,3 @@
-using Cuba
 import Distributions: logpdf, fit
 using Flux
 using GalacticOptim
@@ -6,9 +5,19 @@ using Optim
 using Quadrature
 using Zygote
 
+ground_intensity_aux(t, p) = ground_intensity(p[1], p[2], t)
+
 function integrated_ground_intensity(pp, history)
-    f = (t, p) -> ground_intensity(p[1], p[2], t)
-    lb, ub, p = get_tmin(history), get_tmax(history), [pp, history]
+    lb, ub, p = get_tmin(history), get_tmax(history), [pp]
+    f = (t, p) -> sum(p[1].λ)
+    prob = QuadratureProblem(f, lb, ub, p)
+    sol = solve(prob, HCubatureJL(), reltol = 1e-3, abstol = 1e-3)
+    return sol[1]
+end
+
+function integrated_ground_intensity2(λ, history)
+    lb, ub, p = get_tmin(history), get_tmax(history), [λ]
+    f = (t, p) -> sum(p[1])
     prob = QuadratureProblem(f, lb, ub, p)
     sol = solve(prob, HCubatureJL(), reltol = 1e-3, abstol = 1e-3)
     return sol[1]
