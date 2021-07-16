@@ -1,24 +1,17 @@
 using ComponentArrays
 using Distributions
 
-struct PoissonProcess <: PointProcess{Int}
-    λ::Vector{Float64}
-end
-
-PoissonProcess(x::ComponentArray) = PoissonProcess(exp.(x.logλ))
-
-function default_param(::Type{PoissonProcess}, history::History{Int})
-    dim = maximum(get_marks(history))
-    return ones(dim)
-    return ComponentVector(logλ = zeros(dim))
-end
-
-function ground_intensity(pp::PoissonProcess, history::History{Int}, t)
-    return sum(pp.λ)
+struct PoissonProcess{T} <: PointProcess{Int}
+    λ::Vector{T}
+    PoissonProcess(logλ::Vector{T}) where {T} = new{T}(exp.(logλ))
 end
 
 function intensity(pp::PoissonProcess, history::History{Int}, t, m::Int)
     return pp.λ[m]
+end
+
+function all_marks(pp::PoissonProcess)
+    return 1:length(pp.logλ)
 end
 
 function mark_distribution(pp::PoissonProcess, history::History{Int}, t)
@@ -26,11 +19,11 @@ function mark_distribution(pp::PoissonProcess, history::History{Int}, t)
 end
 
 function ground_intensity_bound(pp::PoissonProcess, history::History{Int}, t)
-    return sum(pp.λ)
+    return ground_intensity(pp, history, t), Inf
 end
 
-function ground_intensity_bound_validity(pp::PoissonProcess, history::History{Int}, t)
-    return Inf
+function default_param(::Type{PoissonProcess{T}}, history::History{Int}) where {T}
+    return zeros(T, maximum(get_marks(history)))
 end
 
 # function integrated_ground_intensity(pp::PoissonProcess, history::History{Int})

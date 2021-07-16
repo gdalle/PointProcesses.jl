@@ -5,8 +5,7 @@ function rand(pp::PointProcess{M}, tmin, tmax) where {M}
     history = History(Float64[], M[], tmin, tmax)
     t = tmin
     while t < tmax
-        B = ground_intensity_bound(pp, history, t)
-        L = ground_intensity_bound_validity(pp, history, t)
+        B, L = ground_intensity_bound(pp, history, t)
         T = B > 0 ? rand(Exponential(1 / B)) : Inf
         if T > L
             t = t + L

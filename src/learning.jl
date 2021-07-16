@@ -1,24 +1,15 @@
 import Distributions: logpdf, fit
-using Flux
+using ForwardDiff
 using GalacticOptim
 using Optim
 using Quadrature
-using Zygote
 
-ground_intensity_aux(t, p) = ground_intensity(p[1], p[2], t)
+ground_intensity_aux(t, params) = ground_intensity(params[1], params[2], t)
 
 function integrated_ground_intensity(pp, history)
-    lb, ub, p = get_tmin(history), get_tmax(history), [pp]
-    f = (t, p) -> sum(p[1].λ)
-    prob = QuadratureProblem(f, lb, ub, p)
-    sol = solve(prob, HCubatureJL(), reltol = 1e-3, abstol = 1e-3)
-    return sol[1]
-end
-
-function integrated_ground_intensity2(λ, history)
-    lb, ub, p = get_tmin(history), get_tmax(history), [λ]
-    f = (t, p) -> sum(p[1])
-    prob = QuadratureProblem(f, lb, ub, p)
+    lb, ub = get_tmin(history), get_tmax(history)
+    params = [pp, history]
+    prob = QuadratureProblem(ground_intensity_aux, lb, ub, params)
     sol = solve(prob, HCubatureJL(), reltol = 1e-3, abstol = 1e-3)
     return sol[1]
 end
@@ -32,11 +23,12 @@ function logpdf(pp::PointProcess, history)
     return l
 end
 
+neglogpdf_aux(x, params) = -logpdf(params[1](x), params[2])
+
 function fit(pptype::Type{<:PointProcess}, history)
-    f = OptimizationFunction((x, p) -> -logpdf(pptype(x), p[1]), GalacticOptim.AutoZygote())
     x0 = default_param(pptype, history)
-    p = [history]
-    prob = OptimizationProblem(f, x0, p)
+    params = [pptype, history]
+    prob = OptimizationProblem(f, x0, params)
     sol = solve(prob, LBFGS())
     x_opt = sol.minimizer
     return pptype(x_opt)
