@@ -1,7 +1,4 @@
-using Distributions
-import Distributions: rand
-
-function rand(pp::PointProcess{M}, tmin, tmax) where {M}
+function Distributions.rand(pp::PointProcess{M}, tmin, tmax) where {M}
     history = History(Float64[], M[], tmin, tmax)
     t = tmin
     while t < tmax

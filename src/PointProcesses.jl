@@ -1,21 +1,34 @@
 module PointProcesses
 
+using ComponentArrays
+using Distributions
+using ForwardDiff
+using GalacticOptim
+using Optim
+using ParameterHandling
+using Plots
+using Quadrature
+using StatsFuns
+
 include("history.jl")
-export History, push!, append!, nb_events, has_events
-
 include("point_process.jl")
-export PointProcess, ground_intensity, intensity, mark_distribution, ground_intensity_bound, ground_intensity_bound_validity_duration
-
+include("utils.jl")
 include("ogata.jl")
-export rand
-
 include("poisson.jl")
-export PoissonProcess, default_param
-
 include("learning.jl")
-export integrated_ground_intensity, integrated_ground_intensity2, logpdf, fit
 
-include("plot.jl")
-export plot
+export History
+export nb_events, has_events
+
+export PointProcess
+export default_params
+export intensity, mark_distribution, ground_intensity, ground_intensity_bound
+
+export PoissonProcess
+
+export integrated_ground_intensity
+export rand, logpdf, fit
+
+export scatter
 
 end
