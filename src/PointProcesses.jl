@@ -17,10 +17,9 @@ include("point_process.jl")
 include("utils.jl")
 include("ogata.jl")
 include("poisson.jl")
-include("learning.jl")
 
 export History
-export nb_events, has_events
+export nb_events, has_events, duration
 
 export PointProcess
 export get_θ

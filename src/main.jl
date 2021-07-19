@@ -1,22 +1,20 @@
-using PointProcesses
+using ForwardDiff
 using GalacticOptim
 using Optim
-using Zygote
+using PointProcesses
 using Quadrature
-using ForwardDiff
-using ComponentArrays
+using Zygote
 
-logλ0 = [-2, 0, 2]
-pp = PoissonProcess(logλ0)
+pp = PoissonProcess([-2, 0, 2])
 θ0 = get_θ(pp)
 
-history = rand(pp, 0.0, 10.0)
+history = rand(pp, 0.0, 1000.0)
 
-integrated_ground_intensity(PoissonProcess, θ0, history)
-logpdf(PoissonProcess, θ0, history)
+integrated_ground_intensity(pp, history)
 
-g = ForwardDiff.gradient(θ -> integrated_ground_intensity(PoissonProcess, θ, history), θ0)
-g = Zygote.gradient(θ -> integrated_ground_intensity(PoissonProcess, θ, history), θ0)
+logpdf(pp, history)
 
-θ_init = ComponentVector(logλ = [0., 0., 0.])
-fit(PoissonProcess, θ_init, history)
+g = ForwardDiff.gradient(θ -> logpdf(PoissonProcess, θ, history), θ0)
+g = Zygote.gradient(θ -> logpdf(PoissonProcess, θ, history), θ0)
+
+@time fit(PoissonProcess, history)

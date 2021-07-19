@@ -3,7 +3,7 @@ struct PoissonProcess <: PointProcess{Int}
 end
 
 function default_θ(::Type{PoissonProcess}, history)
-    return ComponentVector(λ = zeros(maximum(history.marks)))
+    return ComponentVector(logλ = zeros(maximum(history.marks)))
 end
 
 function intensity(::Type{PoissonProcess}, θ, history, t, m)
@@ -20,4 +20,8 @@ end
 
 function ground_intensity_bound(::Type{PoissonProcess}, θ, history, t)
     return ground_intensity(PoissonProcess, θ, history, t), Inf
+end
+
+function integrated_ground_intensity(::Type{PoissonProcess}, θ, history)
+    return sum(exp.(θ.logλ)) * duration(history)
 end

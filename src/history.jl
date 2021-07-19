@@ -15,6 +15,10 @@ function has_events(history, tmin = -Inf, tmax = Inf)
     return nb_events(history, tmin, tmax) > 0
 end
 
+function duration(history)
+    return history.tmax - history.tmin
+end
+
 function Base.push!(history::History{M}, t::Float64, m::M) where {M}
     push!(history.times, t)
     push!(history.marks, m)
