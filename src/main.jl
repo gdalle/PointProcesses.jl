@@ -4,36 +4,19 @@ using Optim
 using Zygote
 using Quadrature
 using ForwardDiff
-using ParameterHandling
+using ComponentArrays
 
-λ0 = [-2, 0, 2]
-pp = PoissonProcess(λ0)
+logλ0 = [-2, 0, 2]
+pp = PoissonProcess(logλ0)
+θ0 = get_θ(pp)
+
 history = rand(pp, 0.0, 10.0)
 
-integrated_ground_intensity(PoissonProcess(λ0), history)
-logpdf(pp, history)
+integrated_ground_intensity(PoissonProcess, θ0, history)
+logpdf(PoissonProcess, θ0, history)
 
-g = ForwardDiff.gradient(
-    λ -> integrated_ground_intensity(PoissonProcess(λ), history),
-    ones(3),
-)
+g = ForwardDiff.gradient(θ -> integrated_ground_intensity(PoissonProcess, θ, history), θ0)
+g = Zygote.gradient(θ -> integrated_ground_intensity(PoissonProcess, θ, history), θ0)
 
-g = Zygote.gradient(
-    λ -> integrated_ground_intensity(PoissonProcess(λ), history),
-    ones(3),
-)
-
-pptype = PoissonProcess{Float64}
-
-x0 = default_params(pptype, history)
-x0, unpack = flatten(x0_tuple)
-f = OptimizationFunction(
-    (x, params) -> -logpdf(pptype(unpack(x)), history),
-    GalacticOptim.AutoForwardDiff(),
-)
-prob = OptimizationProblem(f, x0)
-sol = solve(prob, LBFGS())
-x_opt = sol.minimizer
-pp_opt = PoissonProcess{Float64}(unpack(x_opt))
-
-fit(PoissonProcess{Float64}, history)
+θ_init = ComponentVector(logλ = [0., 0., 0.])
+fit(PoissonProcess, θ_init, history)

@@ -1,30 +1,31 @@
-ground_intensity_aux(t, params) = ground_intensity(params[1], params[2], t)
+ground_intensity_aux(t, θ) = ground_intensity(θ[1], θ[2], t)
 
-function integrated_ground_intensity(pp, history)
-    params = [pp, history]
-    prob = QuadratureProblem(ground_intensity_aux, history.tmin, history.tmax, params)
+function integrated_ground_intensity(pptype::Type{<:PointProcess}, θ, history)
+    prob = QuadratureProblem(
+        (t, θ) -> ground_intensity(pptype, θ, history, t),
+        history.tmin,
+        history.tmax,
+        θ,
+    )
     sol = solve(prob, HCubatureJL(), reltol = 1e-3, abstol = 1e-3)
     return sol[1]
 end
 
-function Distributions.logpdf(pp::PointProcess, history)
-    l = -integrated_ground_intensity(pp, history)
+function Distributions.logpdf(pptype::Type{<:PointProcess}, θ, history)
+    l = -integrated_ground_intensity(pptype, θ, history)
     for (t, m) in zip(history.times, history.marks)
-        l += log(intensity(pp, history, t, m))
+        l += log(intensity(pptype, θ, history, t, m))
     end
     return l
 end
 
-function Distributions.fit(pptype::Type{<:PointProcess}, history)
-    x0_tuple = default_params(pptype, history)
-    x0, unpack = flatten(x0_tuple)
-    println(x0_tuple, " ", x0)
+function Distributions.fit(pptype::Type{<:PointProcess}, initial_θ, history)
     f = OptimizationFunction(
-        (x, params) -> -logpdf(pptype(unpack(x)), history),
+        (θ, params) -> -logpdf(pptype, θ, history),
         GalacticOptim.AutoZygote(),
     )
-    prob = OptimizationProblem(f, x0)
+    prob = OptimizationProblem(f, initial_θ)
     sol = solve(prob, LBFGS())
-    x_opt = sol.minimizer
-    return pptype(unpack(x_opt))
+    θ_opt = sol.minimizer
+    return θ_opt
 end
