@@ -1,3 +1,17 @@
+"""
+    MultivariatePoissonProcess
+
+A homegeneous multivariate Poisson process with integer marks.
+
+# Fields
+- `logλ::Vector{Float64}`: logarithms of the event rates.
+
+# Examples
+
+```jldoctest
+julia> pp = MultivariatePoissonProcess([0., 1., 2.]);
+```
+"""
 struct MultivariatePoissonProcess <: PointProcess{Int}
     logλ::Vector{Float64}
 end

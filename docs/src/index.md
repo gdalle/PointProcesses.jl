@@ -1,7 +1,3 @@
-```@meta
-CurrentModule = PointProcesses
-```
-
 # PointProcesses
 
 Welcome to the documentation of [PointProcesses](https://github.com/gdalle/PointProcesses.jl).

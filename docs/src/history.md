@@ -1,13 +1,9 @@
 # Event history
 
-```@autodocs
-Modules = [PointProcesses]
-Order = [:type]
-Pages = ["history.jl"]
-```
-
-```@autodocs
-Modules = [PointProcesses]
-Order = [:function]
-Pages = ["history.jl"]
+```@docs
+History
+push!
+duration
+nb_events
+has_events
 ```

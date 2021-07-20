@@ -11,29 +11,38 @@ using LinearAlgebra
 using Optim
 using Plots
 using Quadrature
-using StatsFuns
+using Random: AbstractRNG, GLOBAL_RNG
 
 using NamedTupleTools: ntfromstruct
 
+# General stuff
 include("history.jl")
-include("point_process.jl")
-include("utils.jl")
-include("ogata.jl")
-include("poisson.jl")
+
+# Markov processes
 include("markov.jl")
+include("hmm.jl")
+include("forward_backward.jl")
+
+# Point processes
+include("point_process.jl")
+include("poisson.jl")
+include("hawkes.jl")
+include("self_correcting.jl")
+
+# Utils
+include("utils.jl")
 
 export History
 export nb_events, has_events, duration
 
-export PointProcess, Parameter
+export PointProcess, MultivariatePointProcess, Parameter
 export get_θ
 export intensity, mark_distribution, ground_intensity, ground_intensity_bound
+export integrated_ground_intensity, logpdf, fit
+export rand
 
-export MultivariatePoissonProcess
+export MultivariatePoissonProcess, MultivariateHawkesProcess
 
-export integrated_ground_intensity
-export rand, logpdf, fit
-
-export scatter
+export logsumexp, scatter
 
 end

@@ -25,9 +25,8 @@ makedocs(;
         "Tutorial" => "tutorial.md",
         "Components" => [
             "Event history" => "history.md",
-            "Markov processes" => "markov.md",
-            "Point processes" => "point_process.md",
-            "Poisson processes" => "poisson.md",
+            "Markov processes" => "markov_processes.md",
+            "Point processes" => "point_processes.md",
             "Utilities" => "utils.md",
         ],
     ],

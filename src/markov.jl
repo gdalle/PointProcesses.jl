@@ -1,10 +1,28 @@
 abstract type AbstractMarkovChain end
 
+"""
+    DiscreteMarkovChain
+
+Discrete-time Markov chain.
+
+# Fields
+- `π0::Vector{Float64}`: initial state distribution
+- `P::Matrix{Float64}`: state transition matrix.
+"""
 struct DiscreteMarkovChain <: AbstractMarkovChain
     π0::Vector{Float64}
     P::Matrix{Float64}
 end
 
+"""
+    ContinuousMarkovChain
+
+Continuous-time Markov chain.
+
+# Fields
+- `π0::Vector{Float64}`: initial state distribution
+- `Q::Matrix{Float64}`: rate matrix.
+"""
 struct ContinuousMarkovChain <: AbstractMarkovChain
     π0::Vector{Float64}
     Q::Matrix{Float64}
@@ -16,7 +34,7 @@ matrix(cmc::ContinuousMarkovChain) = cmc.Q
 
 # Simulation
 
-function Distributions.rand(dmc::DiscreteMarkovChain, T::Int; π0 = dmc.π0)
+function Base.rand(rng::AbstractRNG, dmc::DiscreteMarkovChain, T::Int; π0)
     s = Vector{Int}(undef, T)
     s[1] = rand(Categorical(π0))
     for t = 2:T
@@ -25,7 +43,9 @@ function Distributions.rand(dmc::DiscreteMarkovChain, T::Int; π0 = dmc.π0)
     return s
 end
 
-function Distributions.rand(cmc::ContinuousMarkovChain, tmin, tmax; π0 = cmc.π0)
+Base.rand(dmc::DiscreteMarkovChain, T::Int; π0 = dmc.π0) = rand(GLOBAL_RNG, dmc, T, π0 = π0)
+
+function Base.rand(rng::AbstractRNG, cmc::ContinuousMarkovChain, tmin, tmax; π0)
     jump_rates = -diag(cmc.Q)
     jump_proba = cmc.Q ./ jump_rates
     jump_proba[diagind(jump_proba)] .= 0
@@ -46,6 +66,9 @@ function Distributions.rand(cmc::ContinuousMarkovChain, tmin, tmax; π0 = cmc.π
     end
     return h
 end
+
+Base.rand(cmc::ContinuousMarkovChain, tmin, tmax; π0 = cmc.π0) =
+    rand(GLOBAL_RNG, cmc, tmin, tmax, π0 = π0)
 
 # Asymptotics
 
