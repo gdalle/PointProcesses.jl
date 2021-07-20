@@ -30,21 +30,21 @@ function Distributions.rand(cmc::ContinuousMarkovChain, tmin, tmax; π0 = cmc.π
     jump_proba = cmc.Q ./ jump_rates
     jump_proba[diagind(jump_proba)] .= 0
 
-    history = History{Int}(Float64[], Int[], tmin, tmax)
+    h = History{Int}(Float64[], Int[], tmin, tmax)
     s = rand(Categorical(cmc.π0))
-    push!(history, t_min, s)
+    push!(h, t_min, s)
     t = t_min
     while t < t_max
         Δt = rand(Exponential(1 / jump_rates[s]))
         if t + Δt < t_max
             t += Δt
             s = rand(Categorical(@view jump_proba[s, :]))
-            push!(history, t, s)
+            push!(h, t, s)
         else
             break
         end
     end
-    return history
+    return h
 end
 
 # Asymptotics

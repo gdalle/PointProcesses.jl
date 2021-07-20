@@ -6,7 +6,10 @@ using Quadrature
 using Test
 using Zygote
 
+doctest(PointProcesses)
+
 @testset "PointProcesses.jl" begin
+
     pp = MultivariatePoissonProcess([-2, 0, 2])
     θ0 = get_θ(pp)
 

@@ -4,11 +4,15 @@ CurrentModule = PointProcesses
 
 # PointProcesses
 
-Documentation for [PointProcesses](https://github.com/gdalle/PointProcesses.jl).
+Welcome to the documentation of [PointProcesses](https://github.com/gdalle/PointProcesses.jl).
 
-```@index
+```@docs
+PointProcesses
 ```
 
-```@autodocs
-Modules = [PointProcesses]
+To get started, take a look at the [Tutorial](@ref).
+
+## Index
+
+```@index
 ```

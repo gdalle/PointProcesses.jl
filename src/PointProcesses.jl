@@ -1,3 +1,6 @@
+"""
+A package for point process modeling, simulation and inference.
+"""
 module PointProcesses
 
 using ComponentArrays
@@ -22,7 +25,7 @@ include("markov.jl")
 export History
 export nb_events, has_events, duration
 
-export PointProcess
+export PointProcess, Parameter
 export get_θ
 export intensity, mark_distribution, ground_intensity, ground_intensity_bound
 

@@ -1,5 +1,7 @@
-using PointProcesses
+push!(LOAD_PATH, "../src/")
+
 using Documenter
+using PointProcesses
 
 DocMeta.setdocmeta!(
     PointProcesses,
@@ -18,7 +20,17 @@ makedocs(;
         canonical = "https://gdalle.github.io/PointProcesses.jl",
         assets = String[],
     ),
-    pages = ["Home" => "index.md"],
+    pages = [
+        "Home" => "index.md",
+        "Tutorial" => "tutorial.md",
+        "Components" => [
+            "Event history" => "history.md",
+            "Markov processes" => "markov.md",
+            "Point processes" => "point_process.md",
+            "Poisson processes" => "poisson.md",
+            "Utilities" => "utils.md",
+        ],
+    ],
 )
 
-deploydocs(; repo = "github.com/gdalle/PointProcesses.jl", devbranch = "main")
+# deploydocs(; repo = "github.com/gdalle/PointProcesses.jl", devbranch = "main")
