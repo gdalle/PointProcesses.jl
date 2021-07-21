@@ -8,7 +8,7 @@ A container for linear event histories with times of type `R` and marks of type 
 - `times::Vector{R}`: vector of event times
 - `marks::Vector{M}`: vector of event marks
 - `tmin::Float64`: start time
-- `tmax::Float64`: end time.
+- `tmax::Float64`: end time
 
 # Examples
 

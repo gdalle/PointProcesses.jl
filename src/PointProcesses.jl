@@ -29,6 +29,7 @@ include("markov/markov_continuous.jl")
 # hidden Markov models
 include("hmm/hmm.jl")
 include("hmm/forward_backward.jl")
+include("hmm/baum_welch.jl")
 
 # Point processes
 include("pp/point_process.jl")
@@ -49,10 +50,10 @@ export nb_events, has_events, duration
 export AbstractMarkovChain, DiscreteMarkovChain, ContinuousMarkovChain
 export nstates, stationary_distribution
 
-export HMM
+export HiddenMarkovModel
 export forward_log!, forward_nolog!, backward_log!, backward_nolog!
 
-export PointProcess, Parameter, params
+export PointProcess, TimedPointProcess, Parameter, params
 export intensity, mark_distribution, ground_intensity, ground_intensity_bound
 export integrated_ground_intensity
 

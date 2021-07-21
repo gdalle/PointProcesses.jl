@@ -1,4 +1,4 @@
-function forward_nolog!(α::Matrix, c::Vector, obs_pdf::Matrix, hmm::HMM)
+function forward_nolog!(α::Matrix, c::Vector, obs_pdf::Matrix, hmm::HiddenMarkovModel)
     T, S = length(obs_logpdf), nstates(hmm)
     π0, P = hmm.transitions.π0, hmm.transitions.P
     for i = 1:S
@@ -25,7 +25,7 @@ function forward_nolog!(α::Matrix, c::Vector, obs_pdf::Matrix, hmm::HMM)
     return logα
 end
 
-function forward_log!(logα::Matrix, obs_logpdf::Matrix, hmm::HMM)
+function forward_log!(logα::Matrix, obs_logpdf::Matrix, hmm::HiddenMarkovModel)
     T, S = length(obs_logpdf), nstates(hmm)
     logπ0, logP = log.(hmm.transitions.π0), log.(hmm.transitions.P)
     for i = 1:S
@@ -44,7 +44,7 @@ function forward_log!(logα::Matrix, obs_logpdf::Matrix, hmm::HMM)
     return logα
 end
 
-function backward_nolog!(β::Matrix, c::Vector, obs_pdf::Matrix, hmm::HMM)
+function backward_nolog!(β::Matrix, c::Vector, obs_pdf::Matrix, hmm::HiddenMarkovModel)
     T, S = length(obs_logpdf), nstates(hmm)
     π0, P = hmm.transitions.π0, hmm.transitions.P
 
@@ -64,7 +64,7 @@ function backward_nolog!(β::Matrix, c::Vector, obs_pdf::Matrix, hmm::HMM)
 end
 
 
-function backward_log!(logβ::Matrix, obs_logpdf::Matrix, hmm::HMM)
+function backward_log!(logβ::Matrix, obs_logpdf::Matrix, hmm::HiddenMarkovModel)
     T, S = length(obs_logpdf), nstates(hmm)
     logπ0, logP = log.(hmm.transitions.π0), log.(hmm.transitions.P)
 
@@ -90,7 +90,7 @@ function forward_backward_nolog!(
     γ::Matrix,
     ξ::Array,
     obs_pdf::Matrix,
-    hmm::HMM,
+    hmm::HiddenMarkovModel,
 )
     T, S = length(observations), nstates(hmm.transitions)
 
@@ -129,7 +129,7 @@ function forward_backward_log!(
     logγ::Matrix,
     logξ::Array,
     obs_logpdf::Matrix,
-    hmm::HMM,
+    hmm::HiddenMarkovModel,
 )
     T, S = length(observations), nstates(hmm.transitions)
     logπ0, logP = log.(hmm.transitions.π0), log.(hmm.transitions.P)
