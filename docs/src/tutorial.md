@@ -1,5 +1,5 @@
 # Tutorial
 
-!!! warning "Warning"
+!!! danger "Warning"
 
     Work in progress

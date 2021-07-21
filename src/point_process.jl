@@ -148,8 +148,10 @@ julia> h = rand(pp, 0., 1000.);
 
 julia> θ_est = fit(MultivariatePoissonProcess, h);
 
-julia> pp_est = MultivariatePoissonProcess(θ_est.logλ)
-MultivariatePoissonProcess([-0.008032171697071258, 0.9895411936136185, 2.0016151262152886])
+julia> pp_est = MultivariatePoissonProcess(θ_est.logλ);
+
+julia> maximum(abs.(pp.logλ - pp_est.logλ)) < 0.1
+true
 ```
 """
 function Distributions.fit(pptype::Type{<:PointProcess}, h)
