@@ -6,7 +6,7 @@ using PointProcesses
 DocMeta.setdocmeta!(
     PointProcesses,
     :DocTestSetup,
-    :(using PointProcesses);
+    :(using PointProcesses; using Random);
     recursive = true,
 )
 
@@ -24,9 +24,10 @@ makedocs(;
         "Home" => "index.md",
         "Tutorial" => "tutorial.md",
         "Components" => [
-            "Event history" => "history.md",
-            "Markov processes" => "markov_processes.md",
-            "Point processes" => "point_processes.md",
+            "Event History" => "history.md",
+            "Point Processes" => "pp.md",
+            "Markov Processes" => "markov.md",
+            "Hidden Markov Models" => "hmm.md",
             "Utilities" => "utils.md",
         ],
     ],

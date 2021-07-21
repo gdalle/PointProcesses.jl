@@ -11,38 +11,53 @@ using LinearAlgebra
 using Optim
 using Plots
 using Quadrature
-using Random: AbstractRNG, GLOBAL_RNG
+using Random
+using StatsBase
 
+using Random: AbstractRNG, GLOBAL_RNG
 using NamedTupleTools: ntfromstruct
 
 # General stuff
-include("history.jl")
+include("history.jl" )
 
 # Markov processes
-include("markov.jl")
-include("hmm.jl")
-include("forward_backward.jl")
+include("markov/matrices.jl")
+include("markov/markov.jl")
+include("markov/markov_discrete.jl")
+include("markov/markov_continuous.jl")
+
+# hidden Markov models
+include("hmm/hmm.jl")
+include("hmm/forward_backward.jl")
 
 # Point processes
-include("point_process.jl")
-include("poisson.jl")
-include("hawkes.jl")
-include("self_correcting.jl")
+include("pp/point_process.jl")
+include("pp/poisson.jl")
+include("pp/hawkes.jl")
+include("pp/intensity.jl")
+include("pp/ogata.jl")
+include("pp/learning.jl")
 
 # Utils
-include("utils.jl")
+include("utils/utils.jl")
+
+export rand, logpdf, fit, scatter
 
 export History
 export nb_events, has_events, duration
 
-export PointProcess, MultivariatePointProcess, Parameter
-export get_θ
+export AbstractMarkovChain, DiscreteMarkovChain, ContinuousMarkovChain
+export nstates, stationary_distribution
+
+export HMM
+export forward_log!, forward_nolog!, backward_log!, backward_nolog!
+
+export PointProcess, Parameter, params
 export intensity, mark_distribution, ground_intensity, ground_intensity_bound
-export integrated_ground_intensity, logpdf, fit
-export rand
+export integrated_ground_intensity
 
 export MultivariatePoissonProcess, MultivariateHawkesProcess
 
-export logsumexp, scatter
+export logsumexp
 
 end

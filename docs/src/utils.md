@@ -2,12 +2,6 @@
 
 ```@autodocs
 Modules = [PointProcesses]
-Order = [:type]
-Pages = ["utils.jl"]
-```
-
-```@autodocs
-Modules = [PointProcesses]
-Order = [:function]
+Order = [:type, :function]
 Pages = ["utils.jl"]
 ```

@@ -1,12 +1,20 @@
-function forward_nolog!(α::Matrix, obs_pdf::Matrix, hmm::HMM)
+function forward_nolog!(α::Matrix, c::Vector, obs_pdf::Matrix, hmm::HMM)
     T, S = length(obs_logpdf), nstates(hmm)
     π0, P = hmm.transitions.π0, hmm.transitions.P
     for i = 1:S
-        α[1, i] .= π0[i] * obs_pdf[1, i]
+        α[1, i] = π0[i] * obs_pdf[1, i]
+    end
+    c[1] = 1 / sum(@view α[1, :])  # scaling
+    for i = 1:S
+        α[1, i] *= c[1]
     end
     for t = 1:T-1
         for j = 1:S
             α[t+1, j] = sum(α[t, i] * P[i, j]) * obs_pdf[t+1, j]
+        end
+        c[t+1] = 1 / sum(@view α[t+1, :])  # scaling
+        for j = 1:S
+            α[t+1, j] *= c[t+1]
         end
     end
     for t = 1:T
@@ -36,16 +44,16 @@ function forward_log!(logα::Matrix, obs_logpdf::Matrix, hmm::HMM)
     return logα
 end
 
-function backward_nolog!(β::Matrix, obs_pdf, hmm::HMM)
+function backward_nolog!(β::Matrix, c::Vector, obs_pdf::Matrix, hmm::HMM)
     T, S = length(obs_logpdf), nstates(hmm)
     π0, P = hmm.transitions.π0, hmm.transitions.P
 
     for i = 1:S
-        β[T, i] = 0.0
+        β[T, i] = 0.
     end
     for t = T-1:-1:1
         for s = 1:S
-            β[t, i] = sum(P[i, j] * obs_pdf[t+1, j] * β[t+1, j])
+            β[t, i] = sum(P[i, j] * obs_pdf[t+1, j] * β[t+1, j]) * c[t]
         end
     end
     for t = 1:T
@@ -61,7 +69,7 @@ function backward_log!(logβ::Matrix, obs_logpdf::Matrix, hmm::HMM)
     logπ0, logP = log.(hmm.transitions.π0), log.(hmm.transitions.P)
 
     for i = 1:S
-        logβ[T, i] = 0.0
+        logβ[T, i] = 0.
     end
     for t = T-1:-1:1
         for i = 1:i
@@ -77,6 +85,7 @@ end
 
 function forward_backward_nolog!(
     α::Matrix,
+    c::Vector,
     β::Matrix,
     γ::Matrix,
     ξ::Array,
@@ -85,8 +94,8 @@ function forward_backward_nolog!(
 )
     T, S = length(observations), nstates(hmm.transitions)
 
-    forward_nolog!(α, hmm, obs_pdf)
-    backward_nolog!(β, hmm, obs_pdf)
+    forward_nolog!(α, c, hmm, obs_pdf)
+    backward_nolog!(β, c, hmm, obs_pdf)
 
     for t = 1:T
         for i = 1:S
@@ -110,7 +119,7 @@ function forward_backward_nolog!(
 
     L = sum(@view α[T, :])
 
-    return γ, ξ, L
+    return L
 end
 
 
@@ -150,5 +159,5 @@ function forward_backward_log!(
 
     logL = logsumexp(logα[T, :])
 
-    return logγ, logξ, logL
+    return logL
 end

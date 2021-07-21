@@ -6,6 +6,8 @@ Welcome to the documentation of [PointProcesses](https://github.com/gdalle/Point
 PointProcesses
 ```
 
+## Quick start
+
 To get started, take a look at the [Tutorial](@ref).
 
 ## Index

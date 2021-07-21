@@ -1,15 +1,15 @@
 """
-    HMM{E}
+    HMM{Tr, Em, Ob}
 
-Hidden Markov Model with arbitrary emission distributions of type `E`.
+Hidden Markov Model with arbitrary transition model (of type `Tr`), emission distributions (of type `Em`) and observations (of type `Ob`).
 
 # Fields
-- `transitions::DiscreteMarkovChain`: state evolution process.
-- `emissions::Vector{E}`: one emission distribution per state.
+- `transitions::Tr`: state evolution process.
+- `emissions::Vector{Em}`: one emission distribution per state with element type `Ob`.
 """
-struct HMM{E}
-    transitions::DiscreteMarkovChain
-    emissions::Vector{E}
+mutable struct HMM{Tr, Em, Ob}
+    transitions::Tr
+    emissions::Vector{Em}
 end
 
 nstates(hmm::HMM) = length(hmm.emissions)
@@ -26,9 +26,8 @@ Base.rand(hmm::HMM, T) = rand(GLOBAL_RNG, hmm, T)
 
 # Likelihood of observations
 
-function observations_logpdf(hmm::HMM, observations)
+function update_observation_likelihood!(obs_logpdf::Matrix, hmm::HMM, observations::Vector)
     T, S = length(observations), nstates(hmm)
-    obs_logpdf = Matrix{Float64}(undef, T, S)
     for t = 1:T
         for s = 1:S
             obs_logpdf[t, s] = logpdf(hmm.emissions[s], observations[t])
@@ -39,5 +38,4 @@ function observations_logpdf(hmm::HMM, observations)
             throw(OverflowError("Log-probabilities are too small for observations."))
         end
     end
-    return obs_logpdf
 end

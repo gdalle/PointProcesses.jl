@@ -1,5 +1,5 @@
 # Tutorial
 
-!!! danger "Warning"
+!!! danger "Work in progress"
 
-    Work in progress
+    Content will be added soon
