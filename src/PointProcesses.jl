@@ -3,7 +3,6 @@ A package for point process modeling, simulation and inference.
 """
 module PointProcesses
 
-using Base: throw_setindex_mismatch
 using ComponentArrays
 using Distributions
 using ForwardDiff
@@ -36,7 +35,6 @@ include("hmm/baum_welch.jl")
 include("pp/point_process.jl")
 include("pp/multivariate.jl")
 include("pp/poisson.jl")
-include("pp/hawkes.jl")
 include("pp/intensity.jl")
 include("pp/ogata.jl")
 include("pp/learning.jl")

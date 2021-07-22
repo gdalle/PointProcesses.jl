@@ -69,13 +69,12 @@ Compute the optimal parameter for a point process of type `pptype` on history `h
 The default method uses the package [GalacticOptim](https://github.com/SciML/GalacticOptim.jl) for numerical optimization, but it should be reimplemented for specific processes if explicit maximization is feasible.
 """
 function Distributions.fit(pptype::Type{<:PointProcess{M}}, θ0::Parameter, h::History{M}) where {M}
-    f = OptimizationFunction(
-        (θ, p) -> -logpdf(pptype, θ, h),
-        GalacticOptim.AutoForwardDiff(),
-    )
-    prob = OptimizationProblem(f, θ0)
-    sol = solve(prob, LBFGS())
-    θ_opt = sol.minimizer
+    f = θ -> -logpdf(pptype, θ, h)
+    # lower = zeros(length(θ0))
+    # upper = fill(Inf, length(θ0))
+    # inner_optimizer = GradientDescent()
+    res = optimize(f, θ0, LBFGS(); autodiff=:forward)
+    θ_opt = Optim.minimizer(res)
     pp_opt = pptype(NamedTuple(θ_opt)...)
     return pp_opt
 end
