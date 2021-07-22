@@ -5,7 +5,7 @@ A container for linear event histories with times of type `R` and marks of type 
 
 # Fields
 
-- `times::Vector{R}`: vector of event times
+- `times::Vector{Float64}`: vector of event times
 - `marks::Vector{M}`: vector of event marks
 - `tmin::Float64`: start time
 - `tmax::Float64`: end time
@@ -37,11 +37,11 @@ julia> has_events(h, 1.5, 2.0)
 true
 ```
 """
-mutable struct History{M, R<:Real}
-    times::Vector{R}
+mutable struct History{M}
+    times::Vector{Float64}
     marks::Vector{M}
-    tmin::R
-    tmax::R
+    tmin::Float64
+    tmax::Float64
 end
 
 """
@@ -78,7 +78,7 @@ end
 
 Add event `(t, m)` at the end of history `h`.
 """
-function Base.push!(h::History{M, R}, t::R, m::M) where {M, R}
+function Base.push!(h::History{M}, t::Float64, m::M) where {M}
     @assert h.tmin <= t < h.tmax
     push!(h.times, t)
     push!(h.marks, m)

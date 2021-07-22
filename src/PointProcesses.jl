@@ -3,6 +3,7 @@ A package for point process modeling, simulation and inference.
 """
 module PointProcesses
 
+using Base: throw_setindex_mismatch
 using ComponentArrays
 using Distributions
 using ForwardDiff
@@ -33,6 +34,7 @@ include("hmm/baum_welch.jl")
 
 # Point processes
 include("pp/point_process.jl")
+include("pp/multivariate.jl")
 include("pp/poisson.jl")
 include("pp/hawkes.jl")
 include("pp/intensity.jl")
@@ -53,7 +55,9 @@ export nstates, stationary_distribution
 export HiddenMarkovModel
 export forward_log!, forward_nolog!, backward_log!, backward_nolog!
 
-export PointProcess, TimedPointProcess, Parameter, params
+export PointProcess, TimedPointProcess
+export Parameter, params
+export MultivariatePointProcess, all_marks
 export intensity, mark_distribution, ground_intensity, ground_intensity_bound
 export integrated_ground_intensity
 

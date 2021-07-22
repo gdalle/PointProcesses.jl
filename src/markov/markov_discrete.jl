@@ -10,7 +10,7 @@ Discrete-time Markov chain..
 # Examples
 
 ```jldoctest
-Random.seed!(63)
+using Random; Random.seed!(63)
 dmc = DiscreteMarkovChain([0.3, 0.7], [0.9 0.1; 0.2 0.8])
 states = rand(dmc, 100)
 fit(DiscreteMarkovChain, states)

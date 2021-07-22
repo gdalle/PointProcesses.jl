@@ -10,7 +10,7 @@ Hidden Markov Model with arbitrary transition model (of type `Tr`) and emission 
 # Examples
 
 ```jldoctest
-Random.seed!(63)
+using Random; Random.seed!(63)
 dmc = DiscreteMarkovChain([0.3, 0.7], [0.9 0.1; 0.2 0.8])
 emission1 = TimedPointProcess(MultivariatePoissonProcess([0., 1., 2.]), 0., 1.)
 emission2 = TimedPointProcess(MultivariatePoissonProcess([2., 1., 0.]), 0., 1.)

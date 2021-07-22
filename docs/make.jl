@@ -6,7 +6,7 @@ using PointProcesses
 DocMeta.setdocmeta!(
     PointProcesses,
     :DocTestSetup,
-    :(using PointProcesses; using Random);
+    :(using PointProcesses);
     recursive = true,
 )
 

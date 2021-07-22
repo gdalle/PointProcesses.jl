@@ -10,7 +10,7 @@ Continuous-time Markov chain.
 # Examples
 
 ```jldoctest
-Random.seed!(63)
+using Random; Random.seed!(63)
 cmc = ContinuousMarkovChain([0.3, 0.7], [-1. 1.; 2. -2.])
 h = rand(cmc, 0., 100.)
 fit(ContinuousMarkovChain, h)

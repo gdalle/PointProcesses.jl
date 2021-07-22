@@ -8,14 +8,22 @@ The conditional intensity function quantifies the instantaneous risk  of an even
 
 [^Rasmussen_2018]: Rasmussen, J. G. (2018), “Lecture Notes: Temporal Point Processes and the Conditional Intensity Function,” arXiv:1806.00221 [stat].
 """
-function intensity(pptype, θ, h, t, m) end
+function intensity(
+    pptype::Type{<:PointProcess{M}},
+    θ::Parameter,
+    h::History{M},
+    t::Float64,
+    m::M,
+) where {M}
+    error("not implemented")
+end
 
 """
     intensity(pp, h, t, m)
 
 Fall back on [`intensity(pptype, θ, h, t, m)`](@ref).
 """
-function intensity(pp::PointProcess{M}, h::History{M}, t::Real, m::M) where {M}
+function intensity(pp::PointProcess{M}, h::History{M}, t::Float64, m::M) where {M}
     return intensity(typeof(pp), params(pp), h, t, m)
 end
 
@@ -24,14 +32,21 @@ end
 
 Compute the distribution of marks for a point process of type `pptype` with parameter `θ` knowing that an event takes place at time `t` after history `h`.
 """
-function mark_distribution(pptype, θ, h, t) end
+function mark_distribution(
+    pptype::Type{<:PointProcess{M}},
+    θ::Parameter,
+    h::History{M},
+    t::Float64,
+) where {M}
+    error("not implemented")
+end
 
 """
     mark_distribution(pp, h, t)
 
 Fall back on [`mark_distribution(pptype, θ, h, t)`](@ref).
 """
-function mark_distribution(pp::PointProcess{M}, h::History{M}, t::Real) where {M}
+function mark_distribution(pp::PointProcess{M}, h::History{M}, t::Float64) where {M}
     return mark_distribution(typeof(pp), params(pp), h, t)
 end
 
@@ -45,14 +60,21 @@ The ground intensity quantifies the instantaneous risk of an event with any mark
     \lambda_g(t|h) = \sum_{m \in \mathcal{M}} \lambda(t, m|h).
 ```
 """
-function ground_intensity(pptype, θ, h, t) end
+function ground_intensity(
+    pptype::Type{<:PointProcess{M}},
+    θ::Parameter,
+    h::History{M},
+    t::Float64,
+) where {M}
+    error("not implemented")
+end
 
 """
     ground_intensity(pp, h, t)
 
 Fall back on [`ground_intensity(pptype, θ, h, t)`](@ref).
 """
-function ground_intensity(pp::PointProcess{M}, h::History{M}, t::Real) where {M}
+function ground_intensity(pp::PointProcess{M}, h::History{M}, t::Float64) where {M}
     return ground_intensity(typeof(pp), params(pp), h, t)
 end
 
@@ -66,13 +88,20 @@ Return a tuple of the form $(B, L)$ satisfying
     \forall u \in [t, t+L), \quad \lambda_g(t|h) \leq B
 ```
 """
-function ground_intensity_bound(pptype, θ, h, t) end
+function ground_intensity_bound(
+    pptype::Type{<:PointProcess{M}},
+    θ::Parameter,
+    h::History{M},
+    t::Float64,
+) where {M}
+    error("not implemented")
+end
 
 """
     ground_intensity_bound(pp, h, t)
 
 Fall back on [`ground_intensity_bound(pptype, θ, h, t)`](@ref).
 """
-function ground_intensity_bound(pp::PointProcess{M}, h::History{M}, t::Real) where {M}
+function ground_intensity_bound(pp::PointProcess{M}, h::History{M}, t::Float64) where {M}
     return ground_intensity_bound(typeof(pp), params(pp), h, t)
 end

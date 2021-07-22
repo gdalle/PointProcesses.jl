@@ -67,28 +67,19 @@ Compute the optimal parameter for a point process of type `pptype` on history `h
 ```
 
 The default method uses the package [GalacticOptim](https://github.com/SciML/GalacticOptim.jl) for numerical optimization, but it should be reimplemented for specific processes if explicit maximization is feasible.
-
-# Examples
-
-```jldoctest
-Random.seed!(96);
-pp = MultivariatePoissonProcess([0., 1., 2.]);
-h = rand(pp, 0., 1000.);
-θ_est = fit(MultivariatePoissonProcess, h);
-pp_est = MultivariatePoissonProcess(θ_est.logλ)
-
-# output
-
-MultivariatePoissonProcess([-0.008032171697071258, 0.9895411936136185, 2.0016151262152886])
-```
 """
-function Distributions.fit(pptype::Type{<:PointProcess{M}}, h::History{M}) where {M}
+function Distributions.fit(pptype::Type{<:PointProcess{M}}, θ0::Parameter, h::History{M}) where {M}
     f = OptimizationFunction(
         (θ, p) -> -logpdf(pptype, θ, h),
         GalacticOptim.AutoForwardDiff(),
     )
-    prob = OptimizationProblem(f, default_param(pptype, h))
+    prob = OptimizationProblem(f, θ0)
     sol = solve(prob, LBFGS())
     θ_opt = sol.minimizer
-    return θ_opt
+    pp_opt = pptype(NamedTuple(θ_opt)...)
+    return pp_opt
+end
+
+function Distributions.fit(pp0::PointProcess{M}, h::History{M}) where {M}
+    return fit(typeof(pp0), params(pp0), h)
 end

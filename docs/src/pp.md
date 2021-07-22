@@ -5,7 +5,7 @@
 ```@autodocs
 Modules = [PointProcesses]
 Order = [:type, :function]
-Pages = ["point_process.jl"]
+Pages = ["pp/point_process.jl", "pp/multivariate.jl"]
 ```
 
 ## Intensity functions
@@ -13,7 +13,7 @@ Pages = ["point_process.jl"]
 ```@autodocs
 Modules = [PointProcesses]
 Order = [:type, :function]
-Pages = ["intensity.jl"]
+Pages = ["pp/intensity.jl"]
 ```
 
 ## Simulation
@@ -21,7 +21,7 @@ Pages = ["intensity.jl"]
 ```@autodocs
 Modules = [PointProcesses]
 Order = [:type, :function]
-Pages = ["ogata.jl"]
+Pages = ["pp/ogata.jl"]
 ```
 
 ## Learning
@@ -37,11 +37,5 @@ Pages = ["pp/learning.jl"]
 ```@autodocs
 Modules = [PointProcesses]
 Order = [:type, :function]
-Pages = ["poisson.jl"]
-```
-
-```@autodocs
-Modules = [PointProcesses]
-Order = [:type, :function]
-Pages = ["hawkes.jl"]
+Pages = ["poisson.jl", "hawkes.jl"]
 ```

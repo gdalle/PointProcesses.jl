@@ -5,7 +5,7 @@
 ```@autodocs
 Modules = [PointProcesses]
 Order = [:type, :function]
-Pages = ["hmm.jl"]
+Pages = ["hmm/hmm.jl"]
 ```
 
 ## Inference
@@ -13,7 +13,7 @@ Pages = ["hmm.jl"]
 ```@autodocs
 Modules = [PointProcesses]
 Order = [:type, :function]
-Pages = ["forward_backward.jl"]
+Pages = ["hmm/forward_backward.jl"]
 ```
 
 ## Learning
@@ -21,5 +21,5 @@ Pages = ["forward_backward.jl"]
 ```@autodocs
 Modules = [PointProcesses]
 Order = [:type, :function]
-Pages = ["baum_welch.jl"]
+Pages = ["hmm/baum_welch.jl"]
 ```

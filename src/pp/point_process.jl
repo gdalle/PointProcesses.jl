@@ -6,19 +6,19 @@ The common supertype of all point processes with mark type `M`.
 abstract type PointProcess{M} end
 
 """
-    TimedPointProcess{M,P<:PointProcess{M},R<:Real}
+    TimedPointProcess{M,P<:PointProcess{M}}
 
 Abstract point process with built-in start and end times.
 
 # Fields
 - `pp::P`: underlying point process
-- `tmin::R`: start time
-- `tmax::R`: end time
+- `tmin::Float64`: start time
+- `tmax::Float64`: end time
 """
-struct TimedPointProcess{M,P<:PointProcess{M},R<:Real} <: PointProcess{M}
+struct TimedPointProcess{M,P<:PointProcess{M}} <: PointProcess{M}
     pp::P
-    tmin::R
-    tmax::R
+    tmin::Float64
+    tmax::Float64
 end
 
 """
@@ -28,8 +28,4 @@ An alias for `ComponentVector`, which is how we store point process parameters `
 """
 const Parameter = ComponentVector
 
-Base.eltype(::Type{<:PointProcess{M}}) where {M} = History{M}
-
 StatsBase.params(pp::PointProcess) = ComponentVector(ntfromstruct(pp))
-
-Base.rand(pp::PointProcess, args...) = rand(GLOBAL_RNG, pp, args...)

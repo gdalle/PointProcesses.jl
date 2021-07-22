@@ -1,13 +1,17 @@
+Base.eltype(::Type{<:PointProcess{M}}) where {M} = History{M}
+
 """
     rand(rng, pp, tmin, tmax)
 
-Simulate a point process `pp` on interval `[tmin, tmax)` using Ogata's algorithm[^Rasmussen_2018].
+Simulate a point process `pp` on interval `[tmin, tmax)` using Ogata's algorithm[^Ogata_1981].
+
+[^Ogata_1981]: Ogata, Y. (1981), “On Lewis’ simulation method for point processes,” IEEE Transactions on Information Theory, 27, 23–31. https://doi.org/10.1109/TIT.1981.1056305.
 """
 function Base.rand(rng::AbstractRNG, pp::PointProcess{M}, tmin::Float64, tmax::Float64) where {M}
     h = History(Float64[], M[], tmin, tmax)
     t = tmin
     while t < tmax
-        B, L = ground_intensity_bound(pp, h, t)
+        B, L = ground_intensity_bound(pp, h, t + eps(t))
         T = B > 0 ? rand(rng, Exponential(1 / B)) : Inf
         if T > L
             t = t + L
@@ -26,3 +30,5 @@ function Base.rand(rng::AbstractRNG, pp::PointProcess{M}, tmin::Float64, tmax::F
 end
 
 Base.rand(rng::AbstractRNG, tpp::TimedPointProcess) = rand(rng, tpp.pp, tpp.tmin, tpp.tmax)
+
+Base.rand(pp::PointProcess, args...) = rand(GLOBAL_RNG, pp, args...)
