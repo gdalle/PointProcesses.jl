@@ -5,7 +5,6 @@ module PointProcesses
 
 ## Imports
 
-using Base: NamedTuple, Float64
 using Distributions
 using ForwardDiff
 using LinearAlgebra
@@ -14,6 +13,7 @@ using Plots
 using Quadrature
 using Random
 using StatsBase
+using StatsPlots
 using TransformVariables
 
 using Random: AbstractRNG, GLOBAL_RNG
@@ -41,13 +41,15 @@ include("pp/point_process.jl")
 # Temporal point processes
 include("tpp/temporal_point_process.jl")
 include("tpp/multivariate.jl")
-include("tpp/poisson.jl")
 include("tpp/intensity.jl")
 include("tpp/ogata.jl")
 include("tpp/learning.jl")
+include("tpp/poisson.jl")
+include("tpp/hawkes.jl")
 
 # Utils
 include("utils/utils.jl")
+include("utils/plot.jl")
 
 ## Exports
 
@@ -56,11 +58,7 @@ export rand, logpdf, fit, scatter
 # .
 
 export History
-export nb_events, has_events, duration
-
-# utils
-
-export logsumexp
+export nb_events, has_events, duration, time_change
 
 # markov
 
@@ -84,8 +82,13 @@ export Parameter, params
 export MultivariatePointProcess, all_marks
 export intensity, mark_distribution, ground_intensity, ground_intensity_bound
 export integrated_ground_intensity
+export check_residuals
 
-export PoissonProcess
+export PoissonProcess, HawkesProcess
 
+# utils
+
+export plot_events, plot_intensity, qqplot_interevent_times
+export logsumexp
 
 end

@@ -28,7 +28,7 @@ PoissonProcess{R}(nt::NamedTuple) where {R} = PoissonProcess(nt.λ)
 
 function build_transform(pp::PoissonProcess)
     M = length(pp.λ)
-    return as((λ = as(Array, asℝ₊, M),))
+    return as((λ = as(Vector, asℝ₊, M),))
 end
 
 function all_marks(pp::PoissonProcess)

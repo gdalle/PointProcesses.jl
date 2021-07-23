@@ -85,14 +85,14 @@ function Base.push!(h::History{M}, t::Float64, m::M) where {M}
     return nothing
 end
 
-function Plots.scatter(history::History{M}) where {M <: Real}
-    scatter(
-        history.times,
-        history.marks,
-        xlim = (history.tmin, history.tmax),
-        title = "Event history",
-        xlabel = "Time",
-        ylabel = "Marks",
-        label = nothing,
-    )
+@doc raw"""
+    time_change(h, Λ)
+
+Apply the time rescaling $t \mapsto \Lambda(t)$ to history `h`.
+"""
+function time_change(h::History{M}, Λ) where {M}
+    new_times = Λ.(h.times)
+    new_tmin = Λ(h.tmin)
+    new_tmax = Λ(h.tmax)
+    return History{M}(new_times, h.marks, new_tmin, new_tmax)
 end
