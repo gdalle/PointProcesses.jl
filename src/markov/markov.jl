@@ -1,6 +1,6 @@
 abstract type AbstractMarkovChain end
 
-StatsBase.params(mc::AbstractMarkovChain) = ComponentVector(ntfromstruct(mc))
+StatsBase.params(mc::AbstractMarkovChain) = ntfromstruct(mc)
 
 nstates(mc::AbstractMarkovChain) = length(mc.π0)
 

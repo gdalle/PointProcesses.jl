@@ -1,6 +1,4 @@
-# Markov processes
-
-## Markov chains
+# Markov chains
 
 ```@autodocs
 Modules = [PointProcesses]

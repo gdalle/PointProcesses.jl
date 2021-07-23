@@ -1,4 +1,4 @@
-# Hidden Markov Models
+# Hidden Markov models
 
 ## HMM structure
 

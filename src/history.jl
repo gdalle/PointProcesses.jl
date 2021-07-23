@@ -14,7 +14,7 @@ A container for linear event histories with times of type `R` and marks of type 
 
 ```jldoctest
 julia> h = History([0.2, 0.8, 1.1], ["a", "b", "c"], 0.0, 2.0)
-History{String, Float64}([0.2, 0.8, 1.1], ["a", "b", "c"], 0.0, 2.0)
+History{String}([0.2, 0.8, 1.1], ["a", "b", "c"], 0.0, 2.0)
 
 julia> duration(h)
 2.0

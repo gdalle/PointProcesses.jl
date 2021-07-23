@@ -25,9 +25,14 @@ makedocs(;
         "Tutorial" => "tutorial.md",
         "Components" => [
             "Event History" => "history.md",
-            "Point Processes" => "pp.md",
-            "Markov Processes" => "markov.md",
-            "Hidden Markov Models" => "hmm.md",
+            "Point Processes" => [
+                "General" => "pp.md",
+                "Temporal" => "tpp.md",
+            ],
+            "Markov models" => [
+                "Markov chains" => "markov.md",
+                "Hidden Markov models" => "hmm.md",
+            ],
             "Utilities" => "utils.md",
         ],
     ],

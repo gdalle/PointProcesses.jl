@@ -3,19 +3,23 @@ A package for point process modeling, simulation and inference.
 """
 module PointProcesses
 
-using ComponentArrays
+## Imports
+
+using Base: NamedTuple, Float64
 using Distributions
 using ForwardDiff
-using GalacticOptim
 using LinearAlgebra
 using Optim
 using Plots
 using Quadrature
 using Random
 using StatsBase
+using TransformVariables
 
 using Random: AbstractRNG, GLOBAL_RNG
 using NamedTupleTools: ntfromstruct
+
+## Includes
 
 # General stuff
 include("history.jl" )
@@ -33,34 +37,55 @@ include("hmm/baum_welch.jl")
 
 # Point processes
 include("pp/point_process.jl")
-include("pp/multivariate.jl")
-include("pp/poisson.jl")
-include("pp/intensity.jl")
-include("pp/ogata.jl")
-include("pp/learning.jl")
+
+# Temporal point processes
+include("tpp/temporal_point_process.jl")
+include("tpp/multivariate.jl")
+include("tpp/poisson.jl")
+include("tpp/intensity.jl")
+include("tpp/ogata.jl")
+include("tpp/learning.jl")
 
 # Utils
 include("utils/utils.jl")
 
+## Exports
+
 export rand, logpdf, fit, scatter
+
+# .
 
 export History
 export nb_events, has_events, duration
 
+# utils
+
+export logsumexp
+
+# markov
+
 export AbstractMarkovChain, DiscreteMarkovChain, ContinuousMarkovChain
 export nstates, stationary_distribution
+
+# hmm
 
 export HiddenMarkovModel
 export forward_log!, forward_nolog!, backward_log!, backward_nolog!
 
-export PointProcess, TimedPointProcess
+# pp
+
+export PointProcess
+export params, build_transform
+
+# tpp
+
+export TemporalPointProcess, Bounded
 export Parameter, params
 export MultivariatePointProcess, all_marks
 export intensity, mark_distribution, ground_intensity, ground_intensity_bound
 export integrated_ground_intensity
 
-export MultivariatePoissonProcess, MultivariateHawkesProcess
+export PoissonProcess
 
-export logsumexp
 
 end
