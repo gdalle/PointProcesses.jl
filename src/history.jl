@@ -1,14 +1,14 @@
 """
-    History{M}
+    History{M, R}
 
 A container for linear event histories with times of type `R` and marks of type `M`.
 
 # Fields
 
-- `times::Vector{Float64}`: vector of event times
+- `times::Vector{R}`: vector of event times
 - `marks::Vector{M}`: vector of event marks
-- `tmin::Float64`: start time
-- `tmax::Float64`: end time
+- `tmin::R`: start time
+- `tmax::R`: end time
 
 # Examples
 
@@ -37,11 +37,11 @@ julia> has_events(h, 1.5, 2.0)
 true
 ```
 """
-mutable struct History{M}
-    times::Vector{Float64}
+mutable struct History{M, R}
+    times::Vector{R}
     marks::Vector{M}
-    tmin::Float64
-    tmax::Float64
+    tmin::R
+    tmax::R
 end
 
 """
@@ -78,7 +78,7 @@ end
 
 Add event `(t, m)` at the end of history `h`.
 """
-function Base.push!(h::History{M}, t::Float64, m::M) where {M}
+function Base.push!(h::History, t, m)
     @assert h.tmin <= t < h.tmax
     push!(h.times, t)
     push!(h.marks, m)
@@ -90,9 +90,9 @@ end
 
 Apply the time rescaling $t \mapsto \Lambda(t)$ to history `h`.
 """
-function time_change(h::History{M}, Λ) where {M}
+function time_change(h::History, Λ)
     new_times = Λ.(h.times)
     new_tmin = Λ(h.tmin)
     new_tmax = Λ(h.tmax)
-    return History{M}(new_times, h.marks, new_tmin, new_tmax)
+    return History(new_times, h.marks, new_tmin, new_tmax)
 end

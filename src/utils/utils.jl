@@ -3,10 +3,10 @@
 
 Compute the `logsumexp` function on any array of real numbers without numerical instability.
 """
-function logsumexp(x::AbstractArray{<:Real})
+function logsumexp(x::AbstractArray{R}) where {R <: Real}
     n = length(x)
     if n == 0
-        return -Inf
+        return typemin(R)
     else
         m = maximum(x)
         s = exp(x[1] - m)
@@ -21,7 +21,7 @@ end
 
 function all_minus_inf(x)
     for y in x
-        if y > -Inf
+        if y > typemin(y)
             return false
         end
     end
@@ -30,7 +30,7 @@ end
 
 function all_plus_inf(x)
     for y in x
-        if y < +Inf
+        if y < typemax(y)
             return false
         end
     end
@@ -39,7 +39,7 @@ end
 
 function all_zeros(x)
     for y in x
-        if 1/abs(x) < Inf
+        if 1/abs(x) < typemax(x)
             return false
         end
     end
