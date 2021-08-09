@@ -3,7 +3,7 @@
 
 The common supertype of all point processes on the real line with mark type `M`.
 """
-abstract type TemporalPointProcess{M} <: PointProcess{Float64,M} end
+abstract type TemporalPointProcess{M} <: AbstractPointProcess{Float64,M} end
 
 """
     Bounded{M, P}

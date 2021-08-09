@@ -1,20 +1,20 @@
 """
-    History{M, R}
+    TemporalTemporalHistory{L<:Real, M}
 
-A container for linear event histories with times of type `R` and marks of type `M`.
+A container for linear event histories with locations of real type `L` and marks of type `M`.
 
 # Fields
 
-- `times::Vector{R}`: vector of event times
+- `times::Vector{L}`: vector of event times
 - `marks::Vector{M}`: vector of event marks
-- `tmin::R`: start time
-- `tmax::R`: end time
+- `tmin::L`: start time
+- `tmax::L`: end time
 
 # Examples
 
 ```jldoctest
-julia> h = History([0.2, 0.8, 1.1], ["a", "b", "c"], 0.0, 2.0)
-History{String}([0.2, 0.8, 1.1], ["a", "b", "c"], 0.0, 2.0)
+julia> h = TemporalHistory([0.2, 0.8, 1.1], ["a", "b", "c"], 0.0, 2.0)
+TemporalHistory{String}([0.2, 0.8, 1.1], ["a", "b", "c"], 0.0, 2.0)
 
 julia> duration(h)
 2.0
@@ -37,48 +37,48 @@ julia> has_events(h, 1.5, 2.0)
 true
 ```
 """
-mutable struct History{M, R}
-    times::Vector{R}
+mutable struct TemporalHistory{L<:Real, M} <: AbstractHistory{L, M}
+    times::Vector{L}
     marks::Vector{M}
-    tmin::R
-    tmax::R
+    tmin::L
+    tmax::L
 end
 
 """
-    nb_events(h::History, tmin=-Inf, tmax=Inf)
+    nb_events(h::TemporalHistory, tmin=-Inf, tmax=Inf)
 
 Count events in `h` during the interval `[tmin, tmax)`.
 """
-function nb_events(h::History, tmin = -Inf, tmax = Inf)
+function nb_events(h::TemporalHistory, tmin = -Inf, tmax = Inf)
     i_min = searchsortedfirst(h.times, tmin)
     i_max = searchsortedlast(h.times, tmax - eps(tmax))
     return i_max - i_min + 1
 end
 
 """
-    has_events(h::History, tmin=-Inf, tmax=Inf)
+    has_events(h::TemporalHistory, tmin=-Inf, tmax=Inf)
 
 Check the presence of events in `h` during the interval `[tmin, tmax)`.
 """
-function has_events(h::History, tmin = -Inf, tmax = Inf)
+function has_events(h::TemporalHistory, tmin = -Inf, tmax = Inf)
     return nb_events(h, tmin, tmax) > 0
 end
 
 """
-    duration(h::History)
+    duration(h::TemporalHistory)
 
 Compute the difference `h.tmax - h.tmin`.
 """
-function duration(h::History)
+function duration(h::TemporalHistory)
     return h.tmax - h.tmin
 end
 
 """
-    push!(h::History{M}, t::Float64, m::M)
+    push!(h::TemporalHistory{M}, t::Float64, m::M)
 
 Add event `(t, m)` at the end of history `h`.
 """
-function Base.push!(h::History, t, m)
+function Base.push!(h::TemporalHistory, t, m)
     @assert h.tmin <= t < h.tmax
     push!(h.times, t)
     push!(h.marks, m)
@@ -90,9 +90,9 @@ end
 
 Apply the time rescaling $t \mapsto \Lambda(t)$ to history `h`.
 """
-function time_change(h::History, Λ)
+function time_change(h::TemporalHistory, Λ)
     new_times = Λ.(h.times)
     new_tmin = Λ(h.tmin)
     new_tmax = Λ(h.tmax)
-    return History(new_times, h.marks, new_tmin, new_tmax)
+    return TemporalHistory(new_times, h.marks, new_tmin, new_tmax)
 end

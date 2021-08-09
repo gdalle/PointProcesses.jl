@@ -22,7 +22,9 @@ using NamedTupleTools: ntfromstruct
 ## Includes
 
 # General stuff
-include("history.jl" )
+include("history/history.jl" )
+include("history/temporal.jl" )
+include("history/spatial.jl" )
 
 # Markov processes
 include("markov/matrices.jl")

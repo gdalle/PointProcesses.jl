@@ -36,6 +36,13 @@ function Distributions.logpdf(pp::TemporalPointProcess{M}, h::History{M}) where 
     return l
 end
 
+"""
+    params(pp)
+
+Retrieve point process parameters as a `NamedTuple`.
+"""
+StatsBase.params(pp::AbstractPointProcess) = ntfromstruct(pp)
+
 @doc raw"""
     fit(pp0, h)
 
