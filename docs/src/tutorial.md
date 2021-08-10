@@ -41,11 +41,14 @@ true
 using Random; Random.seed!(63)
 dmc = DiscreteMarkovChain([0.3, 0.7], [0.9 0.1; 0.2 0.8])
 states = rand(dmc, 100)
-fit(DiscreteMarkovChain, states)
+dmc_est = fit(DiscreteMarkovChain, states)
+round.(dmc_est.P, digits=3)
 
 # output
 
-DiscreteMarkovChain([1.0, 0.0], [0.9425287356321839 0.05747126436781609; 0.4166666666666667 0.5833333333333334])
+2×2 Matrix{Float64}:
+ 0.943  0.057
+ 0.417  0.583
 ```
 
 ### Continuous time
@@ -54,11 +57,14 @@ DiscreteMarkovChain([1.0, 0.0], [0.9425287356321839 0.05747126436781609; 0.41666
 using Random; Random.seed!(63)
 cmc = ContinuousMarkovChain([0.3, 0.7], [-1. 1.; 2. -2.])
 h = rand(cmc, 0., 100.)
-fit(ContinuousMarkovChain, h)
+cmc_est = fit(ContinuousMarkovChain, h)
+round.(cmc_est.Q, digits=3)
 
 # output
 
-ContinuousMarkovChain([1.0, 0.0], [-1.1753044442034237 1.1753044442034237; 1.7933767144927923 -1.7933767144927923])
+2×2 Matrix{Float64}:
+ -1.175   1.175
+  1.793  -1.793
 ```
 
 ## Working with Poisson processes
@@ -69,10 +75,14 @@ pp = TemporalPoissonProcess([0.5, 1., 2.])
 h = rand(pp, 0., 100.)
 pp_init = TemporalPoissonProcess([1., 1., 1.])
 pp_est = fit(pp_init, h)
+round.(pp_est.λ, digits=3)
 
 # output
 
-TemporalPoissonProcess{Float64}([0.5999999999996618, 1.1400000000005681, 1.7900000000002536])
+3-element Vector{Float64}:
+ 0.6
+ 1.14
+ 1.79
 ```
 
 ## Working with Hidden Markov Models
