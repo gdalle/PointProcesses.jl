@@ -38,4 +38,4 @@ makedocs(;
     ],
 )
 
-# deploydocs(; repo = "github.com/gdalle/PointProcesses.jl", devbranch = "main")
+deploydocs(; repo = "github.com/gdalle/PointProcesses.jl", devbranch = "main")
