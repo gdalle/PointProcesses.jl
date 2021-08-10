@@ -6,7 +6,7 @@ DocTestSetup = quote
 end
 ```
 
-Here we demonstrate the main features of PointProcesses.jl.
+In this tutorial we demonstrate the main features of PointProcesses.jl.
 
 ```jldoctest tuto
 julia> using Random
