@@ -3,7 +3,7 @@ Base.eltype(::Type{<:TemporalPointProcess{M}}) where {M} = History{M}
 """
     rand(rng, pp, tmin, tmax)
 
-Simulate a point process `pp` on interval `[tmin, tmax)` using Ogata's algorithm[^Ogata_1981].
+Simulate a temporal point process `pp` on interval `[tmin, tmax)` using Ogata's algorithm[^Ogata_1981].
 
 [^Ogata_1981]: Ogata, Y. (1981), “On Lewis’ simulation method for point processes,” IEEE Transactions on Information Theory, 27, 23–31. https://doi.org/10.1109/TIT.1981.1056305.
 """

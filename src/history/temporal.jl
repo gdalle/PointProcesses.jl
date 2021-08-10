@@ -1,47 +1,20 @@
 """
-    TemporalTemporalHistory{L<:Real, M}
+    TemporalHistory{M}
 
-A container for linear event histories with locations of real type `L` and marks of type `M`.
+Linear event histories with marks of type `M`.
 
 # Fields
 
-- `times::Vector{L}`: vector of event times
+- `times::Vector{Float64}`: vector of event times
 - `marks::Vector{M}`: vector of event marks
-- `tmin::L`: start time
-- `tmax::L`: end time
-
-# Examples
-
-```jldoctest
-julia> h = TemporalHistory([0.2, 0.8, 1.1], ["a", "b", "c"], 0.0, 2.0)
-TemporalHistory{String}([0.2, 0.8, 1.1], ["a", "b", "c"], 0.0, 2.0)
-
-julia> duration(h)
-2.0
-
-julia> nb_events(h)
-3
-
-julia> nb_events(h, 1.0, 2.0)
-1
-
-julia> has_events(h)
-true
-
-julia> has_events(h, 1.5, 2.0)
-false
-
-julia> push!(h, 1.7, "d")
-
-julia> has_events(h, 1.5, 2.0)
-true
-```
+- `tmin::Float64`: start time
+- `tmax::Float64`: end time
 """
-mutable struct TemporalHistory{L<:Real, M} <: AbstractHistory{L, M}
-    times::Vector{L}
+mutable struct TemporalHistory{M} <: AbstractHistory{Float64, M}
+    times::Vector{Float64}
     marks::Vector{M}
-    tmin::L
-    tmax::L
+    tmin::Float64
+    tmax::Float64
 end
 
 """

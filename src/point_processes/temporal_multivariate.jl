@@ -1,7 +1,7 @@
 """
     MultivariateTemporalPointProcess
 
-The common supertype of all point processes on the real line with integer marks.
+The common supertype of all temporal point processes with integer marks.
 """
 abstract type MultivariateTemporalPointProcess <: TemporalPointProcess{Int} end
 

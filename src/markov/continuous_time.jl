@@ -6,19 +6,6 @@ Continuous-time Markov chain.
 # Fields
 - `π0::Vector{Float64}`: initial state distribution
 - `Q::Matrix{Float64}`: rate matrix.
-
-# Examples
-
-```jldoctest
-using Random; Random.seed!(63)
-cmc = ContinuousMarkovChain([0.3, 0.7], [-1. 1.; 2. -2.])
-h = rand(cmc, 0., 100.)
-fit(ContinuousMarkovChain, h)
-
-# output
-
-ContinuousMarkovChain([1.0, 0.0], [-1.1753044442034237 1.1753044442034237; 1.7933767144927923 -1.7933767144927923])
-```
 """
 struct ContinuousMarkovChain <: AbstractMarkovChain
     π0::Vector{Float64}

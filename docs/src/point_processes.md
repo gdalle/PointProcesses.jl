@@ -1,9 +1,17 @@
-# Temporal Point processes
+# Point processes
 
 ```@autodocs
 Modules = [PointProcesses]
 Order = [:type, :function]
-Pages = ["tpp/temporal_point_process.jl", "tpp/multivariate.jl"]
+Pages = ["point_processes/abstract.jl"]
+```
+
+## Temporal point processes
+
+```@autodocs
+Modules = [PointProcesses]
+Order = [:type, :function]
+Pages = ["point_processes/temporal.jl", "point_processes/temporal_multivariate.jl"]
 ```
 
 ## Intensity functions
@@ -11,7 +19,7 @@ Pages = ["tpp/temporal_point_process.jl", "tpp/multivariate.jl"]
 ```@autodocs
 Modules = [PointProcesses]
 Order = [:type, :function]
-Pages = ["tpp/intensity.jl"]
+Pages = ["point_processes/intensity.jl"]
 ```
 
 ## Simulation
@@ -19,7 +27,7 @@ Pages = ["tpp/intensity.jl"]
 ```@autodocs
 Modules = [PointProcesses]
 Order = [:type, :function]
-Pages = ["tpp/ogata.jl"]
+Pages = ["point_processes/ogata.jl"]
 ```
 
 ## Learning
@@ -27,13 +35,5 @@ Pages = ["tpp/ogata.jl"]
 ```@autodocs
 Modules = [PointProcesses]
 Order = [:type, :function]
-Pages = ["tpp/learning.jl"]
-```
-
-## Built-in models
-
-```@autodocs
-Modules = [PointProcesses]
-Order = [:type, :function]
-Pages = ["tpp/poisson.jl"]
+Pages = ["point_processes/learning.jl"]
 ```

@@ -1,7 +1,7 @@
 """
-    HawkesProcess{R}
+    TemporalHawkesProcess{R}
 
-Mutually exciting Hawkes processes.
+Multivariate temporal Hawkes process.
 
 # Fields
 - `λ::Vector{R}`: base event rates

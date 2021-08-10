@@ -2,7 +2,7 @@
 @doc raw"""
     intensity(pp, h, t, m)
 
-Compute the conditional intensity for a point process `pp` applied to history `h` and event `(t, m)`.
+Compute the conditional intensity for a temporal point process `pp` applied to history `h` and event `(t, m)`.
 
 The conditional intensity function quantifies the instantaneous risk  of an event with mark `m` occurring at time `t`[^Rasmussen_2018].
 
@@ -15,7 +15,7 @@ end
 @doc raw"""
     mark_distribution(pp, h, t)
 
-Compute the distribution of marks for a point process `pp` knowing that an event takes place at time `t` after history `h`.
+Compute the distribution of marks for a temporal point process `pp` knowing that an event takes place at time `t` after history `h`.
 """
 function mark_distribution(pp::TemporalPointProcess{M}, h::History{M}, t::Float64) where {M}
     error("not implemented")
@@ -24,7 +24,7 @@ end
 @doc raw"""
     ground_intensity(pp, h, t)
 
-Compute the ground intensity for a point process `pp` applied to history `h` at time `t`.
+Compute the ground intensity for a temporal point process `pp` applied to history `h` at time `t`.
 
 The ground intensity quantifies the instantaneous risk of an event with any mark occurring at time `t`[^Rasmussen_2018]. It can be expressed as
 ```math
@@ -38,7 +38,7 @@ end
 @doc raw"""
     ground_intensity_bound(pp, θ, h, t)
 
-Compute a local upper bound on the ground intensity for a point process `pp` applied to history `h` at time `t`[^Rasmussen_2018].
+Compute a local upper bound on the ground intensity for a temporal point process `pp` applied to history `h` at time `t`[^Rasmussen_2018].
 
 Return a tuple of the form $(B, L)$ satisfying
 ```math

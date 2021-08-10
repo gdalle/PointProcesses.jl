@@ -3,17 +3,17 @@
 ```@autodocs
 Modules = [PointProcesses]
 Order = [:type, :function]
-Pages = ["markov/markov.jl"]
+Pages = ["markov/abstract.jl"]
 ```
 
 ```@autodocs
 Modules = [PointProcesses]
 Order = [:type, :function]
-Pages = ["markov/markov_discrete.jl"]
+Pages = ["markov/discrete_time.jl"]
 ```
 
 ```@autodocs
 Modules = [PointProcesses]
 Order = [:type, :function]
-Pages = ["markov/markov_continuous.jl"]
+Pages = ["markov/continuous_time.jl"]
 ```

@@ -22,15 +22,13 @@ using NamedTupleTools: ntfromstruct
 ## Includes
 
 # General stuff
-include("history/history.jl" )
+include("history/abstract.jl" )
 include("history/temporal.jl" )
-include("history/spatial.jl" )
 
 # Markov processes
-include("markov/matrices.jl")
-include("markov/markov.jl")
-include("markov/markov_discrete.jl")
-include("markov/markov_continuous.jl")
+include("markov/abstract.jl")
+include("markov/discrete_time.jl")
+include("markov/continuous_time.jl")
 
 # hidden Markov models
 include("hmm/hmm.jl")

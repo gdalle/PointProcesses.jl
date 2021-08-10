@@ -1,7 +1,7 @@
-# Various utilities
+# Utilities
 
 ```@autodocs
 Modules = [PointProcesses]
 Order = [:type, :function]
-Pages = ["utils.jl"]
+Pages = ["utils/plot.jl", "utils/utils.jl"]
 ```

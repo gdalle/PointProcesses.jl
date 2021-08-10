@@ -6,19 +6,6 @@ Discrete-time Markov chain..
 # Fields
 - `π0::Vector{Float64}`: initial state distribution
 - `P::Matrix{Float64}`: state transition matrix.
-
-# Examples
-
-```jldoctest
-using Random; Random.seed!(63)
-dmc = DiscreteMarkovChain([0.3, 0.7], [0.9 0.1; 0.2 0.8])
-states = rand(dmc, 100)
-fit(DiscreteMarkovChain, states)
-
-# output
-
-DiscreteMarkovChain([1.0, 0.0], [0.9425287356321839 0.05747126436781609; 0.4166666666666667 0.5833333333333334])
-```
 """
 struct DiscreteMarkovChain <: AbstractMarkovChain
     π0::Vector{Float64}
