@@ -21,11 +21,11 @@ function all_marks(pp::TemporalPoissonProcess)
     return 1:length(pp.λ)
 end
 
-function intensity(pp::TemporalPoissonProcess, h::History{Int}, t::Float64, m::Int)
+function intensity(pp::TemporalPoissonProcess, h::TemporalHistory, t, m)
     return pp.λ[m]
 end
 
-function ground_intensity_bound(pp::TemporalPoissonProcess, h::History{Int}, t::Float64)
+function ground_intensity_bound(pp::TemporalPoissonProcess, h::TemporalHistory, t)
     λg = ground_intensity(pp, h, t)
     return λg, Inf
 end

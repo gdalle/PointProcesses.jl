@@ -1,4 +1,4 @@
-Base.eltype(::Type{<:TemporalPointProcess{M}}) where {M} = History{M}
+Base.eltype(::Type{<:TemporalPointProcess{M}}) where {M} = TemporalHistory{M}
 
 """
     rand(rng, pp, tmin, tmax)
@@ -7,8 +7,8 @@ Simulate a temporal point process `pp` on interval `[tmin, tmax)` using Ogata's 
 
 [^Ogata_1981]: Ogata, Y. (1981), “On Lewis’ simulation method for point processes,” IEEE Transactions on Information Theory, 27, 23–31. https://doi.org/10.1109/TIT.1981.1056305.
 """
-function Base.rand(rng::AbstractRNG, pp::TemporalPointProcess{M}, tmin::Float64, tmax::Float64) where {M}
-    h = History(Float64[], M[], tmin, tmax)
+function Base.rand(rng::AbstractRNG, pp::TemporalPointProcess{M}, tmin, tmax) where {M}
+    h = TemporalHistory(Float64[], M[], tmin, tmax)
     t = tmin
     while t < tmax
         B, L = ground_intensity_bound(pp, h, t + eps(t))
@@ -29,6 +29,7 @@ function Base.rand(rng::AbstractRNG, pp::TemporalPointProcess{M}, tmin::Float64,
     return h
 end
 
-Base.rand(rng::AbstractRNG, tpp::Bounded) = rand(rng, tpp.pp, tpp.tmin, tpp.tmax)
+Base.rand(rng::AbstractRNG, tpp::BoundedTemporalPointProcess) =
+    rand(rng, tpp.pp, tpp.tmin, tpp.tmax)
 
 Base.rand(pp::TemporalPointProcess, args...) = rand(GLOBAL_RNG, pp, args...)

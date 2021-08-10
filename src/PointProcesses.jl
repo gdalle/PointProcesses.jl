@@ -19,76 +19,80 @@ using TransformVariables
 using Random: AbstractRNG, GLOBAL_RNG
 using NamedTupleTools: ntfromstruct
 
-## Includes
+## Includes and exports
 
-# General stuff
-include("history/abstract.jl" )
-include("history/temporal.jl" )
+# Reexports
+
+export eltype, rand  # Base
+export params  # StatsBase
+export logpdf, fit, fit_mle, suffstats  # Distributions
+export plot, scatter  # Plots
+
+# History
+
+include("history/abstract.jl")
+export AbstractHistory
+
+include("history/temporal.jl")
+export TemporalHistory, nb_events, has_events, duration, time_change
 
 # Markov processes
-include("markov/abstract.jl")
-include("markov/discrete_time.jl")
-include("markov/continuous_time.jl")
 
-# hidden Markov models
+include("markov/abstract.jl")
+export AbstractMarkovChain, nstates
+
+include("markov/discrete_time.jl")
+export DiscreteMarkovChain, stationary_distribution
+
+include("markov/continuous_time.jl")
+export ContinuousMarkovChain, discretize
+
+# Hidden Markov models
+
 include("hmm/hmm.jl")
+export HiddenMarkovModel, update_observation_likelihood!
+
 include("hmm/forward_backward.jl")
+export forward_nolog!, forward_log!
+export backward_nolog!, backward_log!
+export forward_backward_nolog!, forward_backward_log!
+
 include("hmm/baum_welch.jl")
+export expectation_maximization_step!
 
 # Point processes
-include("pp/point_process.jl")
 
-# Temporal point processes
-include("tpp/temporal_point_process.jl")
-include("tpp/multivariate.jl")
-include("tpp/intensity.jl")
-include("tpp/ogata.jl")
-include("tpp/learning.jl")
-include("tpp/poisson.jl")
-include("tpp/hawkes.jl")
+include("point_processes/abstract.jl")
+export AbstractPointProcess
+
+include("point_processes/temporal.jl")
+export TemporalPointProcess, BoundedTemporalPointProcess
+
+include("point_processes/intensity.jl")
+export intensity, mark_distribution, ground_intensity, ground_intensity_bound
+
+include("point_processes/temporal_multivariate.jl")
+export MultivariateTemporalPointProcess, all_marks, all_mark_probabilities
+
+include("point_processes/learning.jl")
+export integrated_ground_intensity, check_residuals
+
+include("point_processes/ogata.jl")
+
+# Models
+
+include("models/temporal_poisson.jl")
+export TemporalPoissonProcess, build_transform
+
+include("models/temporal_hawkes.jl")
+export TemporalHawkesProcess
 
 # Utils
+
 include("utils/utils.jl")
-include("utils/plot.jl")
-
-## Exports
-
-export rand, logpdf, fit, scatter
-
-# .
-
-export History
-export nb_events, has_events, duration, time_change
-
-# markov
-
-export AbstractMarkovChain, DiscreteMarkovChain, ContinuousMarkovChain
-export nstates, stationary_distribution
-
-# hmm
-
-export HiddenMarkovModel
-export forward_log!, forward_nolog!, backward_log!, backward_nolog!
-
-# pp
-
-export PointProcess
-export params, build_transform
-
-# tpp
-
-export TemporalPointProcess, Bounded
-export Parameter, params
-export MultivariatePointProcess, all_marks
-export intensity, mark_distribution, ground_intensity, ground_intensity_bound
-export integrated_ground_intensity
-export check_residuals
-
-export PoissonProcess, HawkesProcess
-
-# utils
-
-export plot_events, plot_intensity, qqplot_interevent_times
 export logsumexp
+
+include("utils/plot.jl")
+export plot_events, plot_intensity, qqplot_interevent_times
 
 end

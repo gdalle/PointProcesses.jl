@@ -12,9 +12,7 @@ struct ContinuousMarkovChain <: AbstractMarkovChain
     Q::Matrix{Float64}
 end
 
-Base.eltype(::Type{ContinuousMarkovChain}) = History{Int}
-
-matrix(cmc::ContinuousMarkovChain) = cmc.Q
+Base.eltype(::Type{ContinuousMarkovChain}) = TemporalHistory{Int}
 
 # Simulation
 
@@ -28,7 +26,7 @@ function Base.rand(
     jump_proba = cmc.Q ./ jump_rates
     jump_proba[diagind(jump_proba)] .= 0
 
-    h = History(Float64[], Int[], tmin, tmax)
+    h = TemporalHistory(Float64[], Int[], tmin, tmax)
     s = rand(rng, Categorical(cmc.π0))
     push!(h, tmin, s)
     t = tmin
@@ -62,7 +60,7 @@ struct ContinuousMarkovChainStats
     transition_count::Matrix{Float64}
 end
 
-function Distributions.suffstats(::Type{ContinuousMarkovChain}, h::History{Int})
+function Distributions.suffstats(::Type{ContinuousMarkovChain}, h::TemporalHistory{Int})
     states = h.marks
     S = maximum(states)
     initialization = collect(1:S) .== states[1]

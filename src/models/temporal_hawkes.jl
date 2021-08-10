@@ -8,15 +8,13 @@ Multivariate temporal Hawkes process.
 - `α::Matrix{R}`: excitation amplitudes
 - `β::Matrix{R}`: excitation decays
 """
-struct HawkesProcess{R} <: MultivariateTemporalPointProcess
+struct TemporalHawkesProcess{R} <: MultivariateTemporalPointProcess
     λ::Vector{R}
     α::Matrix{R}
     β::Matrix{R}
 end
 
-PoissonProcess{R}(nt::NamedTuple) where {R} = PoissonProcess(nt.λ, nt.α, nt.β)
-
-function build_transform(pp::HawkesProcess)
+function build_transform(pp::TemporalHawkesProcess)
     M = length(pp.λ)
     return as((
         λ = as(Vector, asℝ₊, M),
@@ -25,15 +23,15 @@ function build_transform(pp::HawkesProcess)
     ))
 end
 
-function all_marks(pp::HawkesProcess)
+function all_marks(pp::TemporalHawkesProcess)
     return 1:length(pp.λ)
 end
 
-function intensity(pp::HawkesProcess, h::History{Int}, t::Float64, m::Int)
+function intensity(pp::TemporalHawkesProcess, h::TemporalHistory, t, m)
     error("not implemented")
 end
 
-function ground_intensity_bound(pp::HawkesProcess, h::History{Int}, t::Float64)
+function ground_intensity_bound(pp::TemporalHawkesProcess, h::TemporalHistory, t)
     λg = ground_intensity(pp, h, t)
-    return λg, λg/2
+    return λg, λg / 2
 end

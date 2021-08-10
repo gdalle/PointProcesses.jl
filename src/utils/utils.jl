@@ -3,7 +3,7 @@
 
 Compute the `logsumexp` function on any array of real numbers without numerical instability.
 """
-function logsumexp(x::AbstractArray{R}) where {R <: Real}
+function logsumexp(x::AbstractArray{R}) where {R<:Real}
     n = length(x)
     if n == 0
         return typemin(R)
@@ -39,7 +39,7 @@ end
 
 function all_zeros(x)
     for y in x
-        if 1/abs(x) < typemax(x)
+        if 1 / abs(x) < typemax(x)
             return false
         end
     end

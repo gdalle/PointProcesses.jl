@@ -1,4 +1,4 @@
-function plot_events(h::History{M}) where {M<:Real}
+function plot_events(h::TemporalHistory{M}) where {M<:Real}
     scatter(
         h.times,
         h.marks,
@@ -10,7 +10,7 @@ function plot_events(h::History{M}) where {M<:Real}
     )
 end
 
-function plot_intensity(pp::TemporalPointProcess, h::History; npoints = 100)
+function plot_intensity(pp::TemporalPointProcess, h::TemporalHistory; npoints = 100)
     curve_times = h.tmin:(duration(h)/npoints):h.tmax
     curve_vals = [ground_intensity(pp, h, t) for t in curve_times]
     history_times = h.times
@@ -25,7 +25,7 @@ function plot_intensity(pp::TemporalPointProcess, h::History; npoints = 100)
     )
 end
 
-function qqplot_interevent_times(h::History)
+function qqplot_interevent_times(h::TemporalHistory)
     plot(
         qqplot(Exponential, diff(vcat(0.0, h.times))),
         xlabel = "Quantiles of exponential distribution",

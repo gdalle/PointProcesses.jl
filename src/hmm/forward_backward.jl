@@ -49,7 +49,7 @@ function backward_nolog!(β::Matrix, c::Vector, obs_pdf::Matrix, hmm::HiddenMark
     π0, P = hmm.transitions.π0, hmm.transitions.P
 
     for i = 1:S
-        β[T, i] = 0.
+        β[T, i] = 0.0
     end
     for t = T-1:-1:1
         for s = 1:S
@@ -69,7 +69,7 @@ function backward_log!(logβ::Matrix, obs_logpdf::Matrix, hmm::HiddenMarkovModel
     logπ0, logP = log.(hmm.transitions.π0), log.(hmm.transitions.P)
 
     for i = 1:S
-        logβ[T, i] = 0.
+        logβ[T, i] = 0.0
     end
     for t = T-1:-1:1
         for i = 1:i

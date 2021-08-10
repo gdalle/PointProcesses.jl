@@ -6,9 +6,13 @@ Compute the integrated ground intensity (or compensator) $\Lambda(t|h)$ for a te
     \Lambda(h) = \int \lambda_g(t|h) \mathrm{d}t.
 ```
 
-The default method uses [Quadrature.jl](https://github.com/SciML/Quadrature.jl) for numerical integration, but it should be reimplemented for specific processes if explicit computation is feasible.
+The default method uses [Quadrature.jl](https://github.com/SciML/Quadrature.jl) for numerical integration, but it should be reimplemented for specific processes if explicit integration is feasible.
 """
-function integrated_ground_intensity(pp::TemporalPointProcess, h::History, t = h.tmax)
+function integrated_ground_intensity(
+    pp::TemporalPointProcess,
+    h::TemporalHistory,
+    t = h.tmax,
+)
     prob = QuadratureProblem((t, pp) -> ground_intensity(pp, h, t), h.tmin, t, pp)
     sol = solve(prob, HCubatureJL(), reltol = 1e-3, abstol = 1e-3)
     return sol[1]
@@ -24,7 +28,7 @@ Compute the log probability density function for a temporal point process `pp` a
 
 The default method uses a loop over events combined with [`integrated_ground_intensity`](@ref), but it should be reimplemented for specific processes if faster computation is possible.
 """
-function Distributions.logpdf(pp::TemporalPointProcess, h::History)
+function Distributions.logpdf(pp::TemporalPointProcess, h::TemporalHistory)
     l = -integrated_ground_intensity(pp, h)
     for (t, m) in zip(h.times, h.marks)
         l += log(intensity(pp, h, t, m))
@@ -47,9 +51,9 @@ Compute the optimal parameter for a temporal point process of type `typeof(pp0)`
     \hat{\theta} = \mathrm{argmax} \{f_{\theta}(h): \theta \in \Theta\}
 ```
 
-The default method uses the package [Optim]() for numerical optimization, but it should be reimplemented for specific processes if explicit maximization is feasible.
+The default method uses [Optim.jl](https://github.com/JuliaNLSolvers/Optim.jl/) for numerical optimization, but it should be reimplemented for specific processes if explicit maximization is feasible.
 """
-function Distributions.fit(pp_init::TemporalPointProcess, h::History)
+function Distributions.fit(pp_init::TemporalPointProcess, h::TemporalHistory)
     t = build_transform(pp_init)
     θ_init = inverse(t, params(pp_init))
     f = θ -> -logpdf(PP(transform(t, θ)), h)
@@ -64,7 +68,7 @@ end
 
 Check whether the point process `pp` is a good fit for history `h` by applying Ogata's time rescaling method: if $(t_i)_i$ is a temporal point process with intensity $\lambda(t)$, then $(\Lambda(t_i))_i$ is a standard temporal Poisson process.
 """
-function check_residuals(pp::TemporalPointProcess, h::History)
+function check_residuals(pp::TemporalPointProcess, h::TemporalHistory)
     Λ(t) = integrated_ground_intensity(pp, h, t)
     h_rescaled = time_change(h, Λ)
     qqplot_interevent_times(h_rescaled)

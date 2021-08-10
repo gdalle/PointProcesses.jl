@@ -68,3 +68,19 @@ pp_est = fit(pp_init, h)
 
 TemporalPoissonProcess{Float64}([0.5999999999996618, 1.1400000000005681, 1.7900000000002536])
 ```
+
+## Working with Hidden Markov Models
+
+```jldoctest
+using Random; Random.seed!(63)
+dmc = DiscreteMarkovChain([0.3, 0.7], [0.9 0.1; 0.2 0.8])
+emission1 = Bounded(PoissonProcess([0., 1., 2.]), 0., 1.)
+emission2 = Bounded(PoissonProcess([2., 1., 0.]), 0., 1.)
+hmm = HiddenMarkovModel(dmc, [emission1, emission2])
+states, observations = rand(hmm, 100)
+sum(nb_events(observations[t]) for t = 1:100)
+
+# output
+
+268
+```
