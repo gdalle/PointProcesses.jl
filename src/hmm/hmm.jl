@@ -7,39 +7,27 @@ Hidden Markov Model with arbitrary transition model (of type `Tr`) and emission 
 - `transitions::Tr`: state evolution process.
 - `emissions::Vector{Em}`: one emission distribution per state.
 """
-mutable struct HiddenMarkovModel{Tr,Em}
+@with_kw struct HiddenMarkovModel{Tr,Em}
     transitions::Tr
     emissions::Vector{Em}
 end
 
-nstates(hmm::HiddenMarkovModel) = length(hmm.emissions)
+## Access
 
-# Simulation
+transitions(hmm::HiddenMarkovModel) = hmm.transitions
+transition_matrix(hmm::HiddenMarkovModel) = transition_matrix(transitions(hmm))
+initial_distribution(hmm::HiddenMarkovModel) = initial_distribution(transitions(hmm))
+
+emissions(hmm::HiddenMarkovModel) = hmm.emissions
+emission(hmm::HiddenMarkovModel, s::Int) = hmm.emissions[s]
+nstates(hmm::HiddenMarkovModel) = length(emissions(hmm))
+
+## Simulation
 
 function Base.rand(rng::AbstractRNG, hmm::HiddenMarkovModel, T::Int)
-    states = rand(rng, hmm.transitions, T)
-    observations = [rand(rng, hmm.emissions[states[t]]) for t = 1:T]
+    states = rand(rng, transitions(hmm), T)
+    observations = [rand(rng, emission(hmm, states[t])) for t = 1:T]
     return states, observations
 end
 
-Base.rand(hmm::HiddenMarkovModel, T::Int) = rand(GLOBAL_RNG, hmm, T)
-
-# Likelihood of observations
-
-function update_observation_likelihood!(
-    obs_logpdf::Matrix,
-    hmm::HiddenMarkovModel,
-    observations::Vector,
-)
-    T, S = length(observations), nstates(hmm)
-    for t = 1:T
-        for s = 1:S
-            obs_logpdf[t, s] = logpdf(hmm.emissions[s], observations[t])
-        end
-    end
-    for t = 1:T
-        if all_minus_inf(@view obs_logpdf[t, :])
-            throw(OverflowError("Log-probabilities are too small for observations."))
-        end
-    end
-end
+Base.rand(hmm::HiddenMarkovModel, T::Int) = rand(Random.GLOBAL_RNG, hmm, T)

@@ -1,6 +1,11 @@
-function forward_nolog!(α::Matrix, c::Vector, obs_pdf::Matrix, hmm::HiddenMarkovModel)
-    T, S = length(obs_logpdf), nstates(hmm)
-    π0, P = hmm.transitions.π0, hmm.transitions.P
+function forward_nolog!(
+    α::AbstractMatrix,
+    c::AbstractVector,
+    obs_pdf::AbstractMatrix,
+    hmm::HiddenMarkovModel,
+)
+    T, S = size(obs_logpdf, 1), nstates(hmm)
+    π0, P = initial_distribution(hmm), transition_matrix(hmm)
     for i = 1:S
         α[1, i] = π0[i] * obs_pdf[1, i]
     end
@@ -25,15 +30,20 @@ function forward_nolog!(α::Matrix, c::Vector, obs_pdf::Matrix, hmm::HiddenMarko
     return logα
 end
 
-function forward_log!(logα::Matrix, obs_logpdf::Matrix, hmm::HiddenMarkovModel)
-    T, S = length(obs_logpdf), nstates(hmm)
-    logπ0, logP = log.(hmm.transitions.π0), log.(hmm.transitions.P)
+function forward_log!(
+    logα::AbstractMatrix,
+    obs_logpdf::AbstractMatrix,
+    hmm::HiddenMarkovModel,
+)
+    T, S = size(obs_logpdf, 1), nstates(hmm)
+    logπ0, logP = log.(initial_distribution(hmm)),
+    log.(transition_matrix(hmm))
     for i = 1:S
         logα[1, i] = logπ0[i] + obs_logpdf[1, i]
     end
     for t = 1:T-1
         for j = 1:S
-            logα[t+1, j] = logsumexp(logα[t, :] + logP[:, s]) + obs_logpdf[t+1, j]  # TODO
+            logα[t+1, j] = logsumexp(logα[t, :] + logP[:, j]) + obs_logpdf[t+1, j]  # TODO
         end
     end
     for t = 1:T
@@ -44,16 +54,21 @@ function forward_log!(logα::Matrix, obs_logpdf::Matrix, hmm::HiddenMarkovModel)
     return logα
 end
 
-function backward_nolog!(β::Matrix, c::Vector, obs_pdf::Matrix, hmm::HiddenMarkovModel)
-    T, S = length(obs_logpdf), nstates(hmm)
-    π0, P = hmm.transitions.π0, hmm.transitions.P
+function backward_nolog!(
+    β::AbstractMatrix,
+    c::AbstractVector,
+    obs_pdf::AbstractMatrix,
+    hmm::HiddenMarkovModel,
+)
+    T, S = size(obs_logpdf, 1), nstates(hmm)
+    P = transition_matrix(hmm)
 
     for i = 1:S
         β[T, i] = 0.0
     end
     for t = T-1:-1:1
-        for s = 1:S
-            β[t, i] = sum(P[i, j] * obs_pdf[t+1, j] * β[t+1, j]) * c[t]
+        for i = 1:S
+            β[t, i] = sum(P[i, j] * obs_pdf[t+1, j] * β[t+1, j] for j = 1:S) * c[t]
         end
     end
     for t = 1:T
@@ -64,16 +79,20 @@ function backward_nolog!(β::Matrix, c::Vector, obs_pdf::Matrix, hmm::HiddenMark
 end
 
 
-function backward_log!(logβ::Matrix, obs_logpdf::Matrix, hmm::HiddenMarkovModel)
-    T, S = length(obs_logpdf), nstates(hmm)
-    logπ0, logP = log.(hmm.transitions.π0), log.(hmm.transitions.P)
+function backward_log!(
+    logβ::AbstractMatrix,
+    obs_logpdf::AbstractMatrix,
+    hmm::HiddenMarkovModel,
+)
+    T, S = size(obs_logpdf, 1), nstates(hmm)
+    logP = log.(transition_matrix(hmm))
 
     for i = 1:S
         logβ[T, i] = 0.0
     end
     for t = T-1:-1:1
-        for i = 1:i
-            logβ[t, i] = logsumexp(logP[s, :] .+ obs_logpdf[t+1, :] .+ logβ[t+1, :])  # TODO
+        for i = 1:S
+            logβ[t, i] = logsumexp(logP[i, :] .+ obs_logpdf[t+1, :] .+ logβ[t+1, :])  # TODO
         end
     end
     for t = 1:T
@@ -84,15 +103,15 @@ function backward_log!(logβ::Matrix, obs_logpdf::Matrix, hmm::HiddenMarkovModel
 end
 
 function forward_backward_nolog!(
-    α::Matrix,
-    c::Vector,
-    β::Matrix,
-    γ::Matrix,
-    ξ::Array,
-    obs_pdf::Matrix,
+    α::AbstractMatrix,
+    c::AbstractVector,
+    β::AbstractMatrix,
+    γ::AbstractMatrix,
+    ξ::AbstractArray{<:Real, 3},
+    obs_pdf::AbstractMatrix,
     hmm::HiddenMarkovModel,
 )
-    T, S = length(observations), nstates(hmm.transitions)
+    T, S = size(obs_logpdf, 1), nstates(hmm)
 
     forward_nolog!(α, c, hmm, obs_pdf)
     backward_nolog!(β, c, hmm, obs_pdf)
@@ -124,22 +143,22 @@ end
 
 
 function forward_backward_log!(
-    logα::Matrix,
-    logβ::Matrix,
-    logγ::Matrix,
-    logξ::Array,
-    obs_logpdf::Matrix,
+    logα::AbstractMatrix,
+    logβ::AbstractMatrix,
+    logγ::AbstractMatrix,
+    logξ::AbstractArray{<:Real, 3},
+    obs_logpdf::AbstractMatrix,
     hmm::HiddenMarkovModel,
 )
-    T, S = length(observations), nstates(hmm.transitions)
-    logπ0, logP = log.(hmm.transitions.π0), log.(hmm.transitions.P)
+    T, S = size(obs_logpdf, 1), nstates(hmm.transitions)
+    logP = log.(transition_matrix(hmm))
 
-    forward_log!(α, obs_logpdf, hmm)
-    backward_log!(β, obs_logpdf, hmm)
+    forward_log!(logα, obs_logpdf, hmm)
+    backward_log!(logβ, obs_logpdf, hmm)
 
     for t = 1:T
         for i = 1:S
-            logγ[t, i] = logα[t, i] + logβ[t, i] - lse
+            logγ[t, i] = logα[t, i] + logβ[t, i]
         end
         logsumγ = logsumexp(@view logγ[t, :])
         for i = 1:S

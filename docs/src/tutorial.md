@@ -6,97 +6,104 @@ DocTestSetup = quote
 end
 ```
 
+Here we demonstrate the main features of PointProcesses.jl.
+
+```jldoctest tuto
+julia> using Random
+
+julia> Random.seed!(63);
+```
+
 ## Working with event histories
 
-```jldoctest
-julia> h = TemporalHistory([0.2, 0.8, 1.1], ["a", "b", "c"], 0.0, 2.0)
-TemporalHistory{String}([0.2, 0.8, 1.1], ["a", "b", "c"], 0.0, 2.0)
+To analyze point processes, we need a way to store their realizations. This is the purpose of the [`AbstractHistory`](@ref) subtypes, of which only [`TemporalHistory`](@ref) is implemented for now.
 
-julia> duration(h)
+```jldoctest tuto
+julia> history = TemporalHistory([0.2, 0.8, 1.1], ["a", "b", "c"], 0.0, 2.0);
+
+julia> duration(history)
 2.0
 
-julia> nb_events(h)
+julia> nb_events(history)
 3
 
-julia> nb_events(h, 1.0, 2.0)
+julia> nb_events(history, 1.0, 2.0)
 1
 
-julia> has_events(h)
+julia> has_events(history)
 true
 
-julia> has_events(h, 1.5, 2.0)
+julia> has_events(history, 1.5, 2.0)
 false
 
-julia> push!(h, 1.7, "d")
+julia> push!(history, 1.7, "d")
 
-julia> has_events(h, 1.5, 2.0)
+julia> has_events(history, 1.5, 2.0)
 true
 ```
 
-## Working with Markov chains
+## Working with Markov processes
 
-### Discrete time
+Some point processes are based on underlying Markov processes, which is why we provide a basic implementation for them.
 
-```jldoctest
-using Random; Random.seed!(63)
-dmc = DiscreteMarkovChain([0.3, 0.7], [0.9 0.1; 0.2 0.8])
-states = rand(dmc, 100)
-dmc_est = fit(DiscreteMarkovChain, states)
-round.(dmc_est.P, digits=3)
+### Discrete time Markov chains
 
-# output
+```jldoctest tuto
+julia> dmc = DiscreteMarkovChain(π0 = [0.3, 0.7], P = [0.9 0.1; 0.2 0.8]);
 
+julia> states = rand(dmc, 1000);
+
+julia> dmc_est = fit(DiscreteMarkovChain, states);
+
+julia> round.(dmc_est.P, digits=1)
 2×2 Matrix{Float64}:
- 0.943  0.057
- 0.417  0.583
+ 0.9  0.1
+ 0.2  0.8
 ```
 
-### Continuous time
+### Continuous time Markov chains
 
-```jldoctest
-using Random; Random.seed!(63)
-cmc = ContinuousMarkovChain([0.3, 0.7], [-1. 1.; 2. -2.])
-h = rand(cmc, 0., 100.)
-cmc_est = fit(ContinuousMarkovChain, h)
-round.(cmc_est.Q, digits=3)
+```jldoctest tuto
+julia> cmc = ContinuousMarkovChain(π0 = [0.3, 0.7], Q = [-1. 1.; 2. -2.]);
 
-# output
+julia> history = rand(cmc, 0., 1000.);
 
+julia> cmc_est = fit(ContinuousMarkovChain, history);
+
+julia> round.(cmc_est.Q, digits=1)
 2×2 Matrix{Float64}:
- -1.175   1.175
-  1.793  -1.793
+ -1.0   1.0
+  1.9  -1.9
 ```
 
-## Working with Poisson processes
+### Hidden Markov models
 
-```jldoctest
-using Random; Random.seed!(63);
-pp = TemporalPoissonProcess([0.5, 1., 2.])
-h = rand(pp, 0., 100.)
-pp_init = TemporalPoissonProcess([1., 1., 1.])
-pp_est = fit(pp_init, h)
-round.(pp_est.λ, digits=3)
+## Working with point processes
 
-# output
+We finally demonstrate the main goal of the package: point process simulation and inference. All point processes are subtypes of [`AbstractPointProcess{L,M}`](@ref), where `L` is the type of event locations and `M` is the type of event marks.
 
+## Temporal Poisson processes
+
+We provide a number of built-in models, including the basic Poisson process on the real line.
+
+```jldoctest tuto
+julia> pp = TemporalPoissonProcess(λ = [0.5, 1., 2.]);
+
+julia> history = rand(pp, 0., 1000.);
+
+julia> pp_init = TemporalPoissonProcess(λ = [1., 1., 1.]);
+
+julia> pp_est = fit(pp_init, history);
+
+julia> round.(pp_est.λ, digits=1)
 3-element Vector{Float64}:
- 0.6
- 1.14
- 1.79
+ 0.5
+ 1.0
+ 2.0
 ```
 
-## Working with Hidden Markov Models
+## Implementing your own temporal point process
 
-```jldoctest
-using Random; Random.seed!(63)
-dmc = DiscreteMarkovChain([0.3, 0.7], [0.9 0.1; 0.2 0.8])
-emission1 = BoundedTemporalPointProcess(TemporalPoissonProcess([0., 1., 2.]), 0., 1.)
-emission2 = BoundedTemporalPointProcess(TemporalPoissonProcess([2., 1., 0.]), 0., 1.)
-hmm = HiddenMarkovModel(dmc, [emission1, emission2])
-states, observations = rand(hmm, 100)
-sum(nb_events(observations[t]) for t = 1:100)
+To implement your own process, you only have to define a subtype of [`TemporalPointProcess`](@ref) and write the necessary methods: [`intensity`](@ref), [`mark_distribution`](@ref), [`ground_intensity`](@ref) and [`ground_intensity_bound`](@ref).
 
-# output
-
-268
-```
+If these methods exist, the default simulation and inference routines should work, but they can be made much more efficient using custom implementations.

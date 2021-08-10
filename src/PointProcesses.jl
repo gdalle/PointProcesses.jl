@@ -9,6 +9,7 @@ using Distributions
 using ForwardDiff
 using LinearAlgebra
 using Optim
+using Parameters
 using Plots
 using Quadrature
 using Random
@@ -42,15 +43,17 @@ include("markov/abstract.jl")
 export AbstractMarkovChain, nstates
 
 include("markov/discrete_time.jl")
-export DiscreteMarkovChain, stationary_distribution
+export DiscreteMarkovChain, transition_matrix
+export initial_distribution, stationary_distribution
 
 include("markov/continuous_time.jl")
-export ContinuousMarkovChain, discretize
+export ContinuousMarkovChain, rate_matrix, rate_diag, discretize
 
 # Hidden Markov models
 
 include("hmm/hmm.jl")
-export HiddenMarkovModel, update_observation_likelihood!
+export HiddenMarkovModel
+export transitions, emissions, emission
 
 include("hmm/forward_backward.jl")
 export forward_nolog!, forward_log!
@@ -58,7 +61,7 @@ export backward_nolog!, backward_log!
 export forward_backward_nolog!, forward_backward_log!
 
 include("hmm/baum_welch.jl")
-export expectation_maximization_step!
+export update_observation_likelihood!, baum_welch_step!, baum_welch!, baum_welch
 
 # Point processes
 
@@ -91,6 +94,7 @@ export TemporalHawkesProcess
 
 include("utils/utils.jl")
 export logsumexp
+export all_minus_inf, all_plus_inf, all_zeros, all_nan
 
 include("utils/plot.jl")
 export plot_events, plot_intensity, qqplot_interevent_times

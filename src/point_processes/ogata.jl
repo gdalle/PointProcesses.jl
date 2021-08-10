@@ -32,4 +32,4 @@ end
 Base.rand(rng::AbstractRNG, tpp::BoundedTemporalPointProcess) =
     rand(rng, tpp.pp, tpp.tmin, tpp.tmax)
 
-Base.rand(pp::TemporalPointProcess, args...) = rand(GLOBAL_RNG, pp, args...)
+Base.rand(tpp::TemporalPointProcess, args...) = rand(Random.GLOBAL_RNG, tpp, args...)

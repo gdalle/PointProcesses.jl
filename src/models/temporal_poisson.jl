@@ -6,7 +6,7 @@ Homogeneous temporal multivariate Poisson process.
 # Fields
 - `λ::Vector{R}`: event rates.
 """
-struct TemporalPoissonProcess{R} <: MultivariateTemporalPointProcess
+@with_kw struct TemporalPoissonProcess{R} <: MultivariateTemporalPointProcess
     λ::Vector{R}
 end
 

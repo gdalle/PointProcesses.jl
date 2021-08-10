@@ -10,7 +10,7 @@ Linear event histories with marks of type `M`.
 - `tmin::Float64`: start time
 - `tmax::Float64`: end time
 """
-mutable struct TemporalHistory{M} <: AbstractHistory{Float64,M}
+@with_kw mutable struct TemporalHistory{M} <: AbstractHistory{Float64,M}
     times::Vector{Float64}
     marks::Vector{M}
     tmin::Float64

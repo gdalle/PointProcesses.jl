@@ -10,7 +10,7 @@ abstract type TemporalPointProcess{M} <: AbstractPointProcess{Float64,M} end
 
 Store a temporal point process `P` with pre-defined start and end times.
 """
-struct BoundedTemporalPointProcess{M,P<:TemporalPointProcess{M}} <: TemporalPointProcess{M}
+@with_kw struct BoundedTemporalPointProcess{M,P<:TemporalPointProcess{M}} <: TemporalPointProcess{M}
     pp::P
     tmin::Float64
     tmax::Float64
