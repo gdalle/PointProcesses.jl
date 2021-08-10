@@ -53,13 +53,13 @@ Compute the optimal parameter for a temporal point process of type `typeof(pp0)`
 
 The default method uses [Optim.jl](https://github.com/JuliaNLSolvers/Optim.jl/) for numerical optimization, but it should be reimplemented for specific processes if explicit maximization is feasible.
 """
-function Distributions.fit(pp_init::TemporalPointProcess, h::TemporalHistory)
+function Distributions.fit(pp_init::P, h::TemporalHistory{M}) where {M, P<:TemporalPointProcess{M}}
     t = build_transform(pp_init)
     θ_init = inverse(t, params(pp_init))
-    f = θ -> -logpdf(PP(transform(t, θ)), h)
+    f = θ -> -logpdf(P(transform(t, θ)), h)
     res = optimize(f, θ_init, LBFGS(), autodiff = :forward)
     θ_opt = Optim.minimizer(res)
-    pp_opt = PP(transform(t, θ_opt))
+    pp_opt = P(transform(t, θ_opt))
     return pp_opt
 end
 

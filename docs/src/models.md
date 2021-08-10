@@ -1,4 +1,4 @@
-## Point process models
+# Point process models
 
 ```@autodocs
 Modules = [PointProcesses]
