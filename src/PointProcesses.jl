@@ -8,6 +8,7 @@ module PointProcesses
 using Distributions
 using ForwardDiff
 using LinearAlgebra
+using LogExpFunctions
 using Optim
 using Parameters
 using Plots
