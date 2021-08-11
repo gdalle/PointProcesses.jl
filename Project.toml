@@ -24,6 +24,7 @@ TransformVariables = "84d833dd-6860-57f9-a1a7-6da5db126cff"
 Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 
 [compat]
+Quadrature = "1"
 Distributions = "0.25"
 TransformVariables = "0.4"
 ForwardDiff = "0.10"
