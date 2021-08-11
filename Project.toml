@@ -23,6 +23,7 @@ TransformVariables = "84d833dd-6860-57f9-a1a7-6da5db126cff"
 Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 
 [compat]
+NamedTupleTools = "0.13"
 julia = "1.6"
 
 [extras]
