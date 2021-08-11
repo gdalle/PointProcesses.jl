@@ -8,6 +8,7 @@ Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+LogExpFunctions = "2ab3a3ac-af41-5b50-aa03-7779005ae688"
 MeasureTheory = "eadaa1a4-d27c-401d-8699-e962e1bbc33b"
 NamedTupleTools = "d9ec5142-1e00-5aa0-9d6a-321866360f50"
 Optim = "429524aa-4258-5aef-a3af-852621145aeb"
@@ -24,6 +25,11 @@ Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 
 [compat]
 Optim = "1"
+Plots = "1"
+Documenter = "0.27"
+MeasureTheory = "0.10"
+Zygote = "0.6"
+Parameters = "0.12"
 julia = "1.6"
 
 [extras]
