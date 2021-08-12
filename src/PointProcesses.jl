@@ -88,19 +88,25 @@ include("point_processes/ogata.jl")
 include("models/poisson.jl")
 export PoissonProcess
 
-include("models/poisson_naive.jl")
-export NaivePoissonProcess
-
 include("models/poisson_inhomogeneous.jl")
 export InhomogeneousPoissonProcess
 
+include("models/poisson_multivariate.jl")
+export MultivariatePoissonProcess
+
+include("models/poisson_multivariate_naive.jl")
+export NaiveMultivariatePoissonProcess
+
 include("models/hawkes.jl")
-export HawkesProcess
+export MultivariateHawkesProcess
 
 # Utils
 
 include("utils/utils.jl")
 export all_minus_inf, all_plus_inf, all_zeros, all_nan
+
+include("utils/mvcategorical.jl")
+export MvCategorical, CategoricalPrior, MvCategoricalPrior, fit_map
 
 include("utils/plot.jl")
 export plot_events, plot_intensity, qqplot_interevent_times

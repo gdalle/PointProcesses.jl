@@ -82,16 +82,16 @@ julia> round.(cmc_est.Q, digits=1)
 
 We finally demonstrate the main goal of the package: point process simulation and inference. All point processes are subtypes of [`AbstractPointProcess{L,M}`](@ref), where `L` is the type of event locations and `M` is the type of event marks.
 
-### Poisson processes
+We provide a number of built-in models, starting with basic Poisson processes on the real line.
 
-We provide a number of built-in models, including the basic Poisson process on the real line.
+### Multivariate Poisson processes
 
 ```jldoctest tuto
-julia> pp = PoissonProcess(λ = [0.5, 1., 2.]);
+julia> pp = MultivariatePoissonProcess(λ = [0.5, 1., 2.]);
 
 julia> history = rand(pp, 0., 1000.);
 
-julia> pp_est = fit(PoissonProcess, history);
+julia> pp_est = fit(MultivariatePoissonProcess, history);
 
 julia> round.(pp_est.λ, digits=1)
 3-element Vector{Float64}:
@@ -100,10 +100,15 @@ julia> round.(pp_est.λ, digits=1)
  2.0
 ```
 
+### General Poisson processes
+
+> Todo
+
 ### Implementing your own models
 
 To implement your own process, you only have to define a subtype of [`TemporalPointProcess`](@ref) and write the necessary methods: [`intensity`](@ref), [`mark_distribution`](@ref), [`ground_intensity`](@ref) and [`ground_intensity_bound`](@ref).
 
 As long as these methods exist, the default simulation and inference routines should work, but they can be made much more efficient using custom implementations.
 
-As an example, we included a naive implementation of the Poisson process, which is much slower than it has to be. It is called [`NaivePoissonProcess`](@ref), and looking at the source may help you understand the requirements of the interface.
+As an example, we included a naive re-implementation of 
+[`MultivariatePoissonProcess`](@ref), called [`NaiveMultivariatePoissonProcess`](@ref). Looking at its source may help you understand the requirements of the interface.

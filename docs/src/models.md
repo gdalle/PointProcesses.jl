@@ -2,22 +2,20 @@
 
 ## Temporal processes
 
-```@autodocs
-Modules = [PointProcesses]
-Order = [:type, :function]
-Pages = ["models/poisson.jl", "models/poisson_naive.jl", "models/poisson_inhomogeneous.jl"]
-```
+### Poisson processes
 
 ```@autodocs
 Modules = [PointProcesses]
 Order = [:type, :function]
-Pages = ["models/hawkes.jl"]
+Pages = ["models/poisson.jl", "models/poisson_inhomogeneous.jl"]
 ```
+
+### Multivariate processes
 
 ```@autodocs
 Modules = [PointProcesses]
 Order = [:type, :function]
-Pages = ["models/cox.jl"]
+Pages = ["models/poisson_multivariate.jl", "models/poisson_multivariate_naive.jl", "models/hawkes.jl"]
 ```
 
 ## Spatial processes

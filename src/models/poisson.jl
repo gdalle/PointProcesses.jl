@@ -1,28 +1,29 @@
 """
-    PoissonProcess{R}
+    PoissonProcess{R<:Real,D,M}
 
-Homogeneous temporal multivariate Poisson process.
+Homogeneous temporal Poisson process with arbitrary mark distribution.
 
 # Fields
-- `λ::Vector{R}`: event rates.
+- `λ::R`: event rate.
+- `mark_dist`: mark distribution.
 """
-@with_kw struct PoissonProcess{R} <: TemporalPointProcess{Int}
-    λ::Vector{R}
+@with_kw struct PoissonProcess{R<:Real,D,M} <: TemporalPointProcess{M}
+    λ::R
+    mark_dist::D
 end
 
 function Base.rand(rng::AbstractRNG, pp::PoissonProcess, tmin, tmax)
-    N = rand(Poisson(sum(pp.λ) * (tmax - tmin)))
+    N = rand(Poisson(pp.λ * (tmax - tmin)))
     times = rand(Uniform(tmin, tmax), N)
-    marks = rand(Categorical(pp.λ / sum(pp.λ)), N)
+    marks = rand(pp.mark_dist, N)
     return TemporalHistory(times, marks, tmin, tmax)
 end
 
-function Distributions.fit(::Type{PoissonProcess}, history::TemporalHistory{Int})
-    M = maximum(history.marks)
-    λ = zeros(Float64, M)
-    for m in history.marks
-        λ[m] += 1.
-    end
-    λ ./= duration(history)
-    return PoissonProcess(λ)
+function Distributions.fit(
+    ::Type{PoissonProcess{R,D,M}},
+    history::TemporalHistory,
+) where {R,D,M}
+    λ = nb_events(history) / duration(history)
+    mark_dist = fit(D, history.marks)
+    return PoissonProcess(λ, mark_dist)
 end

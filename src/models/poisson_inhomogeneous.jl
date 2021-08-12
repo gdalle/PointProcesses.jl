@@ -1,11 +1,13 @@
 """
-    InhomogeneousPoissonProcess{R}
+    InhomogeneousPoissonProcess{D,M}
 
-Inhomogeneous temporal multivariate Poisson process.
+Inhomogeneous temporal Poisson process with arbitrary mark distribution.
 
 # Fields
-- `λ::Vector{R}`: event rates.
+- `λ::Function`: intensity function.
+- `mark_dist::D`: mark distribution.
 """
-@with_kw struct InhomogeneousPoissonProcess{R} <: TemporalPointProcess{Int}
-    λ::Vector{R}
+@with_kw struct InhomogeneousPoissonProcess{D,M} <: TemporalPointProcess{M}
+    λ::Function
+    mark_dist::D
 end

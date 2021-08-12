@@ -9,10 +9,10 @@ Compute the integrated ground intensity (or compensator) $\Lambda(t|h)$ for a te
 The default method uses [Quadrature.jl](https://github.com/SciML/Quadrature.jl) for numerical integration, but it should be reimplemented for specific processes if explicit integration is feasible.
 """
 function integrated_ground_intensity(
-    pp::TemporalPointProcess{M},
-    h::TemporalHistory{M},
+    pp::TemporalPointProcess,
+    h::TemporalHistory,
     t = h.tmax,
-) where {M}
+)
     par = [pp]
     f = (t, par) -> ground_intensity(par[1], h, t)
     prob = QuadratureProblem(f, h.tmin, t, par)
@@ -30,7 +30,7 @@ Compute the log probability density function for a temporal point process `pp` a
 
 The default method uses a loop over events combined with [`integrated_ground_intensity`](@ref), but it should be reimplemented for specific processes if faster computation is possible.
 """
-function Distributions.logpdf(pp::TemporalPointProcess{M}, h::TemporalHistory{M}) where {M}
+function Distributions.logpdf(pp::TemporalPointProcess, h::TemporalHistory)
     l = -integrated_ground_intensity(pp, h)
     for (t, m) in zip(h.times, h.marks)
         l += log(intensity(pp, h, t, m))
@@ -53,7 +53,7 @@ function Distributions.fit(
     h::TemporalHistory{M};
     adtype = GalacticOptim.AutoForwardDiff(),
     alg = Optim.LBFGS(),
-) where {M,PP<:TemporalPointProcess{M}}
+) where {M,PP<:TemporalPointProcess}
     trans = build_transform(pp_init)
     θ_init = inverse(trans, ntfromstruct(pp_init))
     par = [nothing]
@@ -71,7 +71,7 @@ end
 
 Check whether the point process `pp` is a good fit for history `h` by applying Ogata's time rescaling method: if $(t_i)_i$ is a temporal point process with intensity $\lambda(t)$, then $(\Lambda(t_i))_i$ is a standard temporal Poisson process.
 """
-function check_residuals(pp::TemporalPointProcess{M}, h::TemporalHistory{M}) where {M}
+function check_residuals(pp::TemporalPointProcess, h::TemporalHistory)
     Λ(t) = integrated_ground_intensity(pp, h, t)
     h_rescaled = time_change(h, Λ)
     qqplot_interevent_times(h_rescaled)
