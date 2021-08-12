@@ -23,7 +23,7 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 TransformVariables = "84d833dd-6860-57f9-a1a7-6da5db126cff"
 
 [compat]
-Distributions = "0.24"
+Distributions = "0.24, 0.25"
 Documenter = "0.27"
 ForwardDiff = "0.10"
 LogExpFunctions = "0.2"
