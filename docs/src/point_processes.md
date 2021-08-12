@@ -11,7 +11,7 @@ Pages = ["point_processes/abstract.jl"]
 ```@autodocs
 Modules = [PointProcesses]
 Order = [:type, :function]
-Pages = ["point_processes/temporal.jl", "point_processes/temporal_multivariate.jl"]
+Pages = ["point_processes/temporal.jl"]
 ```
 
 ## Intensity functions

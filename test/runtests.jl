@@ -9,6 +9,8 @@ DocMeta.setdocmeta!(
     recursive = true,
 )
 
-@testset "PointProcesses.jl doctests" begin
+@testset "Doctests" begin
     doctest(PointProcesses)
 end
+
+include("poisson.jl")

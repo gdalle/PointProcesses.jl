@@ -78,22 +78,20 @@ julia> round.(cmc_est.Q, digits=1)
 
 ### Hidden Markov models
 
-## Working with point processes
+## Working with temporal point processes
 
 We finally demonstrate the main goal of the package: point process simulation and inference. All point processes are subtypes of [`AbstractPointProcess{L,M}`](@ref), where `L` is the type of event locations and `M` is the type of event marks.
 
-## Temporal Poisson processes
+### Poisson processes
 
 We provide a number of built-in models, including the basic Poisson process on the real line.
 
 ```jldoctest tuto
-julia> pp = TemporalPoissonProcess(λ = [0.5, 1., 2.]);
+julia> pp = PoissonProcess(λ = [0.5, 1., 2.]);
 
 julia> history = rand(pp, 0., 1000.);
 
-julia> pp_init = TemporalPoissonProcess(λ = [1., 1., 1.]);
-
-julia> pp_est = fit(pp_init, history);
+julia> pp_est = fit(PoissonProcess, history);
 
 julia> round.(pp_est.λ, digits=1)
 3-element Vector{Float64}:
@@ -102,8 +100,10 @@ julia> round.(pp_est.λ, digits=1)
  2.0
 ```
 
-## Implementing your own temporal point process
+### Implementing your own models
 
 To implement your own process, you only have to define a subtype of [`TemporalPointProcess`](@ref) and write the necessary methods: [`intensity`](@ref), [`mark_distribution`](@ref), [`ground_intensity`](@ref) and [`ground_intensity_bound`](@ref).
 
-If these methods exist, the default simulation and inference routines should work, but they can be made much more efficient using custom implementations.
+As long as these methods exist, the default simulation and inference routines should work, but they can be made much more efficient using custom implementations.
+
+As an example, we included a naive implementation of the Poisson process, which is much slower than it has to be. It is called [`NaivePoissonProcess`](@ref), and looking at the source may help you understand the requirements of the interface.

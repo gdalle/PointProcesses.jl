@@ -69,15 +69,13 @@ export update_observation_likelihood!, baum_welch_step!, baum_welch!, baum_welch
 # Point processes
 
 include("point_processes/abstract.jl")
-export AbstractPointProcess
+export AbstractPointProcess, build_transform
 
 include("point_processes/temporal.jl")
 export TemporalPointProcess, BoundedTemporalPointProcess
 
 include("point_processes/intensity.jl")
 export intensity, mark_distribution, ground_intensity, ground_intensity_bound
-
-include("point_processes/temporal_multivariate.jl")
 export MultivariateTemporalPointProcess, all_marks, all_mark_probabilities
 
 include("point_processes/learning.jl")
@@ -87,16 +85,21 @@ include("point_processes/ogata.jl")
 
 # Models
 
-include("models/temporal_poisson.jl")
-export TemporalPoissonProcess, build_transform
+include("models/poisson.jl")
+export PoissonProcess
 
-include("models/temporal_hawkes.jl")
-export TemporalHawkesProcess
+include("models/poisson_naive.jl")
+export NaivePoissonProcess
+
+include("models/poisson_inhomogeneous.jl")
+export InhomogeneousPoissonProcess
+
+include("models/hawkes.jl")
+export HawkesProcess
 
 # Utils
 
 include("utils/utils.jl")
-export logsumexp
 export all_minus_inf, all_plus_inf, all_zeros, all_nan
 
 include("utils/plot.jl")
