@@ -17,7 +17,6 @@ Base.eltype(::Type{<:DiscreteMarkovChain}) = Vector{Int}
 ## Access
 
 initial_distribution(dmc::DiscreteMarkovChain) = dmc.π0
-
 transition_matrix(dmc::DiscreteMarkovChain) = dmc.P
 
 ## Simulation

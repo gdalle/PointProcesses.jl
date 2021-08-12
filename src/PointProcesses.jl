@@ -111,4 +111,8 @@ export MvCategorical, CategoricalPrior, MvCategoricalPrior, fit_map
 include("utils/plot.jl")
 export plot_events, plot_intensity, qqplot_interevent_times
 
+include("utils/randvals.jl")
+export uniformprobvec, randprobvec
+export uniformtransmat, randtransmat
+
 end

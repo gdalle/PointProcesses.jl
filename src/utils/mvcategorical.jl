@@ -1,12 +1,3 @@
-function uniformprobvec(n::Int)::Vector{Float64}
-    return ones(n) ./ n
-end
-
-function randprobvec(n::Int)::Vector{Float64}
-    p = rand(n)
-    return p ./ sum(p)
-end
-
 struct MvCategorical <: DiscreteMultivariateDistribution
     marginals::Vector{Categorical{Float64, Vector{Float64}}}
 end
