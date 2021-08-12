@@ -7,8 +7,10 @@ module PointProcesses
 
 using Distributions
 using ForwardDiff
+using GalacticOptim
 using LinearAlgebra
 using LogExpFunctions
+using NamedTupleTools
 using Optim
 using Parameters
 using Plots
@@ -17,9 +19,9 @@ using Random
 using StatsBase
 using StatsPlots
 using TransformVariables
+using Zygote
 
-using Random: AbstractRNG, GLOBAL_RNG
-using NamedTupleTools: ntfromstruct
+using Random: GLOBAL_RNG
 
 ## Includes and exports
 

@@ -36,13 +36,6 @@ function Distributions.logpdf(pp::TemporalPointProcess, h::TemporalHistory)
     return l
 end
 
-"""
-    params(pp)
-
-Retrieve point process parameters as a `NamedTuple`.
-"""
-StatsBase.params(pp::AbstractPointProcess) = ntfromstruct(pp)
-
 @doc raw"""
     fit(pp0, h)
 
@@ -51,14 +44,21 @@ Compute the optimal parameter for a temporal point process of type `typeof(pp0)`
     \hat{\theta} = \mathrm{argmax} \{f_{\theta}(h): \theta \in \Theta\}
 ```
 
-The default method uses [Optim.jl](https://github.com/JuliaNLSolvers/Optim.jl/) for numerical optimization, but it should be reimplemented for specific processes if explicit maximization is feasible.
+The default method uses [GalacticOptim.jl](https://github.com/SciML/GalacticOptim.jl) for numerical optimization, but it should be reimplemented for specific processes if explicit maximization is feasible.
 """
-function Distributions.fit(pp_init::P, h::TemporalHistory{M}) where {M, P<:TemporalPointProcess{M}}
+function Distributions.fit(
+    pp_init::P,
+    h::TemporalHistory{M};
+    adtype = GalacticOptim.AutoForwardDiff(),
+    alg = Optim.LBFGS(),
+) where {M,P<:TemporalPointProcess{M}}
     t = build_transform(pp_init)
-    θ_init = inverse(t, params(pp_init))
-    f = θ -> -logpdf(P(transform(t, θ)), h)
-    res = optimize(f, θ_init, LBFGS(), autodiff = :forward)
-    θ_opt = Optim.minimizer(res)
+    θ_init = inverse(t, ntfromstruct(pp_init))
+    f = (θ, p) -> -logpdf(P(transform(t, θ)), h)
+    obj = OptimizationFunction(f, adtype)
+    prob = OptimizationProblem(obj, θ_init, [nothing])
+    sol = solve(prob, alg)
+    θ_opt = sol.u
     pp_opt = P(transform(t, θ_opt))
     return pp_opt
 end

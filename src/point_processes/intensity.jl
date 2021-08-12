@@ -1,10 +1,9 @@
-
 @doc raw"""
     intensity(pp, h, t, m)
 
 Compute the conditional intensity for a temporal point process `pp` applied to history `h` and event `(t, m)`.
 
-The conditional intensity function quantifies the instantaneous risk  of an event with mark `m` occurring at time `t`[^Rasmussen_2018].
+The conditional intensity function ``\lambda(t, m | h)`` quantifies the instantaneous risk  of an event with mark `m` occurring at time `t`[^Rasmussen_2018].
 
 [^Rasmussen_2018]: Rasmussen, J. G. (2018), “Lecture Notes: Temporal Point Processes and the Conditional Intensity Function,” arXiv:1806.00221 [stat].
 """
