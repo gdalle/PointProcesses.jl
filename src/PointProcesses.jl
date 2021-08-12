@@ -52,20 +52,6 @@ export initial_distribution, stationary_distribution
 include("markov/continuous_time.jl")
 export ContinuousMarkovChain, rate_matrix, rate_diag, discretize
 
-# Hidden Markov models
-
-include("hmm/hmm.jl")
-export HiddenMarkovModel
-export transitions, emissions, emission
-
-include("hmm/forward_backward.jl")
-export forward_nolog!, forward_log!
-export backward_nolog!, backward_log!
-export forward_backward_nolog!, forward_backward_log!
-
-include("hmm/baum_welch.jl")
-export update_observation_likelihood!, baum_welch_step!, baum_welch!, baum_welch
-
 # Point processes
 
 include("point_processes/abstract.jl")
@@ -82,6 +68,21 @@ include("point_processes/learning.jl")
 export integrated_ground_intensity, check_residuals
 
 include("point_processes/ogata.jl")
+
+# Hidden Markov models
+
+include("hmm/hmm.jl")
+export HiddenMarkovModel
+export transitions, emissions, emission
+
+include("hmm/forward_backward.jl")
+export forward_nolog!, forward_log!
+export backward_nolog!, backward_log!
+export forward_backward_nolog!, forward_backward_log!
+
+include("hmm/baum_welch.jl")
+export update_observation_likelihood!, baum_welch_step!, baum_welch!, baum_welch
+
 
 # Models
 
