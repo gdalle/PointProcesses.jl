@@ -7,7 +7,7 @@ The conditional intensity function ``\lambda(t, m | h)`` quantifies the instanta
 
 [^Rasmussen_2018]: Rasmussen, J. G. (2018), “Lecture Notes: Temporal Point Processes and the Conditional Intensity Function,” arXiv:1806.00221 [stat].
 """
-function intensity(pp::TemporalPointProcess, h::TemporalHistory, t, m)
+function intensity(pp::TemporalPointProcess{M}, h::TemporalHistory{M}, t, m::M) where {M}
     error("not implemented")
 end
 
@@ -16,7 +16,7 @@ end
 
 Compute the distribution of marks for a temporal point process `pp` knowing that an event takes place at time `t` after history `h`.
 """
-function mark_distribution(pp::TemporalPointProcess, h::TemporalHistory, t)
+function mark_distribution(pp::TemporalPointProcess{M}, h::TemporalHistory{M}, t) where {M}
     error("not implemented")
 end
 
@@ -30,7 +30,7 @@ The ground intensity quantifies the instantaneous risk of an event with any mark
     \lambda_g(t|h) = \sum_{m \in \mathcal{M}} \lambda(t, m|h).
 ```
 """
-function ground_intensity(pp::TemporalPointProcess, h::TemporalHistory, t)
+function ground_intensity(pp::TemporalPointProcess{M}, h::TemporalHistory{M}, t) where {M}
     error("not implemented")
 end
 
@@ -44,6 +44,10 @@ Return a tuple of the form $(B, L)$ satisfying
     \forall u \in [t, t+L), \quad \lambda_g(t|h) \leq B
 ```
 """
-function ground_intensity_bound(pp::TemporalPointProcess, h::TemporalHistory, t)
+function ground_intensity_bound(
+    pp::TemporalPointProcess{M},
+    h::TemporalHistory{M},
+    t,
+) where {M}
     error("not implemented")
 end

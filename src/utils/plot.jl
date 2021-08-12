@@ -10,7 +10,7 @@ function plot_events(h::TemporalHistory{M}) where {M<:Real}
     )
 end
 
-function plot_intensity(pp::TemporalPointProcess, h::TemporalHistory; npoints = 100)
+function plot_intensity(pp::TemporalPointProcess{M}, h::TemporalHistory{M}; npoints = 100) where {M}
     curve_times = h.tmin:(duration(h)/npoints):h.tmax
     curve_vals = [ground_intensity(pp, h, t) for t in curve_times]
     history_times = h.times
