@@ -1,13 +1,13 @@
 """
-    HiddenMarkovModel{Tr, Em}
+    HiddenMarkovModel{Tr<:DiscreteMarkovChain,Em}
 
-Hidden Markov Model with arbitrary transition model (of type `Tr`) and emission distributions (of type `Em`).
+Hidden Markov Model with arbitrary transition model (must be a discrete Markov chain) and emission distributions.
 
 # Fields
 - `transitions::Tr`: state evolution process.
 - `emissions::Vector{Em}`: one emission distribution per state.
 """
-@with_kw struct HiddenMarkovModel{Tr,Em}
+@with_kw struct HiddenMarkovModel{Tr<:DiscreteMarkovChain,Em}
     transitions::Tr
     emissions::Vector{Em}
 end

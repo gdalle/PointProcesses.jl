@@ -9,8 +9,3 @@ PointProcesses
 ## Quick start
 
 To get started, take a look at the [Tutorial](@ref).
-
-## Index
-
-```@index
-```

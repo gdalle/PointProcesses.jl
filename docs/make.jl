@@ -35,6 +35,8 @@ makedocs(;
             ],
             "Utilities" => "utils.md",
         ],
+        "Roadmap" => "roadmap.md",
+        "Index" => "list.md",
     ],
 )
 
