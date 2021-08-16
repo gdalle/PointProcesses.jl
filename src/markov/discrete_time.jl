@@ -16,6 +16,7 @@ Base.eltype(::Type{<:DiscreteMarkovChain}) = Vector{Int}
 
 ## Access
 
+nstates(dmc::DiscreteMarkovChain) = length(dmc.π0)
 initial_distribution(dmc::DiscreteMarkovChain) = dmc.π0
 transition_matrix(dmc::DiscreteMarkovChain) = dmc.P
 
@@ -32,12 +33,38 @@ end
 
 Base.rand(dmc::DiscreteMarkovChain, T::Int) = rand(Random.GLOBAL_RNG, dmc, T)
 
+## Logpdf
+
+function Distributions.logpdf(dmc::DiscreteMarkovChain, states::Vector{Integer})
+    T = length(states)
+    l = log(dmc.π0[states[1]])
+    for t = 2:T
+        l += log(dmc.P[states[t-1], states[t]])
+    end
+    return l
+end
+
+## Prior
+
+@with_kw struct DiscreteMarkovChainPrior <: AbstractMarkovChainPrior
+    Pα::Matrix{Float64}
+end
+
+## Prior logpdf
+
+function Distributions.logpdf(dmcp::DiscreteMarkovChainPrior, dmc::DiscreteMarkovChain)
+    return sum(
+        logpdf(CategoricalPrior(prior.Pα[s1, :]), Categorical(mc.P[s1, :]))
+        for s1 = 1:nstates(mc)
+    )
+end
+
 ## Fitting
 
 """
-    ContinuousMarkovChainStats
+    DiscreteMarkovChainStats
 
-Sufficient statistics for the likelihood of a ContinuousMarkovChain.
+Sufficient statistics for the likelihood of a DiscreteMarkovChain.
 """
 @with_kw struct DiscreteMarkovChainStats
     initialization::Vector{Float64}

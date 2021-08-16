@@ -1,216 +1,133 @@
-struct MvCategorical <: DiscreteMultivariateDistribution
-    marginals::Vector{Categorical{Float64, Vector{Float64}}}
+struct MvCategorical{P<:Real,Ps<:AbstractVector{<:AbstractVector{P}}} <:
+       DiscreteMultivariateDistribution
+    p::Ps
 end
 
 ## Attributes
 
-function Distributions.ndims(dist::MvCategorical)::Int
-    return length(dist.marginals)
-end
-
-Base.length(dist::MvCategorical) = ndims(dist)
-Base.eltype(::MvCategorical) = Int
-
-function Distributions.ncategories(dist::MvCategorical, dim::Int)::Int
-    return ncategories(dist.marginals[dim])
-end
-
-function Distributions.ncategories(dist::MvCategorical)::Vector{Int}
-    return [ncategories(dist, dim) for dim = 1:length(dist)]
-end
-
-function Distributions.probs(dist::MvCategorical, dim::Int)::Vector{Float64}
-    return probs(dist.marginals[dim])
-end
-
-function Distributions.probs(dist::MvCategorical)::Vector{Vector{Float64}}
-    return [probs(dist, dim) for dim = 1:length(dist)]
-end
-
-function prob(dist::MvCategorical, dim::Int, val::Int)::Float64
-    return probs(dist, dim)[val]
-end
-
-## Check support
-
-function Distributions.insupport(dist::MvCategorical, x::Vector{Int})::Bool
-    length(x) == length(dist) || return false
-    for dim = 1:length(dist)
-        if !insupport(dist.marginals[dim], x[dim])
-            return false
-        end
-    end
-    return true
-end
-
-## Likelihood
-
-function Distributions._logpdf(dist::MvCategorical, x::Vector{Int})::Float64
-    insupport(dist, x) || return -Inf
-    s = 0.0
-    for dim = 1:length(dist)
-        s += log(prob(dist, dim, x[dim]))
-    end
-    return s
-end
+Base.length(dist::MvCategorical) = length(dist.p)
 
 ## Simulation
 
 function Distributions._rand!(
     rng::AbstractRNG,
     dist::MvCategorical,
-    x::AbstractVector{T},
-) where {T<:Real}
-    length(x) == length(dist) || throw(DimensionMismatch("Invalid argument dimension."))
-    for dim = 1:length(dist)
-        x[dim] = rand(rng, Categorical(probs(dist, dim)))
+    x::AbstractVector{Real},
+)
+    for i = 1:length(dist)
+        x[i] = rand(rng, Categorical(dist.p[i]))
     end
     return x
 end
 
-## MLE estimation
+## Likelihood
 
-function Distributions.fit_mle(
+function Distributions.logpdf(dist::MvCategorical{P}, x::AbstractVector{Integer}) where {P}
+    l = zero(P)
+    for i = 1:length(dist)
+        l += log(dist.p[i][x[i]])
+    end
+    return l
+end
+
+## Sufficient statistics
+
+struct MvCategoricalStats <: SufficientStats
+    h::Vector{Vector{Float64}}
+end
+
+function Distributions.suffstats(::Type{<:MvCategorical}, ks::Integer, x::AbstractArray{Integer})
+    h = [add_categorical_counts!(zeros(ks[i]), x[i, :]) for i in size(x, 1)]
+    return CategoricalStats(h)
+end
+
+function Distributions.suffstats(
     ::Type{<:MvCategorical},
-    ranges::Vector{Int},
-    x::Matrix{Int},
-)::MvCategorical
-    marginals = [fit_mle(Categorical, ranges[dim], x[dim, :]) for dim = 1:length(ranges)]
-    return MvCategorical(marginals)
+    k::Integer,
+    x::AbstractVector{Integer},
+    w::AbstractVector{Real},
+)
+    h = [add_categorical_counts!(zeros(ks[i]), x[i, :], w) for i in size(x, 1)]
+    return CategoricalStats(h)
 end
 
-function Distributions.fit_mle(
-    ::Type{<:MvCategorical},
-    ranges::Vector{Int},
-    x::Matrix{Int},
-    w::Vector{Float64},
-)::MvCategorical
-    marginals = [fit_mle(Categorical, ranges[dim], x[dim, :], w) for dim = 1:length(ranges)]
-    return MvCategorical(marginals)
-end
-
-function Distributions.fit_mle(::Type{<:MvCategorical}, x::Matrix{Int})
-    @assert size(x, 2) > 0 "Zero samples provided"
-    return fit_mle(MvCategorical, maximum(x, dims = 2)[:, 1], x)
-end
-
-function Distributions.fit_mle(::Type{<:MvCategorical}, x::Matrix{Int}, w::Vector{Float64})
-    @assert size(x, 2) > 0 "Zero samples provided"
-    return fit_mle(MvCategorical, maximum(x, dims = 2)[:, 1], x, w)
-end
-
-## Default estimation
-
-Distributions.fit(::Type{<:MvCategorical}, x) = fit_mle(MvCategorical, x)
-Distributions.fit(::Type{<:MvCategorical}, x, w) = fit_mle(MvCategorical, x, w)
-
-## Priors
-
-struct CategoricalPrior
-    α::Vector{Float64}
-end
-
-Base.length(prior::CategoricalPrior)::Int = length(prior.α)
+## Prior
 
 struct MvCategoricalPrior
-    marginals::Vector{CategoricalPrior}
+    α::Vector{Vector{Float64}}
+end
+
+function Distributions.logpdf(prior::MvCategoricalPrior, dist::MvCategorical)
+    l = 0.
+    for i in length(dist)
+        l += logpdf(CategoricalPrior(prior.α[i]), Categorical(dist.p[i]))
+    end
+    return l
+end
+
+## MLE
+
+function Distributions.fit_mle(
+    ::Type{<:MvCategorical},
+    ks::AbstractVector{Integer},
+    x::AbstractMatrix{Integer},
+)
+    marginals = [fit_mle(Categorical, ks[i], x[i, :]) for i = 1:length(ks)]
+    p = [probs(dist) for dist in marginals]
+    return MvCategorical(p)
+end
+
+function Distributions.fit_mle(
+    ::Type{<:MvCategorical},
+    ks::AbstractVector{Integer},
+    x::AbstractMatrix{Integer},
+    w::AbstractVector{Real},
+)
+    marginals = [fit_mle(Categorical, ks[i], x[i, :], w) for i = 1:length(ks)]
+    p = [probs(dist) for dist in marginals]
+    return MvCategorical(p)
+end
+
+
+function Distributions.fit_mle(::Type{<:MvCategorical}, x::AbstractMatrix{Integer})
+    ks = vec(maximum(x, dims = 2))
+    return fit_mle(MvCategorical, ks, x)
+end
+
+function Distributions.fit_mle(
+    ::Type{<:MvCategorical},
+    x::AbstractMatrix{Integer},
+    w::AbstractVector{Real},
+)
+    ks = vec(maximum(x, dims = 2))
+    return fit_mle(MvCategorical, ks, x, w)
 end
 
 ## MAP estimation
 
-function fit_map(::Type{<:Categorical}, k::Int, x::Vector{Int}, prior::CategoricalPrior)
-    Categorical(
-        Distributions.pnormalize!(
-            Distributions.add_categorical_counts!(zeros(k), x) .+ prior.α .- 1.0,
-        ),
-        check_args = false,
-    )
-end
-
 function fit_map(
-    ::Type{<:Categorical},
-    k::Int,
-    x::Vector{Int},
-    w::Vector{Float64},
-    prior::CategoricalPrior,
+    ::Type{<:MvCategorical},
+    prior::MvCategoricalPrior,
+    x::AbstractMatrix{Integer},
 )
-    Categorical(
-        Distributions.pnormalize!(
-            Distributions.add_categorical_counts!(zeros(k), x, w) .+ prior.α .- 1.0,
-        ),
-        check_args = false,
-    )
+    marginals = [
+        fit_map(Categorical, CategoricalPrior(prior.α[i]), x[i, :]) for
+        i = 1:length(prior.α)
+    ]
+    p = [probs(dist) for dist in marginals]
+    return MvCategorical(p)
 end
 
 function fit_map(
     ::Type{<:MvCategorical},
-    ranges::Vector{Int},
-    x::Matrix{Int},
     prior::MvCategoricalPrior,
-)::MvCategorical
-    marginals = [fit_map(Categorical, ranges[dim], x[dim, :], prior.marginals[dim]) for dim = 1:length(ranges)]
-    return MvCategorical(marginals)
+    x::AbstractMatrix{Integer},
+    w::AbstractVector{Real},
+)
+    marginals = [
+        fit_map(Categorical, CategoricalPrior(prior.α[i]), x[i, :], w) for
+        i = 1:length(prior.α)
+    ]
+    p = [probs(dist) for dist in marginals]
+    return MvCategorical(p)
 end
-
-function fit_map(
-    ::Type{<:MvCategorical},
-    ranges::Vector{Int},
-    x::Matrix{Int},
-    w::Vector{Float64},
-    prior::MvCategoricalPrior,
-)::MvCategorical
-    marginals = [fit_map(Categorical, ranges[dim], x[dim, :], w, prior.marginals[dim]) for dim = 1:length(ranges)]
-    return MvCategorical(marginals)
-end
-
-function fit_map(::Type{<:MvCategorical}, x::Matrix{Int}, prior::MvCategoricalPrior)::MvCategorical
-    @assert size(x, 2) > 0 "Zero samples provided"
-    return fit_map(MvCategorical, length.(prior.marginals), x, prior)
-end
-
-function fit_map(
-    ::Type{<:MvCategorical},
-    x::Matrix{Int},
-    w::Vector{Float64},
-    α::Vector{Vector{Float64}},
-)::MvCategorical
-    @assert size(x, 2) > 0 "Zero samples provided"
-    return fit_map(MvCategorical, length.(α), x, w, α)
-end
-
-## Prior likelihood
-
-function Distributions.logpdf(prior::CategoricalPrior, dist::Categorical)::Float64
-    p, α = probs(dist), prior.α
-    # return logpdf(Dirichlet(α), p) # TODO
-    return logpdf(Dirichlet(α[α.>1.0]), p[α.>1.0])
-end
-
-function Distributions.logpdf(prior::MvCategoricalPrior, dist::MvCategorical)::Float64
-    LL = 0.0
-    for dim = 1:length(dist)
-        LL += logpdf(prior.marginals[dim], dist.marginals[dim])
-    end
-    return LL
-end
-
-## Plotting
-
-# function plot_histogram(dist::MvCategorical; logscale = false)
-#     fig, ax = subplots(1, ndims(d), figsize = (ndims(d), 2), sharey = true)
-#     for dim = 1:ndims(d)
-#         a = ndims(d) > 1 ? ax[dim] : ax
-#         if logscale
-#             a.set_yscale("log")
-#         end
-#         a.bar(1:ncategories(d, dim), probs(d, dim))
-#         a.set_xlabel("Dim $dim")
-#         a.set_ylim(0, 1)
-#         a.set_xticks(1:ncategories(d, dim))
-#         dim == 1 ? a.set_ylabel("Probability") : nothing
-#     end
-#     fig.suptitle("Multivariate categorical distribution")
-#     fig.tight_layout()
-#     savefig("p.svg")
-#     show()
-# end

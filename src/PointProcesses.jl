@@ -106,8 +106,12 @@ export MultivariateHawkesProcess
 include("utils/utils.jl")
 export all_minus_inf, all_plus_inf, all_zeros, all_nan
 
+include("utils/categorical.jl")
+export fit_map
+export CategoricalPrior
+
 include("utils/mvcategorical.jl")
-export MvCategorical, CategoricalPrior, MvCategoricalPrior, fit_map
+export MvCategorical, MvCategoricalStats, MvCategoricalPrior
 
 include("utils/plot.jl")
 export plot_events, plot_intensity, qqplot_interevent_times

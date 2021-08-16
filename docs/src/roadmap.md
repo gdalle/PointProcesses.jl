@@ -14,6 +14,7 @@ Here is a list of features that are yet to be implemented...
 
 - Poisson processes on arbitrary measured spaces
 - Piecewise-Deterministic Markov Processes
+- Gaussian Process-modulated Poisson Processes
 
 ## Maybe not
 

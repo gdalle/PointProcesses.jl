@@ -1,8 +1,6 @@
 abstract type AbstractMarkovChain end
 
-StatsBase.params(mc::AbstractMarkovChain) = ntfromstruct(mc)
-
-nstates(mc::AbstractMarkovChain) = length(mc.π0)
+abstract type AbstractMarkovChainPrior end
 
 function Distributions.fit(mctype::Type{<:AbstractMarkovChain}, args...)
     return fit_mle(mctype, args...)
