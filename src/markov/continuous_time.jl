@@ -21,7 +21,7 @@ Base.eltype(::Type{<:ContinuousMarkovChain}) = TemporalHistory{Int}
 
 ## Access
 
-nstates(dmc::DiscreteMarkovChain) = length(dmc.π0)
+nstates(mc::ContinuousMarkovChain) = length(mc.π0)
 
 initial_distribution(mc::ContinuousMarkovChain) = mc.π0
 
@@ -75,7 +75,21 @@ Sufficient statistics for the likelihood of a ContinuousMarkovChain.
     transition_count::T3
 end
 
-function Distributions.suffstats(::Type{ContinuousMarkovChain}, h::TemporalHistory{Int})
+function Distributions.suffstats(::Type{ContinuousMarkovChain}, h::TemporalHistory{<:Integer})
+    states = h.marks
+    S = maximum(states)
+    initialization = collect(1:S) .== states[1]
+    duration = zeros(Float64, S)
+    transition_count = zeros(Int, S, S)
+    for t = 1:length(states)-1
+        duration[states[t]] += h.times[t+1] - h.times[t]
+        transition_count[states[t], states[t+1]] += 1
+    end
+    duration[states[length(states)]] += h.tmax - h.times[length(states)]
+    return ContinuousMarkovChainStats(initialization, duration, transition_count)
+end
+
+function Distributions.suffstats(::Type{ContinuousMarkovChain}; m̂, D̂)
     states = h.marks
     S = maximum(states)
     initialization = collect(1:S) .== states[1]
@@ -95,7 +109,7 @@ function Distributions.fit_mle(
 )
     π0 = ss.initialization
     Q = ss.transition_count ./ ss.duration
-    Q[diagind(Q)] .= -vec(sum(Q, dims = 2)) + sum(Q[diagind(Q)])
+    Q[diagind(Q)] .= -vec(sum(Q, dims = 2)) + Q[diagind(Q)]
     return ContinuousMarkovChain(π0, Q)
 end
 

@@ -96,14 +96,19 @@ end
 
 function Distributions.suffstats(
     ::Type{<:DiscreteMarkovChain};
-    logγ::Matrix{<:Real},
-    logξ::Array{<:Real,3},
+    γ = nothing,
+    ξ = nothing,
+    logγ = nothing,
+    logξ = nothing,
 )
-    T, S, _ = size(logξ)
-    initialization = exp.(logγ[1, :])
+    if isnothing(γ) || isnothing(ξ)
+        γ, ξ = exp.(logγ), exp.(logξ)
+    end
+    T, S, _ = size(ξ)
+    initialization = γ[1, :]
     transition_count = zeros(Float64, S, S)
     for i = 1:S, j = 1:S
-        transition_count[i, j] = sum(exp(x) for x in @view logξ[:, i, j])
+        transition_count[i, j] = sum(@view ξ[:, i, j])
     end
     return DiscreteMarkovChainStats(initialization, transition_count)
 end

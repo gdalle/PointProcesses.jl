@@ -5,12 +5,14 @@ module PointProcesses
 
 ## Imports
 
+using DataStructures
 using Distributions
 using ForwardDiff
 using GalacticOptim
 using LinearAlgebra
 using LogExpFunctions
 using NamedTupleTools
+using OffsetArrays
 using Optim
 using Parameters
 using Plots
@@ -77,14 +79,15 @@ include("hmm/hmm.jl")
 export HiddenMarkovModel
 export transitions, emissions, emission
 
-include("hmm/forward_backward.jl")
+include("hmm/baum_welch.jl")
 export forward_nolog!, forward_log!
 export backward_nolog!, backward_log!
 export forward_backward_nolog!, forward_backward_log!
+export update_obs_pdf!, update_obs_logpdf!
+export baum_welch!, baum_welch
 
-include("hmm/baum_welch.jl")
-export update_observation_likelihood!, baum_welch_step!, baum_welch!, baum_welch
-
+include("hmm/mmpp.jl")
+export MarkovModulatedPoissonProcess
 
 # Models
 

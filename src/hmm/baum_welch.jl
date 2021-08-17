@@ -9,17 +9,17 @@ function forward_nolog!(
     for i = 1:S
         α[1, i] = π0[i] * obs_pdf[1, i]
     end
-    c[1] = 1 / sum(@view α[1, :])  # scaling
+    c[1] = sum(@view α[1, :])  # scaling
     for i = 1:S
-        α[1, i] *= c[1]
+        α[1, i] /= c[1]
     end
     for t = 1:T-1
         for j = 1:S
             α[t+1, j] = sum(α[t, i] * P[i, j]) * obs_pdf[t+1, j]
         end
-        c[t+1] = 1 / sum(@view α[t+1, :])  # scaling
+        c[t+1] = sum(@view α[t+1, :])  # scaling
         for j = 1:S
-            α[t+1, j] *= c[t+1]
+            α[t+1, j] /= c[t+1]
         end
     end
     for t = 1:T
@@ -27,7 +27,7 @@ function forward_nolog!(
             throw(OverflowError("Probabilities are too small in forward step."))
         end
     end
-    return logα
+    return nothing
 end
 
 function forward_log!(
@@ -36,8 +36,7 @@ function forward_log!(
     hmm::HiddenMarkovModel,
 )
     T, S = size(obs_logpdf, 1), nstates(hmm)
-    logπ0, logP = log.(initial_distribution(hmm)),
-    log.(transition_matrix(hmm))
+    logπ0, logP = log.(initial_distribution(hmm)), log.(transition_matrix(hmm))
     for i = 1:S
         logα[1, i] = logπ0[i] + obs_logpdf[1, i]
     end
@@ -51,7 +50,7 @@ function forward_log!(
             throw(OverflowError("Log probabilities are too small in forward step."))
         end
     end
-    return logα
+    return nothing
 end
 
 function backward_nolog!(
@@ -68,7 +67,7 @@ function backward_nolog!(
     end
     for t = T-1:-1:1
         for i = 1:S
-            β[t, i] = sum(P[i, j] * obs_pdf[t+1, j] * β[t+1, j] for j = 1:S) * c[t]
+            β[t, i] = sum(P[i, j] * obs_pdf[t+1, j] * β[t+1, j] for j = 1:S) / c[t]
         end
     end
     for t = 1:T
@@ -76,6 +75,7 @@ function backward_nolog!(
             throw(OverflowError("Log probabilities are too small in backward step."))
         end
     end
+    return nothing
 end
 
 
@@ -100,6 +100,7 @@ function backward_log!(
             throw(OverflowError("Log probabilities are too small in backward step."))
         end
     end
+    return nothing
 end
 
 function forward_backward_nolog!(
@@ -107,7 +108,7 @@ function forward_backward_nolog!(
     β::AbstractMatrix,
     c::AbstractVector,
     γ::AbstractMatrix,
-    ξ::AbstractArray{<:Real, 3},
+    ξ::AbstractArray{<:Real,3},
     obs_pdf::AbstractMatrix,
     hmm::HiddenMarkovModel,
 )
@@ -136,7 +137,7 @@ function forward_backward_nolog!(
         end
     end
 
-    L = sum(@view α[T, :])
+    logL = sum(log.(c))  # TODO: @view
 
     return log(L)
 end
@@ -146,7 +147,7 @@ function forward_backward_log!(
     logα::AbstractMatrix,
     logβ::AbstractMatrix,
     logγ::AbstractMatrix,
-    logξ::AbstractArray{<:Real, 3},
+    logξ::AbstractArray{<:Real,3},
     obs_logpdf::AbstractMatrix,
     hmm::HiddenMarkovModel,
 )
@@ -226,18 +227,17 @@ function baum_welch_nolog!(
     γ::AbstractMatrix,
     ξ::AbstractArray{<:Real,3},
     obs_pdf::AbstractMatrix,
-    hmm::HiddenMarkovModel,
+    hmm::HiddenMarkovModel{Tr,Em},
     observations::AbstractVector;
     iterations,
-)
+) where {Tr,Em}
     logL_evolution = Float64[]
     for _ = 1:iterations
         update_obs_pdf!(obs_pdf, hmm, observations)
         logL = forward_backward_nolog!(α, β, c, γ, ξ, obs_pdf, hmm)
         push!(logL_evolution, logL)
-        new_transitions = fit(typeof(transitions(hmm)), γ = γ, ξ = ξ)
-        new_emissions =
-            [fit(typeof(emission(hmm, s)), observations, γ[:, s]) for s = 1:nstates(hmm)]  # TODO: @view
+        new_transitions = fit(Tr, γ = γ, ξ = ξ)
+        new_emissions = [fit(Em, observations, γ[:, s]) for s = 1:nstates(hmm)]  # TODO: @view
         hmm = HiddenMarkovModel(new_transitions, new_emissions)
     end
     return hmm, logL_evolution
@@ -249,20 +249,17 @@ function baum_welch_log!(
     logγ::AbstractMatrix,
     logξ::AbstractArray{<:Real,3},
     obs_logpdf::AbstractMatrix,
-    hmm::HiddenMarkovModel,
+    hmm::HiddenMarkovModel{Tr,Em},
     observations::AbstractVector;
     iterations,
-)
+) where {Tr,Em}
     logL_evolution = Float64[]
     for _ = 1:iterations
         update_obs_logpdf!(obs_logpdf, hmm, observations)
         logL = forward_backward_log!(logα, logβ, logγ, logξ, obs_logpdf, hmm)
         push!(logL_evolution, logL)
-        new_transitions = fit(typeof(transitions(hmm)), logγ = logγ, logξ = logξ)
-        new_emissions = [
-            fit(typeof(emission(hmm, s)), observations, exp.(logγ[:, s])) for
-            s = 1:nstates(hmm)
-        ]  # TODO: @view
+        new_transitions = fit(Tr, logγ = logγ, logξ = logξ)
+        new_emissions = [fit(Em, observations, exp.(logγ[:, s])) for s = 1:nstates(hmm)]  # TODO: @view
         hmm = HiddenMarkovModel(new_transitions, new_emissions)
     end
     return hmm, logL_evolution
