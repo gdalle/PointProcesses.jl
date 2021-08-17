@@ -1,30 +1,30 @@
-function intensity_by_state(mmpp::MarkovModulatedPoissonProcess, m = nothing)
+function intensity_by_state(mmpp::MMPP, m = nothing)
     λ = [intensity(emission(mmpp, s), m) for s = 1:nstates(mmpp)]
     Λ = Diagonal(λ)
     return Λ
 end
 
-function renewal_density(mmpp::MarkovModulatedPoissonProcess, y, m = nothing)
+function renewal_density(mmpp::MMPP, y, m = nothing)
     Q = rate_matrix(mmpp)
     Λ = intensity_by_state(mmpp)
     Λm = intensity_by_state(mmpp, m)
     return exp((Q - Λ) * y) * Λm
 end
 
-function renewal_void_probability(mmpp::MarkovModulatedPoissonProcess, y)
+function renewal_void_probability(mmpp::MMPP, y)
     Q = rate_matrix(mmpp)
     Λ = intensity_by_state(mmpp)
     return exp((Q - Λ) * y)
 end
 
-function stationary_distribution(mmpp::MarkovModulatedPoissonProcess)
+function stationary_distribution(mmpp::MMPP)
     Q = rate_matrix(mmpp)
     Λ = intensity_by_state(mmpp)
     P = inv(Λ - Q) * Λ
     return stationary_distribution(DiscreteMarkovChain(ones(nstates(mmpp)), P))
 end
 
-function forward_backward(mmpp::MarkovModulatedPoissonProcess, h::TemporalHistory)
+function forward_backward(mmpp::MMPP, h::TemporalHistory)
     S = nstates(mmpp)
     π0 = stationary_distribution(mmpp)
 
@@ -72,7 +72,7 @@ function forward_backward(mmpp::MarkovModulatedPoissonProcess, h::TemporalHistor
 
     m̂ = Q .* sum(∫[k]' / c[k] for k = 1:n+1)
     D̂ = diag(m̂) ./ diag(Q)
-    n̂ = [DefaultDict{M,Float64}(0.) for s = 1:S]
+    n̂ = [DefaultDict{M,Float64}(0.0) for s = 1:S]
     for k = 1:n
         local_n̂ = L[k]' .* R[k+1]
         for s = 1:S
@@ -85,18 +85,14 @@ function forward_backward(mmpp::MarkovModulatedPoissonProcess, h::TemporalHistor
     return m̂, n̂, D̂, logL
 end
 
-function ryden(
-    mmpp::MarkovModulatedPoissonProcess{M,Tr,Em},
-    h::TemporalHistory{M};
-    iterations,
-) where {M,Tr,Em}
+function ryden(mmpp::MMPP{M,Tr,Em}, h::TemporalHistory{M}; iterations) where {M,Tr,Em}
     logL_evolution = Float64[]
     for _ = 1:iterations
         m̂, n̂, D̂, logL = forward_backward(mmpp, h)
         push!(logL_evolution, logL)
         new_transitions = fit(Tr, m̂ = m̂, D̂ = D̂)
         new_emissions = [fit(Em, n̂ = n̂[s], D̂ = D̂[s]) for s = 1:nstates(hmm)]  # TODO: @view
-        mmpp = MarkovModulatedPoissonProcess(new_transitions, new_emissions)
+        mmpp = MMPP(new_transitions, new_emissions)
     end
     return hmm, logL_evolution
 end

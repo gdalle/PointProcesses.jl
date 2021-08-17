@@ -7,25 +7,32 @@ Homogeneous temporal Poisson process with arbitrary mark distribution.
 - `λ::R`: event rate.
 - `mark_dist`: mark distribution.
 """
-@with_kw struct PoissonProcess{M,R<:Real,D} <: TemporalPointProcess{M}
+struct PoissonProcess{M,D,R<:Real} <: TemporalPointProcess{M}
     λ::R
     mark_dist::D
 end
 
-intensity(pp::PoissonProcess, m=nothing) = isnothing(m) ? pp.λ : pp.λ * pdf(pp.mark_dist, m)
+function PoissonProcess{M}(λ::R, mark_dist::D) where {M,D,R}
+    return PoissonProcess{M,D,R}(λ, mark_dist)
+end
+
+mark_distribution(pp::PoissonProcess) = pp.mark_dist
+
+intensity(pp::PoissonProcess, m = nothing) =
+    isnothing(m) ? pp.λ : pp.λ * pdf(pp.mark_dist, m)
 
 function Base.rand(rng::AbstractRNG, pp::PoissonProcess, tmin, tmax)
-    N = rand(Poisson(pp.λ * (tmax - tmin)))
-    times = rand(Uniform(tmin, tmax), N)
-    marks = rand(pp.mark_dist, N)
+    N = rand(rng, Poisson(pp.λ * (tmax - tmin)))
+    times = rand(rng, Uniform(tmin, tmax), N)
+    marks = rand(rng, pp.mark_dist, N)
     return TemporalHistory(times, marks, tmin, tmax)
 end
 
 function Distributions.fit(
-    ::Type{PoissonProcess{M}},
+    ::Type{<:PoissonProcess{M,D}},
     history::TemporalHistory{M},
-) where {R,D,M}
+) where {M,D}
     λ = nb_events(history) / duration(history)
     mark_dist = fit(D, history.marks)
-    return PoissonProcess(λ, mark_dist)
+    return PoissonProcess{M}(λ, mark_dist)
 end

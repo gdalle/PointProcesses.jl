@@ -10,7 +10,7 @@ abstract type TemporalPointProcess{M} <: AbstractPointProcess{Float64,M} end
 
 Store a temporal point process `P` with pre-defined start and end times.
 """
-@with_kw struct BoundedTemporalPointProcess{M,P<:TemporalPointProcess{M}} <: TemporalPointProcess{M}
+struct BoundedTemporalPointProcess{M,P<:TemporalPointProcess{M}} <: TemporalPointProcess{M}
     pp::P
     tmin::Float64
     tmax::Float64
@@ -74,7 +74,7 @@ Simulate a temporal point process `pp` on interval `[tmin, tmax)` using Ogata's 
 [^Ogata_1981]: Ogata, Y. (1981), “On Lewis’ simulation method for point processes,” IEEE Transactions on Information Theory, 27, 23–31. https://doi.org/10.1109/TIT.1981.1056305.
 """
 function Base.rand(rng::AbstractRNG, pp::TemporalPointProcess{M}, tmin, tmax) where {M}
-    h = TemporalHistory(times = Float64[], marks = M[], tmin = tmin, tmax = tmax)
+    h = TemporalHistory(Float64[], M[], tmin, tmax)
     t = tmin
     while t < tmax
         B, L = ground_intensity_bound(pp, h, t + eps(t))

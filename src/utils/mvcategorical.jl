@@ -1,3 +1,8 @@
+"""
+    MvCategorical
+
+Product of independent `Categorical` distributions.
+"""
 struct MvCategorical{R<:Real,T<:AbstractVector{<:AbstractVector{R}}} <:
        DiscreteMultivariateDistribution
     p::T
@@ -12,7 +17,7 @@ Base.length(dist::MvCategorical) = length(dist.p)
 function Distributions._rand!(
     rng::AbstractRNG,
     dist::MvCategorical,
-    x::AbstractVector{Real},
+    x::AbstractVector{<:Real},
 )
     for i = 1:length(dist)
         x[i] = rand(rng, Categorical(dist.p[i]))

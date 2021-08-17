@@ -1,9 +1,4 @@
-function forward_nolog!(
-    α::AbstractMatrix,
-    c::AbstractVector,
-    obs_pdf::AbstractMatrix,
-    hmm::HiddenMarkovModel,
-)
+function forward_nolog!(α, c, obs_pdf::AbstractMatrix, hmm::HMM)
     T, S = size(obs_logpdf, 1), nstates(hmm)
     π0, P = initial_distribution(hmm), transition_matrix(hmm)
     for i = 1:S
@@ -30,11 +25,7 @@ function forward_nolog!(
     return nothing
 end
 
-function forward_log!(
-    logα::AbstractMatrix,
-    obs_logpdf::AbstractMatrix,
-    hmm::HiddenMarkovModel,
-)
+function forward_log!(logα, obs_logpdf::AbstractMatrix, hmm::HMM)
     T, S = size(obs_logpdf, 1), nstates(hmm)
     logπ0, logP = log.(initial_distribution(hmm)), log.(transition_matrix(hmm))
     for i = 1:S
@@ -53,12 +44,7 @@ function forward_log!(
     return nothing
 end
 
-function backward_nolog!(
-    β::AbstractMatrix,
-    c::AbstractVector,
-    obs_pdf::AbstractMatrix,
-    hmm::HiddenMarkovModel,
-)
+function backward_nolog!(β, c, obs_pdf::AbstractMatrix, hmm::HMM)
     T, S = size(obs_logpdf, 1), nstates(hmm)
     P = transition_matrix(hmm)
 
@@ -79,11 +65,7 @@ function backward_nolog!(
 end
 
 
-function backward_log!(
-    logβ::AbstractMatrix,
-    obs_logpdf::AbstractMatrix,
-    hmm::HiddenMarkovModel,
-)
+function backward_log!(logβ, obs_logpdf::AbstractMatrix, hmm::HMM)
     T, S = size(obs_logpdf, 1), nstates(hmm)
     logP = log.(transition_matrix(hmm))
 
@@ -103,15 +85,7 @@ function backward_log!(
     return nothing
 end
 
-function forward_backward_nolog!(
-    α::AbstractMatrix,
-    β::AbstractMatrix,
-    c::AbstractVector,
-    γ::AbstractMatrix,
-    ξ::AbstractArray{<:Real,3},
-    obs_pdf::AbstractMatrix,
-    hmm::HiddenMarkovModel,
-)
+function forward_backward_nolog!(α, β, c, γ, ξ, obs_pdf::AbstractMatrix, hmm::HMM)
     T, S = size(obs_logpdf, 1), nstates(hmm)
 
     forward_nolog!(α, c, hmm, obs_pdf)
@@ -143,14 +117,7 @@ function forward_backward_nolog!(
 end
 
 
-function forward_backward_log!(
-    logα::AbstractMatrix,
-    logβ::AbstractMatrix,
-    logγ::AbstractMatrix,
-    logξ::AbstractArray{<:Real,3},
-    obs_logpdf::AbstractMatrix,
-    hmm::HiddenMarkovModel,
-)
+function forward_backward_log!(logα, logβ, logγ, logξ, obs_logpdf::AbstractMatrix, hmm::HMM)
     T, S = size(obs_logpdf, 1), nstates(hmm.transitions)
     logP = log.(transition_matrix(hmm))
 
@@ -184,11 +151,7 @@ end
 
 ## Likelihood of observations
 
-function update_obs_pdf!(
-    obs_pdf::AbstractMatrix,
-    hmm::HiddenMarkovModel,
-    observations::AbstractVector,
-)
+function update_obs_pdf!(obs_pdf::AbstractMatrix, hmm::HMM, observations::AbstractVector)
     T, S = length(observations), nstates(hmm)
     for t = 1:T
         for s = 1:S
@@ -204,7 +167,7 @@ end
 
 function update_obs_logpdf!(
     obs_logpdf::AbstractMatrix,
-    hmm::HiddenMarkovModel,
+    hmm::HMM,
     observations::AbstractVector,
 )
     T, S = length(observations), nstates(hmm)
@@ -221,13 +184,13 @@ function update_obs_logpdf!(
 end
 
 function baum_welch_nolog!(
-    α::AbstractMatrix,
-    β::AbstractMatrix,
-    c::AbstractVector,
-    γ::AbstractMatrix,
-    ξ::AbstractArray{<:Real,3},
+    α,
+    β,
+    c,
+    γ,
+    ξ,
     obs_pdf::AbstractMatrix,
-    hmm::HiddenMarkovModel{Tr,Em},
+    hmm::HMM{Tr,Em},
     observations::AbstractVector;
     iterations,
 ) where {Tr,Em}
@@ -238,18 +201,18 @@ function baum_welch_nolog!(
         push!(logL_evolution, logL)
         new_transitions = fit(Tr, γ = γ, ξ = ξ)
         new_emissions = [fit(Em, observations, γ[:, s]) for s = 1:nstates(hmm)]  # TODO: @view
-        hmm = HiddenMarkovModel(new_transitions, new_emissions)
+        hmm = HMM(new_transitions, new_emissions)
     end
     return hmm, logL_evolution
 end
 
 function baum_welch_log!(
-    logα::AbstractMatrix,
-    logβ::AbstractMatrix,
-    logγ::AbstractMatrix,
-    logξ::AbstractArray{<:Real,3},
+    logα,
+    logβ,
+    logγ,
+    logξ,
     obs_logpdf::AbstractMatrix,
-    hmm::HiddenMarkovModel{Tr,Em},
+    hmm::HMM{Tr,Em},
     observations::AbstractVector;
     iterations,
 ) where {Tr,Em}
@@ -260,19 +223,14 @@ function baum_welch_log!(
         push!(logL_evolution, logL)
         new_transitions = fit(Tr, exp.(logγ), exp.(logξ))
         new_emissions = [fit(Em, observations, exp.(logγ[:, s])) for s = 1:nstates(hmm)]  # TODO: @view
-        hmm = HiddenMarkovModel(new_transitions, new_emissions)
+        hmm = HMM(new_transitions, new_emissions)
     end
     return hmm, logL_evolution
 end
 
 ## Non mutating version
 
-function baum_welch(
-    hmm::HiddenMarkovModel,
-    observations::AbstractVector;
-    iterations,
-    log = true,
-)
+function baum_welch(hmm::HMM, observations::AbstractVector; iterations, log = true)
     T, S = length(observations), nstates(hmm)
     if log
         logα = Matrix{Float64}(undef, T, S)

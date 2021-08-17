@@ -7,7 +7,7 @@ Discrete-time Markov chain with finite state space.
 - `π0`: initial state distribution
 - `P`: state transition matrix.
 """
-@with_kw struct DiscreteMarkovChain{
+struct DiscreteMarkovChain{
     T1<:AbstractVector{<:Real},
     T2<:AbstractMatrix{<:Real},
 } <: AbstractMarkovChain
@@ -51,7 +51,7 @@ end
 
 ## Prior
 
-@with_kw struct DiscreteMarkovChainPrior{
+struct DiscreteMarkovChainPrior{
     T1<:AbstractVector{<:Real},
     T2<:AbstractMatrix{<:Real},
 } <: AbstractMarkovChainPrior
@@ -76,7 +76,7 @@ end
 
 Sufficient statistics for the likelihood of a DiscreteMarkovChain.
 """
-@with_kw struct DiscreteMarkovChainStats{
+struct DiscreteMarkovChainStats{
     T1<:AbstractVector{<:Real},
     T2<:AbstractMatrix{<:Real},
 }

@@ -17,7 +17,7 @@ Some point processes are based on underlying Markov processes, which is why we p
 ## Discrete time
 
 ```jldoctest markov
-julia> dmc = DiscreteMarkovChain(π0 = [0.3, 0.7], P = [0.9 0.1; 0.2 0.8]);
+julia> dmc = DiscreteMarkovChain([0.3, 0.7], [0.9 0.1; 0.2 0.8]);
 
 julia> states = rand(dmc, 1000);
 
@@ -32,7 +32,7 @@ julia> round.(dmc_est.P, digits=2)
 ## Continuous time
 
 ```jldoctest markov
-julia> cmc = ContinuousMarkovChain(π0 = [0.3, 0.7], Q = [-1. 1.; 2. -2.]);
+julia> cmc = ContinuousMarkovChain([0.3, 0.7], [-1. 1.; 2. -2.]);
 
 julia> history = rand(cmc, 0., 1000.);
 

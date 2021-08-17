@@ -8,7 +8,7 @@ This naive implementation demonstrates the use of our general `TemporalPointProc
 # Fields
 - `λ::Vector{R}`: event rates.
 """
-@with_kw struct NaiveMultivariatePoissonProcess{R} <: TemporalPointProcess{Int}
+struct NaiveMultivariatePoissonProcess{R} <: TemporalPointProcess{Int}
     λ::Vector{R}
 end
 

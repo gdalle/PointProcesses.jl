@@ -98,5 +98,5 @@ Pages = ["hmm/mmpp.jl", "hmm/ryden.jl"]
 ```@autodocs
 Modules = [PointProcesses]
 Order = [:type, :function]
-Pages = ["utils/plot.jl", "utils/utils.jl"]
+Pages = ["utils/plot.jl", "utils/utils.jl", "utils/categorical.jl", "utils/mvcategorical.jl", "utils.randvals.jl"]
 ```

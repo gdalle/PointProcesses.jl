@@ -7,7 +7,7 @@ Continuous-time Markov chain with finite state space.
 - `π0`: initial state distribution
 - `Q`: rate matrix.
 """
-@with_kw struct ContinuousMarkovChain{
+struct ContinuousMarkovChain{
     T1<:AbstractVector{<:Real},
     T2<:AbstractMatrix{<:Real},
 } <: AbstractMarkovChain
@@ -65,7 +65,7 @@ Base.rand(mc::ContinuousMarkovChain, tmin, tmax) = rand(Random.GLOBAL_RNG, mc, t
 
 Sufficient statistics for the likelihood of a ContinuousMarkovChain.
 """
-@with_kw struct ContinuousMarkovChainStats{
+struct ContinuousMarkovChainStats{
     T1<:AbstractVector{<:Real},
     T2<:AbstractVector{<:Real},
     T3<:AbstractMatrix{<:Real},

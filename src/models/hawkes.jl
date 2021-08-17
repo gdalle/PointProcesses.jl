@@ -8,7 +8,7 @@ Homogeneous temporal multivariate Hawkes process.
 - `α::Matrix{R}`: excitation amplitudes
 - `β::Matrix{R}`: excitation decays
 """
-@with_kw struct MultivariateHawkesProcess{R} <: TemporalPointProcess{Int}
+struct MultivariateHawkesProcess{R} <: TemporalPointProcess{Int}
     λ::Vector{R}
     α::Matrix{R}
     β::Matrix{R}

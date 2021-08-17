@@ -20,15 +20,15 @@ Here is an example of the Baum-Welch estimation algorithm applied to a discrete 
 
 ```jldoctest hmm
 julia> hmm = HiddenMarkovModel(
-           transitions = DiscreteMarkovChain(π0 = [0.3, 0.7], P = [0.9 0.1; 0.2 0.8]),
-           emissions = [Normal(1, 0.3), Normal(2, 0.3)]
+           DiscreteMarkovChain([0.3, 0.7], [0.9 0.1; 0.2 0.8]),
+           [Normal(1, 0.3), Normal(2, 0.3)]
        );
 
 julia> states, observations = rand(hmm, 1000);
 
 julia> hmm_init = HiddenMarkovModel(
-           transitions = DiscreteMarkovChain(π0 = randprobvec(2), P = randtransmat(2)),
-           emissions = [Normal(rand(), 1), Normal(rand(), 1)]
+           DiscreteMarkovChain(randprobvec(2), randtransmat(2)),
+           [Normal(rand(), 1), Normal(rand(), 1)]
        );
 
 julia> hmm_est, logL_evolution = baum_welch(hmm_init, observations, iterations=100);

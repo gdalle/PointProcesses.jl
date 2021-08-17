@@ -14,7 +14,6 @@ using LogExpFunctions
 using NamedTupleTools
 using OffsetArrays
 using Optim
-using Parameters
 using Plots
 using Quadrature
 using Random
@@ -99,6 +98,9 @@ export baum_welch!, baum_welch
 
 include("hmm/mmpp.jl")
 export MarkovModulatedPoissonProcess
+
+include("hmm/ryden.jl")
+export forward_backward, ryden
 
 # Utils
 
