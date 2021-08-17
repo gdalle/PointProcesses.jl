@@ -57,10 +57,10 @@ julia> states = rand(dmc, 1000);
 
 julia> dmc_est = fit(DiscreteMarkovChain, states);
 
-julia> round.(dmc_est.P, digits=1)
+julia> round.(dmc_est.P, digits=2)
 2×2 Matrix{Float64}:
- 0.9  0.1
- 0.2  0.8
+ 0.9   0.1
+ 0.25  0.75
 ```
 
 ### Continuous time Markov chains
@@ -72,10 +72,10 @@ julia> history = rand(cmc, 0., 1000.);
 
 julia> cmc_est = fit(ContinuousMarkovChain, history);
 
-julia> round.(cmc_est.Q, digits=1)
+julia> round.(cmc_est.Q, digits=2)
 2×2 Matrix{Float64}:
- -1.0   1.0
-  1.9  -1.9
+ -1.0    1.0
+  1.92  -1.92
 ```
 
 ### Hidden Markov models
@@ -84,10 +84,7 @@ julia> round.(cmc_est.Q, digits=1)
 julia> hmm = HiddenMarkovModel(
            transitions = dmc,
            emissions = [Normal(1, 0.3), Normal(2, 0.3)]
-       )
-HiddenMarkovModel{DiscreteMarkovChain{Float64}, Normal{Float64}}
-  transitions: DiscreteMarkovChain{Float64}
-  emissions: Array{Normal{Float64}}((2,))
+       );
 
 julia> states, observations = rand(hmm, 1000);
 
@@ -96,20 +93,22 @@ julia> hmm_init = HiddenMarkovModel(
            emissions = [Normal(rand(), 1), Normal(rand(), 1)]
        );
 
-julia> hmm_est, logL_evolution = baum_welch(hmm_init, observations, iter=100);
+julia> hmm_est, logL_evolution = baum_welch(hmm_init, observations, iterations=100);
 
-julia> minimum(diff(logL_evolution))
--8.185452315956354e-12
+julia> minimum(diff(logL_evolution)) > -1e-10
+true
 
 julia> round.(transition_matrix(hmm_est), digits=2)
 2×2 Matrix{Float64}:
  0.83  0.17
  0.11  0.89
 
-julia> emissions(hmm_est)
-2-element Vector{Normal{Float64}}:
- Distributions.Normal{Float64}(μ=2.007774167238364, σ=0.28677264095786803)
- Distributions.Normal{Float64}(μ=0.9764685756929417, σ=0.30552164217241995)
+julia> round(mean(emission(hmm_est, 1)), digits=2)
+2.01
+
+julia> round(mean(emission(hmm_est, 2)), digits=2)
+0.98
+
 ```
 
 ## Working with temporal point processes
@@ -127,11 +126,11 @@ julia> history = rand(pp, 0., 1000.);
 
 julia> pp_est = fit(MultivariatePoissonProcess, history);
 
-julia> round.(pp_est.λ, digits=1)
+julia> round.(pp_est.λ, digits=2)
 3-element Vector{Float64}:
- 0.5
- 1.0
- 2.0
+ 0.53
+ 0.96
+ 2.01
 ```
 
 ### General Poisson processes

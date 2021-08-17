@@ -258,7 +258,7 @@ function baum_welch_log!(
         update_obs_logpdf!(obs_logpdf, hmm, observations)
         logL = forward_backward_log!(logα, logβ, logγ, logξ, obs_logpdf, hmm)
         push!(logL_evolution, logL)
-        new_transitions = fit(Tr, logγ = logγ, logξ = logξ)
+        new_transitions = fit(Tr, exp.(logγ), exp.(logξ))
         new_emissions = [fit(Em, observations, exp.(logγ[:, s])) for s = 1:nstates(hmm)]  # TODO: @view
         hmm = HiddenMarkovModel(new_transitions, new_emissions)
     end
@@ -280,7 +280,7 @@ function baum_welch(
         logγ = Matrix{Float64}(undef, T, S)
         logξ = Array{Float64,3}(undef, T - 1, S, S)
         obs_logpdf = Matrix{Float64}(undef, T, S)
-        hmm_est, logL_evolution = baum_welch!(
+        hmm_est, logL_evolution = baum_welch_log!(
             logα,
             logβ,
             logγ,
@@ -297,8 +297,17 @@ function baum_welch(
         γ = Matrix{Float64}(undef, T, S)
         ξ = Array{Float64,3}(undef, T - 1, S, S)
         obs_pdf = Matrix{Float64}(undef, T, S)
-        hmm_est, logL_evolution =
-            baum_welch!(α, β, c, γ, ξ, obs_pdf, hmm, observations; iterations = iterations)
+        hmm_est, logL_evolution = baum_welch_nolog!(
+            α,
+            β,
+            c,
+            γ,
+            ξ,
+            obs_pdf,
+            hmm,
+            observations;
+            iterations = iterations,
+        )
     end
     return hmm_est, logL_evolution
 end

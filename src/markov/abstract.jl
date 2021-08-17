@@ -2,13 +2,11 @@ abstract type AbstractMarkovChain end
 
 abstract type AbstractMarkovChainPrior end
 
-Base.rand(mc::AbstractMarkovChain, args...) = rand(Random.GLOBAL_RNG, mc, args...)
-
-function Distributions.fit(mctype::Type{<:AbstractMarkovChain}, args...)
-    return fit_mle(mctype, args...)
+function Distributions.fit(mctype::Type{<:AbstractMarkovChain}, args...; kwargs...)
+    return fit_mle(mctype, args..., kwargs...)
 end
 
-function Distributions.fit_mle(mctype::Type{<:AbstractMarkovChain}, args...)
-    ss = suffstats(mctype, args...)
+function Distributions.fit_mle(mctype::Type{<:AbstractMarkovChain}, args...; kwargs...)
+    ss = suffstats(mctype, args...; kwargs...)
     return fit_mle(mctype, ss)
 end

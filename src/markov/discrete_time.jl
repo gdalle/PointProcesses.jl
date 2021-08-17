@@ -4,14 +4,12 @@
 Discrete-time Markov chain with finite state space.
 
 # Fields
-- `π0::AbstractVector{<:Real}`: initial state distribution
-- `P::AbstractMatrix{<:Real}`: state transition matrix.
+- `π0`: initial state distribution
+- `P`: state transition matrix.
 """
 @with_kw struct DiscreteMarkovChain{
-    R1<:Real,
-    T1<:AbstractVector{R1},
-    R2<:Real,
-    T2<:AbstractVector{R2},
+    T1<:AbstractVector{<:Real},
+    T2<:AbstractMatrix{<:Real},
 } <: AbstractMarkovChain
     π0::T1
     P::T2
@@ -29,7 +27,7 @@ transition_matrix(mc::DiscreteMarkovChain) = mc.P
 
 ## Simulation
 
-function Base.rand(rng::AbstractRNG, mc::DiscreteMarkovChain, T::Int)
+function Base.rand(rng::AbstractRNG, mc::DiscreteMarkovChain, T::Integer)
     states = Vector{Int}(undef, T)
     states[1] = rand(rng, Categorical(mc.π0))
     for t = 2:T
@@ -37,6 +35,8 @@ function Base.rand(rng::AbstractRNG, mc::DiscreteMarkovChain, T::Int)
     end
     return states
 end
+
+Base.rand(mc::DiscreteMarkovChain, T::Integer) = rand(Random.GLOBAL_RNG, mc, T)
 
 ## Logpdf
 
@@ -52,8 +52,8 @@ end
 ## Prior
 
 @with_kw struct DiscreteMarkovChainPrior{
-    T1<:AbstractVector{Float64},
-    T2<:AbstractMatrix{Float64},
+    T1<:AbstractVector{<:Real},
+    T2<:AbstractMatrix{<:Real},
 } <: AbstractMarkovChainPrior
     π0α::T1
     Pα::T2
@@ -78,7 +78,7 @@ Sufficient statistics for the likelihood of a DiscreteMarkovChain.
 """
 @with_kw struct DiscreteMarkovChainStats{
     T1<:AbstractVector{<:Real},
-    T2<:AbstractVector{<:Real},
+    T2<:AbstractMatrix{<:Real},
 }
     initialization::T1
     transition_count::T2
@@ -95,15 +95,10 @@ function Distributions.suffstats(::Type{<:DiscreteMarkovChain}, states::Vector{I
 end
 
 function Distributions.suffstats(
-    ::Type{<:DiscreteMarkovChain};
-    γ = nothing,
-    ξ = nothing,
-    logγ = nothing,
-    logξ = nothing,
+    ::Type{<:DiscreteMarkovChain},
+    γ::AbstractMatrix,
+    ξ::AbstractArray{<:Real,3},
 )
-    if isnothing(γ) || isnothing(ξ)
-        γ, ξ = exp.(logγ), exp.(logξ)
-    end
     T, S, _ = size(ξ)
     initialization = γ[1, :]
     transition_count = zeros(Float64, S, S)

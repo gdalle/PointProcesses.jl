@@ -24,10 +24,10 @@ nstates(hmm::HiddenMarkovModel) = length(emissions(hmm))
 
 ## Simulation
 
-function Base.rand(rng::AbstractRNG, hmm::HiddenMarkovModel, T::Int)
+function Base.rand(rng::AbstractRNG, hmm::HiddenMarkovModel, T::Integer)
     states = rand(rng, transitions(hmm), T)
     observations = [rand(rng, emission(hmm, states[t])) for t = 1:T]
     return states, observations
 end
 
-Base.rand(hmm::HiddenMarkovModel, args...) = rand(Random.GLOBAL_RNG, hmm, args...)
+Base.rand(hmm::HiddenMarkovModel, T::Integer) = rand(Random.GLOBAL_RNG, hmm, T)

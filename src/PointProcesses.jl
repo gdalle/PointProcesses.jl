@@ -63,31 +63,9 @@ export AbstractPointProcess, build_transform
 
 include("point_processes/temporal.jl")
 export TemporalPointProcess, BoundedTemporalPointProcess
-
-include("point_processes/intensity.jl")
 export intensity, mark_distribution, ground_intensity, ground_intensity_bound
 export MultivariateTemporalPointProcess, all_marks, all_mark_probabilities
-
-include("point_processes/learning.jl")
 export integrated_ground_intensity, check_residuals
-
-include("point_processes/ogata.jl")
-
-# Hidden Markov models
-
-include("hmm/hmm.jl")
-export HiddenMarkovModel
-export transitions, emissions, emission
-
-include("hmm/baum_welch.jl")
-export forward_nolog!, forward_log!
-export backward_nolog!, backward_log!
-export forward_backward_nolog!, forward_backward_log!
-export update_obs_pdf!, update_obs_logpdf!
-export baum_welch!, baum_welch
-
-include("hmm/mmpp.jl")
-export MarkovModulatedPoissonProcess
 
 # Models
 
@@ -105,6 +83,22 @@ export NaiveMultivariatePoissonProcess
 
 include("models/hawkes.jl")
 export MultivariateHawkesProcess
+
+# Hidden Markov models
+
+include("hmm/hmm.jl")
+export HiddenMarkovModel
+export transitions, emissions, emission
+
+include("hmm/baum_welch.jl")
+export forward_nolog!, forward_log!
+export backward_nolog!, backward_log!
+export forward_backward_nolog!, forward_backward_log!
+export update_obs_pdf!, update_obs_logpdf!
+export baum_welch!, baum_welch
+
+include("hmm/mmpp.jl")
+export MarkovModulatedPoissonProcess
 
 # Utils
 

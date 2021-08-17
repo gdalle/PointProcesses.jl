@@ -22,18 +22,18 @@ makedocs(;
     ),
     pages = [
         "Home" => "index.md",
-        "Tutorial" => "tutorial.md",
+        "Tutorial" => "tuto/tutorial.md",
         "API reference" => [
-            "Event history" => "history.md",
-            "Markov models" => [
-                "Markov chains" => "markov.md",
-                "Hidden Markov models" => "hmm.md",
-            ],
+            "Event history" => "api/history.md",
             "Point processes" => [
-                "General functions" => "point_processes.md",
-                "Built-in models" => "models.md",
+                "General framework" => "api/point_processes.md",
+                "Built-in models" => "api/models.md",
             ],
-            "Utilities" => "utils.md",
+            "Markov models" => [
+                "Markov chains" => "api/markov.md",
+                "Hidden Markov models" => "api/hmm.md",
+            ],
+            "Utilities" => "api/utils.md",
         ],
         "Roadmap" => "roadmap.md",
         "Index" => "list.md",

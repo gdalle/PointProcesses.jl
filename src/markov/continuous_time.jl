@@ -4,14 +4,12 @@
 Continuous-time Markov chain with finite state space.
 
 # Fields
-- `π0::Vector{R}`: initial state distribution
-- `Q::Matrix{R}`: rate matrix.
+- `π0`: initial state distribution
+- `Q`: rate matrix.
 """
 @with_kw struct ContinuousMarkovChain{
-    R1<:Real,
-    T1<:AbstractVector{R1},
-    R2<:Real,
-    T2<:AbstractMatrix{R2},
+    T1<:AbstractVector{<:Real},
+    T2<:AbstractMatrix{<:Real},
 } <: AbstractMarkovChain
     π0::T1
     Q::T2
@@ -57,6 +55,8 @@ function Base.rand(rng::AbstractRNG, mc::ContinuousMarkovChain, tmin, tmax)
     end
     return h
 end
+
+Base.rand(mc::ContinuousMarkovChain, tmin, tmax) = rand(Random.GLOBAL_RNG, mc, tmin, tmax)
 
 ## Fitting
 
