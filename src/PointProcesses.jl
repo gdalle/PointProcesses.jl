@@ -38,7 +38,9 @@ include("history/abstract.jl")
 export AbstractHistory
 
 include("history/temporal.jl")
-export TemporalHistory, nb_events, has_events, duration, time_change
+export TemporalHistory
+export event_times, event_marks, mintime, maxtime
+export nb_events, has_events, duration, time_change
 
 # Markov processes
 
@@ -46,7 +48,7 @@ include("markov/abstract.jl")
 export AbstractMarkovChain, nstates
 
 include("markov/discrete_time.jl")
-export DiscreteMarkovChain, transition_matrix
+export DiscreteMarkovChain, transition_matrix, DiscreteMarkovChainPrior
 export initial_distribution, stationary_distribution
 
 include("markov/continuous_time.jl")

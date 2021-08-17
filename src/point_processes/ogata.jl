@@ -8,7 +8,7 @@ Simulate a temporal point process `pp` on interval `[tmin, tmax)` using Ogata's 
 [^Ogata_1981]: Ogata, Y. (1981), “On Lewis’ simulation method for point processes,” IEEE Transactions on Information Theory, 27, 23–31. https://doi.org/10.1109/TIT.1981.1056305.
 """
 function Base.rand(rng::AbstractRNG, pp::TemporalPointProcess{M}, tmin, tmax) where {M}
-    h = TemporalHistory(Float64[], M[], tmin, tmax)
+    h = TemporalHistory(times = Float64[], marks = M[], tmin = tmin, tmax = tmax)
     t = tmin
     while t < tmax
         B, L = ground_intensity_bound(pp, h, t + eps(t))

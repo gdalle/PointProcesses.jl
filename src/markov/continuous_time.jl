@@ -1,41 +1,48 @@
 """
-    ContinuousMarkovChain{R<:Real}
+    ContinuousMarkovChain
 
-Continuous-time Markov chain.
+Continuous-time Markov chain with finite state space.
 
 # Fields
 - `π0::Vector{R}`: initial state distribution
 - `Q::Matrix{R}`: rate matrix.
 """
-@with_kw struct ContinuousMarkovChain{R<:Real} <: AbstractMarkovChain
-    π0::Vector{R}
-    Q::Matrix{R}
+@with_kw struct ContinuousMarkovChain{
+    R1<:Real,
+    T1<:AbstractVector{R1},
+    R2<:Real,
+    T2<:AbstractMatrix{R2},
+} <: AbstractMarkovChain
+    π0::T1
+    Q::T2
 end
 
 Base.eltype(::Type{<:ContinuousMarkovChain}) = TemporalHistory{Int}
 
 ## Access
 
-initial_distribution(cmc::ContinuousMarkovChain) = cmc.π0
+nstates(dmc::DiscreteMarkovChain) = length(dmc.π0)
 
-rate_matrix(cmc::ContinuousMarkovChain) = cmc.Q
+initial_distribution(mc::ContinuousMarkovChain) = mc.π0
 
-rate_diag(cmc::ContinuousMarkovChain) = -diag(rate_matrix(cmc))
+rate_matrix(mc::ContinuousMarkovChain) = mc.Q
 
-function transition_matrix(cmc::ContinuousMarkovChain)
-    P = rate_matrix(cmc) ./ rate_diag(cmc)
+rate_negdiag(mc::ContinuousMarkovChain) = -diag(rate_matrix(mc))
+
+function transition_matrix(mc::ContinuousMarkovChain)
+    P = rate_matrix(mc) ./ rate_negdiag(mc)
     P[diagind(P)] .= zero(eltype(P))
     return P
 end
 
 ## Simulation
 
-function Base.rand(rng::AbstractRNG, cmc::ContinuousMarkovChain, tmin, tmax)
-    D = rate_diag(cmc)
-    P = transition_matrix(cmc)
+function Base.rand(rng::AbstractRNG, mc::ContinuousMarkovChain, tmin, tmax)
+    D = rate_negdiag(mc)
+    P = transition_matrix(mc)
 
     h = TemporalHistory(Float64[], Int[], tmin, tmax)
-    s = rand(rng, Categorical(cmc.π0))
+    s = rand(rng, Categorical(mc.π0))
     push!(h, tmin, s)
     t = tmin
     while t < tmax
@@ -51,8 +58,6 @@ function Base.rand(rng::AbstractRNG, cmc::ContinuousMarkovChain, tmin, tmax)
     return h
 end
 
-Base.rand(cmc::ContinuousMarkovChain, tmin, tmax) = rand(Random.GLOBAL_RNG, cmc, tmin, tmax)
-
 ## Fitting
 
 """
@@ -60,10 +65,14 @@ Base.rand(cmc::ContinuousMarkovChain, tmin, tmax) = rand(Random.GLOBAL_RNG, cmc,
 
 Sufficient statistics for the likelihood of a ContinuousMarkovChain.
 """
-@with_kw struct ContinuousMarkovChainStats
-    initialization::Vector{Float64}
-    duration::Vector{Float64}
-    transition_count::Matrix{Float64}
+@with_kw struct ContinuousMarkovChainStats{
+    T1<:AbstractVector{<:Real},
+    T2<:AbstractVector{<:Real},
+    T3<:AbstractMatrix{<:Real},
+}
+    initialization::T1
+    duration::T2
+    transition_count::T3
 end
 
 function Distributions.suffstats(::Type{ContinuousMarkovChain}, h::TemporalHistory{Int})
@@ -86,20 +95,19 @@ function Distributions.fit_mle(
 )
     π0 = ss.initialization
     Q = ss.transition_count ./ ss.duration
-    Q[diagind(Q)] .= 0.0
-    Q[diagind(Q)] .= -vec(sum(Q, dims = 2))
+    Q[diagind(Q)] .= -vec(sum(Q, dims = 2)) + sum(Q[diagind(Q)])
     return ContinuousMarkovChain(π0, Q)
 end
 
 ## Asymptotics
 
-function stationary_distribution(cmc::ContinuousMarkovChain)
-    π = real.(eigvecs(matrix(rate_matrix(cmc))')[:, end])
+function stationary_distribution(mc::ContinuousMarkovChain)
+    π = real.(eigvecs(matrix(rate_matrix(mc))')[:, end])
     return π / sum(π)
 end
 
 ## Misc
 
-function discretize(cmc::ContinuousMarkovChain, Δt)
-    return DiscreteMarkovChain(initial_distribution(cmc), exp(rate_matrix(cmc) * Δt))
+function discretize(mc::ContinuousMarkovChain, Δt)
+    return DiscreteMarkovChain(initial_distribution(mc), exp(rate_matrix(mc) * Δt))
 end

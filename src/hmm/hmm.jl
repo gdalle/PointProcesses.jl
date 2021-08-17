@@ -15,8 +15,8 @@ end
 ## Access
 
 transitions(hmm::HiddenMarkovModel) = hmm.transitions
-transition_matrix(hmm::HiddenMarkovModel) = transition_matrix(transitions(hmm))
 initial_distribution(hmm::HiddenMarkovModel) = initial_distribution(transitions(hmm))
+transition_matrix(hmm::HiddenMarkovModel) = transition_matrix(transitions(hmm))
 
 emissions(hmm::HiddenMarkovModel) = hmm.emissions
 emission(hmm::HiddenMarkovModel, s::Int) = hmm.emissions[s]
@@ -30,4 +30,4 @@ function Base.rand(rng::AbstractRNG, hmm::HiddenMarkovModel, T::Int)
     return states, observations
 end
 
-Base.rand(hmm::HiddenMarkovModel, T::Int) = rand(Random.GLOBAL_RNG, hmm, T)
+Base.rand(hmm::HiddenMarkovModel, args...) = rand(Random.GLOBAL_RNG, hmm, args...)

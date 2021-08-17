@@ -23,7 +23,7 @@ makedocs(;
     pages = [
         "Home" => "index.md",
         "Tutorial" => "tutorial.md",
-        "Components" => [
+        "API reference" => [
             "Event history" => "history.md",
             "Markov models" => [
                 "Markov chains" => "markov.md",

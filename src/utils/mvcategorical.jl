@@ -1,6 +1,6 @@
-struct MvCategorical{P<:Real,Ps<:AbstractVector{<:AbstractVector{P}}} <:
+struct MvCategorical{R<:Real,T<:AbstractVector{<:AbstractVector{R}}} <:
        DiscreteMultivariateDistribution
-    p::Ps
+    p::T
 end
 
 ## Attributes
@@ -22,45 +22,24 @@ end
 
 ## Likelihood
 
-function Distributions.logpdf(dist::MvCategorical{P}, x::AbstractVector{Integer}) where {P}
-    l = zero(P)
+function Distributions._logpdf(dist::MvCategorical, x::AbstractVector{Integer})
+    l = 0.0
     for i = 1:length(dist)
         l += log(dist.p[i][x[i]])
     end
     return l
 end
 
-## Sufficient statistics
-
-struct MvCategoricalStats <: SufficientStats
-    h::Vector{Vector{Float64}}
-end
-
-function Distributions.suffstats(::Type{<:MvCategorical}, ks::Integer, x::AbstractArray{Integer})
-    h = [add_categorical_counts!(zeros(ks[i]), x[i, :]) for i in size(x, 1)]
-    return CategoricalStats(h)
-end
-
-function Distributions.suffstats(
-    ::Type{<:MvCategorical},
-    k::Integer,
-    x::AbstractVector{Integer},
-    w::AbstractVector{Real},
-)
-    h = [add_categorical_counts!(zeros(ks[i]), x[i, :], w) for i in size(x, 1)]
-    return CategoricalStats(h)
-end
-
 ## Prior
 
-struct MvCategoricalPrior
-    α::Vector{Vector{Float64}}
+struct MvCategoricalPrior{R<:Real,T<:AbstractVector{<:AbstractVector{R}}}
+    α::T
 end
 
 function Distributions.logpdf(prior::MvCategoricalPrior, dist::MvCategorical)
-    l = 0.
+    l = 0.0
     for i in length(dist)
-        l += logpdf(CategoricalPrior(prior.α[i]), Categorical(dist.p[i]))
+        l += logpdf(CategoricalProir(prior.α[i]), Categorical(dist.p[i]))
     end
     return l
 end

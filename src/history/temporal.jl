@@ -17,14 +17,22 @@ Linear event histories with marks of type `M`.
     tmax::Float64
 end
 
+event_times(h::TemporalHistory) = h.times
+
+event_marks(h::TemporalHistory) = h.marks
+
+mintime(h::TemporalHistory) = h.tmin
+
+maxtime(h::TemporalHistory) = h.tmax
+
 """
     nb_events(h::TemporalHistory, tmin=-Inf, tmax=Inf)
 
 Count events in `h` during the interval `[tmin, tmax)`.
 """
 function nb_events(h::TemporalHistory, tmin = -Inf, tmax = Inf)
-    i_min = searchsortedfirst(h.times, tmin)
-    i_max = searchsortedlast(h.times, tmax - eps(tmax))
+    i_min = searchsortedfirst(event_times(h), tmin)
+    i_max = searchsortedlast(event_times(h), tmax - eps(tmax))
     return i_max - i_min + 1
 end
 
@@ -43,7 +51,7 @@ end
 Compute the difference `h.tmax - h.tmin`.
 """
 function duration(h::TemporalHistory)
-    return h.tmax - h.tmin
+    return maxtime(h) - mintime(h)
 end
 
 """
@@ -58,14 +66,28 @@ function Base.push!(h::TemporalHistory, t, m)
     return nothing
 end
 
+"""
+    append!(h1::TemporalHistory, h2::TemporalHistory)
+
+Add all the events of `h2` at the end of `h1`.
+"""
+function Base.append!(h1::TemporalHistory, h2::TemporalHistory)
+    @assert maximum(event_times(h1)) < minimum(event_times(h2))
+    for (t, m) in zip(event_times(h2), event_marks(h2))
+        push!(h1, t, m)
+    end
+    return nothing
+end
+
 @doc raw"""
     time_change(h, Λ)
 
 Apply the time rescaling $t \mapsto \Lambda(t)$ to history `h`.
 """
 function time_change(h::TemporalHistory, Λ)
-    new_times = Λ.(h.times)
-    new_tmin = Λ(h.tmin)
-    new_tmax = Λ(h.tmax)
-    return TemporalHistory(new_times, h.marks, new_tmin, new_tmax)
+    new_times = Λ.(event_times(h))
+    new_marks = copy(event_marks(h))
+    new_tmin = Λ(mintime(h))
+    new_tmax = Λ(maxtime(h))
+    return TemporalHistory(new_times, new_marks, new_tmin, new_tmax)
 end
