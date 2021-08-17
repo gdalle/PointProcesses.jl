@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Tutorial · PointProcesses.jl</title><script data-outdated-warner src="../../assets/warner.js"></script><link rel="canonical" href="https://gdalle.github.io/PointProcesses.jl/tuto/tutorial/"/><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.039/juliamono-regular.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.11/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">PointProcesses.jl</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li class="is-active"><a class="tocitem" href>Tutorial</a><ul class="internal"><li><a class="tocitem" href="#Working-with-event-histories"><span>Working with event histories</span></a></li><li><a class="tocitem" href="#Working-with-Markov-processes"><span>Working with Markov processes</span></a></li><li><a class="tocitem" href="#Working-with-temporal-point-processes"><span>Working with temporal point processes</span></a></li></ul></li><li><span class="tocitem">API reference</span><ul><li><a class="tocitem" href="../../api/history/">Event history</a></li><li><input class="collapse-toggle" id="menuitem-3-2" type="checkbox"/><label class="tocitem" for="menuitem-3-2"><span class="docs-label">Point processes</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../api/point_processes/">General framework</a></li><li><a class="tocitem" href="../../api/models/">Built-in models</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-3" type="checkbox"/><label class="tocitem" for="menuitem-3-3"><span class="docs-label">Markov models</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../api/markov/">Markov chains</a></li><li><a class="tocitem" href="../../api/hmm/">Hidden Markov models</a></li></ul></li><li><a class="tocitem" href="../../api/utils/">Utilities</a></li></ul></li><li><a class="tocitem" href="../../roadmap/">Roadmap</a></li><li><a class="tocitem" href="../../list/">Index</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Tutorial</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Tutorial</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/gdalle/PointProcesses.jl/blob/master/docs/src/tuto/tutorial.md#" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Tutorial"><a class="docs-heading-anchor" href="#Tutorial">Tutorial</a><a id="Tutorial-1"></a><a class="docs-heading-anchor-permalink" href="#Tutorial" title="Permalink"></a></h1><p>In this tutorial we demonstrate the main features of PointProcesses.jl.</p><pre><code class="language-julia-repl">julia&gt; using Random
+
+julia&gt; using Distributions
+
+julia&gt; Random.seed!(63);</code></pre><h2 id="Working-with-event-histories"><a class="docs-heading-anchor" href="#Working-with-event-histories">Working with event histories</a><a id="Working-with-event-histories-1"></a><a class="docs-heading-anchor-permalink" href="#Working-with-event-histories" title="Permalink"></a></h2><p>To analyze point processes, we need a way to store their realizations. This is the purpose of the <a href="../../api/history/#PointProcesses.AbstractHistory"><code>AbstractHistory</code></a> subtypes, of which only <a href="../../api/history/#PointProcesses.TemporalHistory"><code>TemporalHistory</code></a> is implemented for now.</p><pre><code class="language-julia-repl">julia&gt; history = TemporalHistory([0.2, 0.8, 1.1], [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;], 0.0, 2.0);
+
+julia&gt; duration(history)
+2.0
+
+julia&gt; nb_events(history)
+3
+
+julia&gt; nb_events(history, 1.0, 2.0)
+1
+
+julia&gt; has_events(history)
+true
+
+julia&gt; has_events(history, 1.5, 2.0)
+false
+
+julia&gt; push!(history, 1.7, &quot;d&quot;)
+
+julia&gt; has_events(history, 1.5, 2.0)
+true</code></pre><h2 id="Working-with-Markov-processes"><a class="docs-heading-anchor" href="#Working-with-Markov-processes">Working with Markov processes</a><a id="Working-with-Markov-processes-1"></a><a class="docs-heading-anchor-permalink" href="#Working-with-Markov-processes" title="Permalink"></a></h2><p>Some point processes are based on underlying Markov processes, which is why we provide a basic implementation for them.</p><h3 id="Discrete-time-Markov-chains"><a class="docs-heading-anchor" href="#Discrete-time-Markov-chains">Discrete time Markov chains</a><a id="Discrete-time-Markov-chains-1"></a><a class="docs-heading-anchor-permalink" href="#Discrete-time-Markov-chains" title="Permalink"></a></h3><pre><code class="language-julia-repl">julia&gt; dmc = DiscreteMarkovChain(π0 = [0.3, 0.7], P = [0.9 0.1; 0.2 0.8]);
+
+julia&gt; states = rand(dmc, 1000);
+
+julia&gt; dmc_est = fit(DiscreteMarkovChain, states);
+
+julia&gt; round.(dmc_est.P, digits=2)
+2×2 Matrix{Float64}:
+ 0.9   0.1
+ 0.25  0.75</code></pre><h3 id="Continuous-time-Markov-chains"><a class="docs-heading-anchor" href="#Continuous-time-Markov-chains">Continuous time Markov chains</a><a id="Continuous-time-Markov-chains-1"></a><a class="docs-heading-anchor-permalink" href="#Continuous-time-Markov-chains" title="Permalink"></a></h3><pre><code class="language-julia-repl">julia&gt; cmc = ContinuousMarkovChain(π0 = [0.3, 0.7], Q = [-1. 1.; 2. -2.]);
+
+julia&gt; history = rand(cmc, 0., 1000.);
+
+julia&gt; cmc_est = fit(ContinuousMarkovChain, history);
+
+julia&gt; round.(cmc_est.Q, digits=2)
+2×2 Matrix{Float64}:
+ -1.0    1.0
+  1.92  -1.92</code></pre><h3 id="Hidden-Markov-models"><a class="docs-heading-anchor" href="#Hidden-Markov-models">Hidden Markov models</a><a id="Hidden-Markov-models-1"></a><a class="docs-heading-anchor-permalink" href="#Hidden-Markov-models" title="Permalink"></a></h3><pre><code class="language-julia-repl">julia&gt; hmm = HiddenMarkovModel(
+           transitions = dmc,
+           emissions = [Normal(1, 0.3), Normal(2, 0.3)]
+       );
+
+julia&gt; states, observations = rand(hmm, 1000);
+
+julia&gt; hmm_init = HiddenMarkovModel(
+           transitions = DiscreteMarkovChain(π0 = randprobvec(2), P = randtransmat(2)),
+           emissions = [Normal(rand(), 1), Normal(rand(), 1)]
+       );
+
+julia&gt; hmm_est, logL_evolution = baum_welch(hmm_init, observations, iterations=100);
+
+julia&gt; minimum(diff(logL_evolution)) &gt; -1e-10
+true
+
+julia&gt; round.(transition_matrix(hmm_est), digits=2)
+2×2 Matrix{Float64}:
+ 0.83  0.17
+ 0.11  0.89
+
+julia&gt; round(mean(emission(hmm_est, 1)), digits=2)
+2.01
+
+julia&gt; round(mean(emission(hmm_est, 2)), digits=2)
+0.98
+</code></pre><h2 id="Working-with-temporal-point-processes"><a class="docs-heading-anchor" href="#Working-with-temporal-point-processes">Working with temporal point processes</a><a id="Working-with-temporal-point-processes-1"></a><a class="docs-heading-anchor-permalink" href="#Working-with-temporal-point-processes" title="Permalink"></a></h2><p>We finally demonstrate the main goal of the package: point process simulation and inference. All point processes are subtypes of <a href="../../api/point_processes/#PointProcesses.AbstractPointProcess"><code>AbstractPointProcess{L,M}</code></a>, where <code>L</code> is the type of event locations and <code>M</code> is the type of event marks.</p><p>We provide a number of built-in models, starting with basic Poisson processes on the real line.</p><h3 id="Multivariate-Poisson-processes"><a class="docs-heading-anchor" href="#Multivariate-Poisson-processes">Multivariate Poisson processes</a><a id="Multivariate-Poisson-processes-1"></a><a class="docs-heading-anchor-permalink" href="#Multivariate-Poisson-processes" title="Permalink"></a></h3><pre><code class="language-julia-repl">julia&gt; pp = MultivariatePoissonProcess(λ = [0.5, 1., 2.]);
+
+julia&gt; history = rand(pp, 0., 1000.);
+
+julia&gt; pp_est = fit(MultivariatePoissonProcess, history);
+
+julia&gt; round.(pp_est.λ, digits=2)
+3-element Vector{Float64}:
+ 0.53
+ 0.96
+ 2.01</code></pre><h3 id="General-Poisson-processes"><a class="docs-heading-anchor" href="#General-Poisson-processes">General Poisson processes</a><a id="General-Poisson-processes-1"></a><a class="docs-heading-anchor-permalink" href="#General-Poisson-processes" title="Permalink"></a></h3><blockquote><p>Todo</p></blockquote><h3 id="Implementing-your-own-models"><a class="docs-heading-anchor" href="#Implementing-your-own-models">Implementing your own models</a><a id="Implementing-your-own-models-1"></a><a class="docs-heading-anchor-permalink" href="#Implementing-your-own-models" title="Permalink"></a></h3><p>To implement your own process, you only have to define a subtype of <a href="../../api/point_processes/#PointProcesses.TemporalPointProcess"><code>TemporalPointProcess</code></a> and write the necessary methods: <a href="../../api/point_processes/#PointProcesses.intensity-Tuple{TemporalPointProcess, TemporalHistory, Any, Any}"><code>intensity</code></a>, <a href="../../api/point_processes/#PointProcesses.mark_distribution-Tuple{TemporalPointProcess, TemporalHistory, Any}"><code>mark_distribution</code></a>, <a href="../../api/point_processes/#PointProcesses.ground_intensity-Tuple{TemporalPointProcess, TemporalHistory, Any}"><code>ground_intensity</code></a> and <a href="../../api/point_processes/#PointProcesses.ground_intensity_bound-Tuple{TemporalPointProcess, TemporalHistory, Any}"><code>ground_intensity_bound</code></a>.</p><p>As long as these methods exist, the default simulation and inference routines should work, but they can be made much more efficient using custom implementations.</p><p>As an example, we included a naive re-implementation of  <a href="../../api/models/#PointProcesses.MultivariatePoissonProcess"><code>MultivariatePoissonProcess</code></a>, called <a href="../../api/models/#PointProcesses.NaiveMultivariatePoissonProcess"><code>NaiveMultivariatePoissonProcess</code></a>. Looking at its source may help you understand the requirements of the interface.</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../">« Home</a><a class="docs-footer-nextpage" href="../../api/history/">Event history »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.3 on <span class="colophon-date" title="Tuesday 17 August 2021 13:28">Tuesday 17 August 2021</span>. Using Julia version 1.6.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
