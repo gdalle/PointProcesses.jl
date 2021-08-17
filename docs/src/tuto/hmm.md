@@ -6,19 +6,13 @@ DocTestSetup = quote
 end
 ```
 
-```jldoctest hmm
-julia> using Random
-
-julia> using Distributions
-
-julia> Random.seed!(63);
-```
-
 ## Discrete time
 
 Here is an example of the Baum-Welch estimation algorithm applied to a discrete HMM.
 
-```jldoctest hmm
+```jldoctest
+julia> using Random, Distributions; Random.seed!(63);
+
 julia> hmm = HiddenMarkovModel(
            DiscreteMarkovChain([0.3, 0.7], [0.9 0.1; 0.2 0.8]),
            [Normal(1, 0.3), Normal(2, 0.3)]
@@ -50,4 +44,3 @@ julia> round(mean(emission(hmm_est, 2)), digits=2)
 
 ## Continuous time
 
-> Todo
