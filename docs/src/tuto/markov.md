@@ -29,7 +29,7 @@ julia> round.(dmc_est.P, digits=2)
  0.25  0.75
 ```
 
-### Continuous time
+## Continuous time
 
 ```jldoctest markov
 julia> cmc = ContinuousMarkovChain(π0 = [0.3, 0.7], Q = [-1. 1.; 2. -2.]);

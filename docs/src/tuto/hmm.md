@@ -47,3 +47,7 @@ julia> round(mean(emission(hmm_est, 1)), digits=2)
 julia> round(mean(emission(hmm_est, 2)), digits=2)
 1.99
 ```
+
+## Continuous time
+
+> Todo
