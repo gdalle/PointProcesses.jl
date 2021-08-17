@@ -1,5 +1,5 @@
 """
-    MarkovModulatedPoissonProcess{M,Tr<:ContinuousMarkovChain,Em<:PoissonProcess{M}}
+    MarkovModulatedPoissonProcess{M,Tr<:ContinuousMarkovChain,Em<:TemporalPointProcess{M}}
 
 Markov-Modulated Poisson Process with mark type `M`.
 
@@ -7,7 +7,7 @@ Markov-Modulated Poisson Process with mark type `M`.
 - `transitions::Tr`: state evolution process.
 - `emissions::Vector{Em}`: one emission distribution per state.
 """
-struct MarkovModulatedPoissonProcess{M,Tr<:ContinuousMarkovChain,Em<:PoissonProcess{M}}
+struct MarkovModulatedPoissonProcess{M,Tr<:ContinuousMarkovChain,Em<:TemporalPointProcess{M}}
     transitions::Tr
     emissions::Vector{Em}
 end

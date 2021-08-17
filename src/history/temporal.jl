@@ -77,7 +77,9 @@ end
 Add all the events of `h2` at the end of `h1`.
 """
 function Base.append!(h1::TemporalHistory, h2::TemporalHistory)
-    @assert maximum(event_times(h1)) < minimum(event_times(h2))
+    if has_events(h1) && has_events(h2)
+        @assert maximum(event_times(h1)) < minimum(event_times(h2))
+    end
     for (t, m) in zip(event_times(h2), event_marks(h2))
         push!(h1, t, m)
     end

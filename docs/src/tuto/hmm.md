@@ -44,3 +44,13 @@ julia> round(mean(emission(hmm_est, 2)), digits=2)
 
 ## Continuous time
 
+```jldoctest
+julia> using Random, Distributions; Random.seed!(63);
+
+julia> mmpp = MarkovModulatedPoissonProcess(
+           ContinuousMarkovChain([0.3, 0.7], [-1. 1.; 2. -2.]),
+           [MultivariatePoissonProcess([0.1, 1.]), MultivariatePoissonProcess([1., 0.1])]
+       );
+
+julia> state_history, observations = rand(mmpp, 0., 1000.);
+```
