@@ -8,4 +8,9 @@ PointProcesses
 
 ## Quick start
 
-To get started, take a look at the [Tutorial](@ref).
+To get started with code examples, take a look at the `Tutorial` section. The objects and methods defined in this package are documented in the `API reference`.
+
+## Index
+
+```@index
+```
