@@ -22,15 +22,20 @@ TransformVariables = "84d833dd-6860-57f9-a1a7-6da5db126cff"
 Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 
 [compat]
+DataStructures = "0.18"
 Distributions = "0.24"
+Documenter = "0.27"
 ForwardDiff = "0.10"
+GalacticOptim = "2.0"
 LogExpFunctions = "0.2"
 NamedTupleTools = "0.13"
+OffsetArrays = "1.10"
 Optim = "1.4"
 Plots = "1.20"
 Quadrature = "1.9"
 StatsPlots = "0.14"
 TransformVariables = "0.4"
+Zygote = "0.6"
 julia = "1.6"
 
 [extras]
