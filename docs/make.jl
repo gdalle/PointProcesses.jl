@@ -24,14 +24,10 @@ makedocs(;
         "Home" => "index.md",
         "Tutorial" => [
             "Event history" => "tuto/history.md",
-            "Point processes" => [
-                "General framework" => "tuto/point_processes.md",
-                "Built-in models" => "tuto/models.md",
-            ],
-            "Markov models" => [
-                "Markov chains" => "tuto/markov.md",
-                "Hidden Markov models" => "tuto/hmm.md",
-            ],
+            "Point processes" => "tuto/point_processes.md",
+            "Built-in models" => "tuto/models.md",
+            "Markov chains" => "tuto/markov.md",
+            "Hidden Markov models" => "tuto/hmm.md",
             "Utilities" => "tuto/utils.md",
         ],
         "API reference" => "api.md",

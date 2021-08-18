@@ -16,7 +16,7 @@ Modules = [PointProcesses]
 Pages = ["history/temporal.jl"]
 ```
 
-## General framework for point processes
+## Point processes
 
 ### Abstract type
 
