@@ -24,7 +24,7 @@ intensity(pp::PoissonProcess, m = nothing) =
 function Base.rand(rng::AbstractRNG, pp::PoissonProcess, tmin, tmax)
     N = rand(rng, Poisson(pp.λ * (tmax - tmin)))
     times = rand(rng, Uniform(tmin, tmax), N)
-    marks = rand(rng, pp.mark_dist, N)
+    marks = [rand(rng, pp.mark_dist) for k = 1:N]
     return TemporalHistory(times, marks, tmin, tmax)
 end
 

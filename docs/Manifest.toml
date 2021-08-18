@@ -818,7 +818,7 @@ uuid = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 version = "1.20.0"
 
 [[PointProcesses]]
-deps = ["Distributions", "Documenter", "ForwardDiff", "GalacticOptim", "LinearAlgebra", "LogExpFunctions", "NamedTupleTools", "Optim", "Parameters", "Plots", "Quadrature", "Random", "StatsBase", "StatsFuns", "StatsPlots", "Test", "TransformVariables", "Zygote"]
+deps = ["DataStructures", "Distributions", "ForwardDiff", "GalacticOptim", "LinearAlgebra", "LogExpFunctions", "NamedTupleTools", "OffsetArrays", "Optim", "Plots", "Quadrature", "Random", "StatsPlots", "TransformVariables", "Zygote"]
 path = ".."
 uuid = "af0b7596-9bb0-472a-a012-63904f2b4c55"
 version = "0.1.0"

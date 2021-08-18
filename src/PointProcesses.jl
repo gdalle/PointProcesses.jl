@@ -17,7 +17,6 @@ using Optim
 using Plots
 using Quadrature
 using Random
-using StatsBase
 using StatsPlots
 using TransformVariables
 using Zygote
