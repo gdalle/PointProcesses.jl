@@ -1,7 +1,7 @@
 name = "PointProcesses"
 uuid = "af0b7596-9bb0-472a-a012-63904f2b4c55"
 authors = ["Guillaume Dalle"]
-version = "0.1.0"
+version = "0.2.0"
 
 [deps]
 DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
