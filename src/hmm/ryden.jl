@@ -28,7 +28,7 @@ function forward_backward(mmpp::MMPP, h::TemporalHistory)
     S = nstates(mmpp)
     π0 = stationary_distribution(mmpp)
 
-    y = diff(vcat(mintime(h), event_times(h), maxtime(h)))
+    y = diff(vcat(min_time(h), event_times(h), max_time(h)))
     marks = event_marks(h)
     n = nb_events(h)
 

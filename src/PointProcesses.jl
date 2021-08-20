@@ -39,7 +39,7 @@ export AbstractHistory
 
 include("history/temporal.jl")
 export TemporalHistory
-export event_times, event_marks, mintime, maxtime
+export event_times, event_marks, min_time, max_time
 export nb_events, has_events, duration, time_change
 
 # Markov processes

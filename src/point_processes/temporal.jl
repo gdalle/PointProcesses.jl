@@ -34,9 +34,7 @@ function intensity(pp::TemporalPointProcess, h::TemporalHistory, t, m) end
 
 Compute the distribution of marks for a temporal point process `pp` knowing that an event takes place at time `t` after history `h`.
 """
-function mark_distribution(pp::TemporalPointProcess, h::TemporalHistory, t)
-    error("not implemented")
-end
+function mark_distribution(pp::TemporalPointProcess, h::TemporalHistory, t) end
 
 @doc raw"""
     ground_intensity(pp, h, t)
@@ -115,11 +113,11 @@ The default method uses [Quadrature.jl](https://github.com/SciML/Quadrature.jl) 
 function integrated_ground_intensity(
     pp::TemporalPointProcess,
     h::TemporalHistory,
-    t = h.tmax,
+    t = max_time(h),
 )
     par = [pp]
     f = (t, par) -> ground_intensity(par[1], h, t)
-    prob = QuadratureProblem(f, h.tmin, t, par)
+    prob = QuadratureProblem(f, min_time(t), t, par)
     sol = solve(prob, HCubatureJL())
     return sol[1]
 end
@@ -136,7 +134,7 @@ The default method uses a loop over events combined with [`integrated_ground_int
 """
 function Distributions.logpdf(pp::TemporalPointProcess, h::TemporalHistory)
     l = -integrated_ground_intensity(pp, h)
-    for (t, m) in zip(h.times, h.marks)
+    for (t, m) in zip(event_times(h), event_marks(h))
         l += log(intensity(pp, h, t, m))
     end
     return l

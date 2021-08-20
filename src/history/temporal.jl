@@ -26,9 +26,9 @@ event_times(h::TemporalHistory) = h.times
 
 event_marks(h::TemporalHistory) = h.marks
 
-mintime(h::TemporalHistory) = h.tmin
+min_time(h::TemporalHistory) = h.tmin
 
-maxtime(h::TemporalHistory) = h.tmax
+max_time(h::TemporalHistory) = h.tmax
 
 """
     nb_events(h::TemporalHistory, tmin=-Inf, tmax=Inf)
@@ -56,7 +56,7 @@ end
 Compute the difference `h.tmax - h.tmin`.
 """
 function duration(h::TemporalHistory)
-    return maxtime(h) - mintime(h)
+    return max_time(h) - min_time(h)
 end
 
 """
@@ -94,7 +94,7 @@ Apply the time rescaling $t \mapsto \Lambda(t)$ to history `h`.
 function time_change(h::TemporalHistory, Λ)
     new_times = Λ.(event_times(h))
     new_marks = copy(event_marks(h))
-    new_tmin = Λ(mintime(h))
-    new_tmax = Λ(maxtime(h))
+    new_tmin = Λ(min_time(h))
+    new_tmax = Λ(max_time(h))
     return TemporalHistory(new_times, new_marks, new_tmin, new_tmax)
 end
