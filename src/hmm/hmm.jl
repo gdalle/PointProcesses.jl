@@ -22,7 +22,7 @@ transition_matrix(hmm::HMM) = transition_matrix(transitions(hmm))
 
 emissions(hmm::HMM) = hmm.emissions
 emission(hmm::HMM, s::Int) = hmm.emissions[s]
-nstates(hmm::HMM) = length(emissions(hmm))
+nb_states(hmm::HMM) = length(emissions(hmm))
 
 ## Simulation
 

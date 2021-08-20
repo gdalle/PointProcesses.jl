@@ -45,14 +45,19 @@ export nb_events, has_events, duration, time_change
 # Markov processes
 
 include("markov/abstract.jl")
-export AbstractMarkovChain, nstates
+export AbstractMarkovChain
+export nb_states
+export AbstractMarkovChainPrior
 
 include("markov/discrete_time.jl")
-export DiscreteMarkovChain, transition_matrix, DiscreteMarkovChainPrior
-export initial_distribution, stationary_distribution
+export DiscreteMarkovChain
+export initial_distribution, transition_matrix, stationary_distribution
+export DiscreteMarkovChainPrior, DiscreteMarkovChainStats
 
 include("markov/continuous_time.jl")
-export ContinuousMarkovChain, rate_matrix, rate_diag, discretize
+export ContinuousMarkovChain
+export rate_matrix, rate_diag, discretize
+export ContinuousMarkovChainPrior, ContinuousMarkovChainStats
 
 # Point processes
 
@@ -107,11 +112,6 @@ include("utils/utils.jl")
 export all_minus_inf, all_plus_inf, all_zeros, all_nan
 
 include("utils/categorical.jl")
-export fit_map
-export CategoricalPrior
-
-include("utils/mvcategorical.jl")
-export MvCategorical, MvCategoricalStats, MvCategoricalPrior
 
 include("utils/plot.jl")
 export plot_events, plot_intensity, qqplot_interevent_times

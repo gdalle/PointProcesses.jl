@@ -1,34 +1,15 @@
-const CategoricalPrior = Dirichlet
-
 ## Prior likelihood
 
-function Distributions.logpdf(prior::CategoricalPrior, dist::Categorical)
+function Distributions.logpdf(prior::Dirichlet, dist::Categorical)
     return logpdf(prior, probs(dist))
 end
 
-## MAP fitting
+## Sufficient statistics with prior
 
-function fit_map(
-    ::Type{<:Categorical},
-    prior::CategoricalPrior,
-    x::AbstractVector{Integer},
-)
-    k = length(prior)
-    counts = Distributions.add_categorical_counts!(zeros(k), x)
-    corrected_counts = counts .+ prior.alpha .- 1.0
-    p = Distributions.pnormalize!(corrected_counts)
-    return Categorical(p)
+function Distributions.suffstats(::Type{<:Categorical}, prior::Dirichlet, x::AbstractArray{<:Integer})
+    return CategoricalStats(add_categorical_counts!(prior.alpha .- 1, x))
 end
 
-function fit_map(
-    ::Type{<:Categorical},
-    prior::CategoricalPrior,
-    x::AbstractVector{Integer},
-    w::AbstractVector{Real},
-)
-    k = length(prior)
-    counts = Distributions.add_categorical_counts!(zeros(k), x, w)
-    corrected_counts = counts .+ prior.alpha .- 1.0
-    p = Distributions.pnormalize!(corrected_counts)
-    return Categorical(p)
+function Distributions.suffstats(::Type{<:Categorical}, prior::Dirichlet, x::AbstractArray{<:Integer}, w::AbstractArray{Float64})
+    return CategoricalStats(add_categorical_counts!(prior.alpha .- 1, x, w))
 end

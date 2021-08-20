@@ -1,5 +1,5 @@
 function intensity_by_state(mmpp::MMPP, m = nothing)
-    λ = [intensity(emission(mmpp, s), m) for s = 1:nstates(mmpp)]
+    λ = [intensity(emission(mmpp, s), m) for s = 1:nb_states(mmpp)]
     Λ = Diagonal(λ)
     return Λ
 end
@@ -21,11 +21,11 @@ function stationary_distribution(mmpp::MMPP)
     Q = rate_matrix(mmpp)
     Λ = intensity_by_state(mmpp)
     P = inv(Λ - Q) * Λ
-    return stationary_distribution(DiscreteMarkovChain(ones(nstates(mmpp)), P))
+    return stationary_distribution(DiscreteMarkovChain(ones(nb_states(mmpp)), P))
 end
 
 function forward_backward(mmpp::MMPP, h::TemporalHistory)
-    S = nstates(mmpp)
+    S = nb_states(mmpp)
     π0 = stationary_distribution(mmpp)
 
     y = diff(vcat(min_time(h), event_times(h), max_time(h)))
@@ -91,7 +91,7 @@ function ryden(mmpp::MMPP{M,Tr,Em}, h::TemporalHistory{M}; iterations) where {M,
         m̂, n̂, D̂, logL = forward_backward(mmpp, h)
         push!(logL_evolution, logL)
         new_transitions = fit(Tr, m̂ = m̂, D̂ = D̂)
-        new_emissions = [fit(Em, n̂ = n̂[s], D̂ = D̂[s]) for s = 1:nstates(hmm)]  # TODO: @view
+        new_emissions = [fit(Em, n̂ = n̂[s], D̂ = D̂[s]) for s = 1:nb_states(hmm)]  # TODO: @view
         mmpp = MMPP(new_transitions, new_emissions)
     end
     return hmm, logL_evolution

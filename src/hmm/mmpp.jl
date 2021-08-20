@@ -23,7 +23,7 @@ rate_matrix(mmpp::MMPP) = rate_matrix(transitions(mmpp))
 
 emissions(mmpp::MMPP) = mmpp.emissions
 emission(mmpp::MMPP, s::Int) = mmpp.emissions[s]
-nstates(mmpp::MMPP) = length(emissions(mmpp))
+nb_states(mmpp::MMPP) = length(emissions(mmpp))
 
 ## Simulation
 

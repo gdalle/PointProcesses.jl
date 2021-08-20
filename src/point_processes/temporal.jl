@@ -117,7 +117,7 @@ function integrated_ground_intensity(
 )
     par = [pp]
     f = (t, par) -> ground_intensity(par[1], h, t)
-    prob = QuadratureProblem(f, min_time(t), t, par)
+    prob = QuadratureProblem(f, min_time(h), t, par)
     sol = solve(prob, HCubatureJL())
     return sol[1]
 end

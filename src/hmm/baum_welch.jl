@@ -1,5 +1,5 @@
 function forward_nolog!(α, c, obs_pdf::AbstractMatrix, hmm::HMM)
-    T, S = size(obs_logpdf, 1), nstates(hmm)
+    T, S = size(obs_logpdf, 1), nb_states(hmm)
     π0, P = initial_distribution(hmm), transition_matrix(hmm)
     for i = 1:S
         α[1, i] = π0[i] * obs_pdf[1, i]
@@ -26,7 +26,7 @@ function forward_nolog!(α, c, obs_pdf::AbstractMatrix, hmm::HMM)
 end
 
 function forward_log!(logα, obs_logpdf::AbstractMatrix, hmm::HMM)
-    T, S = size(obs_logpdf, 1), nstates(hmm)
+    T, S = size(obs_logpdf, 1), nb_states(hmm)
     logπ0, logP = log.(initial_distribution(hmm)), log.(transition_matrix(hmm))
     for i = 1:S
         logα[1, i] = logπ0[i] + obs_logpdf[1, i]
@@ -45,7 +45,7 @@ function forward_log!(logα, obs_logpdf::AbstractMatrix, hmm::HMM)
 end
 
 function backward_nolog!(β, c, obs_pdf::AbstractMatrix, hmm::HMM)
-    T, S = size(obs_logpdf, 1), nstates(hmm)
+    T, S = size(obs_logpdf, 1), nb_states(hmm)
     P = transition_matrix(hmm)
 
     for i = 1:S
@@ -66,7 +66,7 @@ end
 
 
 function backward_log!(logβ, obs_logpdf::AbstractMatrix, hmm::HMM)
-    T, S = size(obs_logpdf, 1), nstates(hmm)
+    T, S = size(obs_logpdf, 1), nb_states(hmm)
     logP = log.(transition_matrix(hmm))
 
     for i = 1:S
@@ -86,7 +86,7 @@ function backward_log!(logβ, obs_logpdf::AbstractMatrix, hmm::HMM)
 end
 
 function forward_backward_nolog!(α, β, c, γ, ξ, obs_pdf::AbstractMatrix, hmm::HMM)
-    T, S = size(obs_logpdf, 1), nstates(hmm)
+    T, S = size(obs_logpdf, 1), nb_states(hmm)
 
     forward_nolog!(α, c, hmm, obs_pdf)
     backward_nolog!(β, c, hmm, obs_pdf)
@@ -118,7 +118,7 @@ end
 
 
 function forward_backward_log!(logα, logβ, logγ, logξ, obs_logpdf::AbstractMatrix, hmm::HMM)
-    T, S = size(obs_logpdf, 1), nstates(hmm.transitions)
+    T, S = size(obs_logpdf, 1), nb_states(hmm.transitions)
     logP = log.(transition_matrix(hmm))
 
     forward_log!(logα, obs_logpdf, hmm)
@@ -152,7 +152,7 @@ end
 ## Likelihood of observations
 
 function update_obs_pdf!(obs_pdf::AbstractMatrix, hmm::HMM, observations::AbstractVector)
-    T, S = length(observations), nstates(hmm)
+    T, S = length(observations), nb_states(hmm)
     for t = 1:T
         for s = 1:S
             obs_pdf[t, s] = pdf(emission(hmm, s), observations[t])
@@ -170,7 +170,7 @@ function update_obs_logpdf!(
     hmm::HMM,
     observations::AbstractVector,
 )
-    T, S = length(observations), nstates(hmm)
+    T, S = length(observations), nb_states(hmm)
     for t = 1:T
         for s = 1:S
             obs_logpdf[t, s] = logpdf(emission(hmm, s), observations[t])
@@ -200,7 +200,7 @@ function baum_welch_nolog!(
         logL = forward_backward_nolog!(α, β, c, γ, ξ, obs_pdf, hmm)
         push!(logL_evolution, logL)
         new_transitions = fit(Tr, γ = γ, ξ = ξ)
-        new_emissions = [fit(Em, observations, γ[:, s]) for s = 1:nstates(hmm)]  # TODO: @view
+        new_emissions = [fit(Em, observations, γ[:, s]) for s = 1:nb_states(hmm)]  # TODO: @view
         hmm = HMM(new_transitions, new_emissions)
     end
     return hmm, logL_evolution
@@ -222,7 +222,7 @@ function baum_welch_log!(
         logL = forward_backward_log!(logα, logβ, logγ, logξ, obs_logpdf, hmm)
         push!(logL_evolution, logL)
         new_transitions = fit(Tr, exp.(logγ), exp.(logξ))
-        new_emissions = [fit(Em, observations, exp.(logγ[:, s])) for s = 1:nstates(hmm)]  # TODO: @view
+        new_emissions = [fit(Em, observations, exp.(logγ[:, s])) for s = 1:nb_states(hmm)]  # TODO: @view
         hmm = HMM(new_transitions, new_emissions)
     end
     return hmm, logL_evolution
@@ -231,7 +231,7 @@ end
 ## Non mutating version
 
 function baum_welch(hmm::HMM, observations::AbstractVector; iterations, log = true)
-    T, S = length(observations), nstates(hmm)
+    T, S = length(observations), nb_states(hmm)
     if log
         logα = Matrix{Float64}(undef, T, S)
         logβ = Matrix{Float64}(undef, T, S)

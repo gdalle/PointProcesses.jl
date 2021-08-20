@@ -49,22 +49,3 @@ julia> round.(probs(mark_distribution(pp_est)), digits=2)
  0.28
  0.57
 ```
-
-Going further, using our custom [`MvCategorical`](@ref) distribution, we can create Poisson processes with multi-dimensional integer marks.
-
-```jldoctest
-julia> using Random; Random.seed!(63);
-
-julia> mark_dist = MvCategorical([[0.6, 0.4], [0.1, 0.2, 0.7]]);
-
-julia> pp = PoissonProcess{Vector{Int}}(1., mark_dist);
-
-julia> h = rand(pp, 0., 100.);
-
-julia> event_marks(h)[1:4]
-4-element Vector{Vector{Int64}}:
- [1, 2]
- [1, 3]
- [1, 2]
- [1, 3]
-```

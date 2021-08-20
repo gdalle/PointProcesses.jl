@@ -17,17 +17,22 @@ mutable struct TemporalHistory{M} <: AbstractHistory{Float64,M}
     tmax::Float64
 end
 
-function TemporalHistory(times, marks::AbstractMatrix{M}, tmin, tmax) where {M}
-    vector_marks = [c for c in eachcol(marks)]
-    return TemporalHistory{Vector{M}}(times, vector_marks, tmin, tmax)
-end
-
 event_times(h::TemporalHistory) = h.times
 
 event_marks(h::TemporalHistory) = h.marks
 
+"""
+    min_time(h)
+
+Return the starting time of `h` (not the same as the first event time).
+"""
 min_time(h::TemporalHistory) = h.tmin
 
+"""
+    max_time(h)
+
+Return the end time of `h` (not the same as the last event time).
+"""
 max_time(h::TemporalHistory) = h.tmax
 
 """

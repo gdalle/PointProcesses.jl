@@ -5,7 +5,7 @@ Homogeneous temporal Poisson process with arbitrary mark distribution.
 
 # Fields
 - `λ::R`: event rate.
-- `mark_dist`: mark distribution.
+- `mark_dist::D`: mark distribution.
 """
 struct PoissonProcess{M,D,R<:Real} <: TemporalPointProcess{M}
     λ::R
