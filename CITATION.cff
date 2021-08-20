@@ -1,0 +1,16 @@
+# YAML 1.2
+---
+abstract: "A package for point process modeling, simulation and inference."
+authors: 
+  -
+    affiliation: "CERMICS, École des Ponts ParisTech"
+    family-names: Dalle
+    given-names: Guillaume
+    orcid: "https://orcid.org/0000-0003-4866-1687"
+cff-version: "1.1.0"
+license: MIT
+message: "If you use this software, please cite it using these metadata."
+repository-code: "https://github.com/gdalle/PointProcesses.jl"
+title: "PointProcesses.jl"
+version: "v0.2.0"
+...
