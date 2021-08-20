@@ -1,12 +1,12 @@
-abstract type AbstractMarkovChain end
+abstract type AbstractMarkovChain <: AbstractMeasure end
 
-abstract type AbstractMarkovChainPrior end
+abstract type AbstractMarkovChainPrior <: AbstractMeasure end
 
-function Distributions.fit(mctype::Type{<:AbstractMarkovChain}, args...; kwargs...)
+function fit(mctype::Type{<:AbstractMarkovChain}, args...; kwargs...)
     return fit_mle(mctype, args..., kwargs...)
 end
 
-function Distributions.fit_mle(mctype::Type{<:AbstractMarkovChain}, args...; kwargs...)
+function fit_mle(mctype::Type{<:AbstractMarkovChain}, args...; kwargs...)
     ss = suffstats(mctype, args...; kwargs...)
     return fit_mle(mctype, ss)
 end

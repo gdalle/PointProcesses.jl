@@ -7,7 +7,7 @@ Hidden Markov Model with arbitrary transition model (must be a discrete Markov c
 - `transitions::Tr`: state evolution process.
 - `emissions::Vector{Em}`: one emission distribution per state.
 """
-struct HiddenMarkovModel{Tr<:DiscreteMarkovChain,Em}
+struct HiddenMarkovModel{Tr<:DiscreteMarkovChain,Em} <: AbstractMeasure
     transitions::Tr
     emissions::Vector{Em}
 end
@@ -26,10 +26,10 @@ nb_states(hmm::HMM) = length(emissions(hmm))
 
 ## Simulation
 
-function Base.rand(rng::AbstractRNG, hmm::HMM, T::Integer)
+function rand(rng::AbstractRNG, hmm::HMM, T::Integer)
     states = rand(rng, transitions(hmm), T)
     observations = [rand(rng, emission(hmm, states[t])) for t = 1:T]
     return states, observations
 end
 
-Base.rand(hmm::HMM, T::Integer) = rand(Random.GLOBAL_RNG, hmm, T)
+rand(hmm::HMM, T::Integer) = rand(GLOBAL_RNG, hmm, T)

@@ -3,7 +3,7 @@
 
 The common supertype of all point processes with location type `L` and mark type `M`.
 """
-abstract type AbstractPointProcess{L,M} end
+abstract type AbstractPointProcess{L,M} <: AbstractMeasure end
 
 """
     build_transform(pp)

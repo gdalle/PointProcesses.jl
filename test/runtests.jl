@@ -12,5 +12,3 @@ DocMeta.setdocmeta!(
 @testset "Doctests" begin
     doctest(PointProcesses)
 end
-
-include("poisson.jl")

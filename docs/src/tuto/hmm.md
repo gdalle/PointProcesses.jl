@@ -10,47 +10,48 @@ end
 
 Here is an example of the Baum-Welch estimation algorithm applied to a discrete HMM.
 
-```jldoctest
-julia> using Random, Distributions; Random.seed!(63);
+```jldoctest hmm
+using Random, MeasureTheory; Random.seed!(63)
 
-julia> hmm = HiddenMarkovModel(
-           DiscreteMarkovChain([0.3, 0.7], [0.9 0.1; 0.2 0.8]),
-           [Normal(1, 0.3), Normal(2, 0.3)]
-       );
+tr = DiscreteMarkovChain([0.3, 0.7], [0.9 0.1; 0.2 0.8])
+em1 = Dists.Normal(1, 0.3)
+em2 = Dists.Normal(2, 0.3)
+hmm = HiddenMarkovModel(tr, [em1, em2])
 
-julia> states, observations = rand(hmm, 1000);
+states, observations = rand(hmm, 1000)
 
-julia> hmm_init = HiddenMarkovModel(
-           DiscreteMarkovChain(randprobvec(2), randtransmat(2)),
-           [Normal(rand(), 1), Normal(rand(), 1)]
-       );
+tr_init = DiscreteMarkovChain(randprobvec(2), randtransmat(2))
+em1_init = Dists.Normal(rand(), 1)
+em2_init = Dists.Normal(rand(), 1)
+hmm_init = HiddenMarkovModel(tr_init, [em1_init, em2_init])
 
-julia> hmm_est, logL_evolution = baum_welch(hmm_init, observations, iterations=100);
+hmm_est, logL_evolution = baum_welch(hmm_init, observations, iterations=100)
 
-julia> minimum(diff(logL_evolution)) > -1e-10
-true
+round.(transition_matrix(hmm_est), digits=2)
 
-julia> round.(transition_matrix(hmm_est), digits=2)
+# output
+
 2×2 Matrix{Float64}:
  0.9   0.1
  0.23  0.77
-
-julia> round(mean(emission(hmm_est, 1)), digits=2)
-1.02
-
-julia> round(mean(emission(hmm_est, 2)), digits=2)
-1.99
 ```
 
 ## Continuous time
 
-```jldoctest
-julia> using Random, Distributions; Random.seed!(63);
+Here is an example of the Baum-Welch estimation algorithm applied to a MMPP.
 
-julia> mmpp = MarkovModulatedPoissonProcess(
-           ContinuousMarkovChain([0.3, 0.7], [-1. 1.; 2. -2.]),
-           [MultivariatePoissonProcess([0.1, 1.]), MultivariatePoissonProcess([1., 0.1])]
-       );
+```jldoctest mmpp
+using Random, MeasureTheory; Random.seed!(63)
 
-julia> state_history, observations = rand(mmpp, 0., 1000.);
+tr = ContinuousMarkovChain([0.3, 0.7], [-1. 1.; 2. -2.])
+em1 = PoissonProcess(1., Dists.Normal(1, 1))
+em2 = PoissonProcess(2., Dists.Normal(-1, 1))
+mmpp = MarkovModulatedPoissonProcess(tr, [em1, em2])
+
+state_history, observations = rand(mmpp, 0., 1000.)
+nb_events(observations)
+
+# output
+
+1345
 ```

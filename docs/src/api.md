@@ -39,12 +39,7 @@ Pages = ["point_processes/temporal.jl"]
 
 ```@autodocs
 Modules = [PointProcesses]
-Pages = ["models/poisson.jl", "models/poisson_inhomogeneous.jl"]
-```
-
-```@autodocs
-Modules = [PointProcesses]
-Pages = ["models/poisson_multivariate.jl", "models/poisson_multivariate_naive.jl"]
+Pages = ["models/poisson.jl", "models/poisson_multivariate_naive.jl"]
 ```
 
 ### Hawkes processes
@@ -98,5 +93,5 @@ Pages = ["hmm/mmpp.jl", "hmm/ryden.jl"]
 ```@autodocs
 Modules = [PointProcesses]
 Order = [:type, :function]
-Pages = ["utils/plot.jl", "utils/utils.jl", "utils/categorical.jl", "utils/randvals.jl"]
+Pages = ["utils/categorical.jl", "utils/overflow.jl", "utils/plot.jl", "utils/randvals.jl"]
 ```

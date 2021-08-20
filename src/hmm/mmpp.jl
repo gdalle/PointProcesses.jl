@@ -7,7 +7,11 @@ Markov-Modulated Poisson Process with mark type `M`.
 - `transitions::Tr`: state evolution process.
 - `emissions::Vector{Em}`: one emission distribution per state.
 """
-struct MarkovModulatedPoissonProcess{M,Tr<:ContinuousMarkovChain,Em<:TemporalPointProcess{M}}
+struct MarkovModulatedPoissonProcess{
+    M,
+    Tr<:ContinuousMarkovChain,
+    Em<:TemporalPointProcess{M},
+} <: AbstractMeasure
     transitions::Tr
     emissions::Vector{Em}
 end
@@ -41,4 +45,4 @@ function Base.rand(rng::AbstractRNG, mmpp::MMPP{M}, tmin, tmax) where {M}
     return state_history, observations
 end
 
-Base.rand(mmpp::MMPP, args...) = rand(Random.GLOBAL_RNG, mmpp, args...)
+rand(mmpp::MMPP, args...) = rand(GLOBAL_RNG, mmpp, args...)

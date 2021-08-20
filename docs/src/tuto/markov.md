@@ -11,15 +11,15 @@ Some point processes are based on underlying Markov processes, which is why we p
 ## Discrete time
 
 ```jldoctest
-julia> using Random; Random.seed!(63);
+using Random; Random.seed!(63)
 
-julia> dmc = DiscreteMarkovChain([0.3, 0.7], [0.9 0.1; 0.2 0.8]);
+dmc = DiscreteMarkovChain([0.3, 0.7], [0.9 0.1; 0.2 0.8])
+states = rand(dmc, 1000)
+dmc_est = fit(DiscreteMarkovChain, states)
+round.(dmc_est.P, digits=2)
 
-julia> states = rand(dmc, 1000);
+# output
 
-julia> dmc_est = fit(DiscreteMarkovChain, states);
-
-julia> round.(dmc_est.P, digits=2)
 2×2 Matrix{Float64}:
  0.9   0.1
  0.25  0.75
@@ -28,15 +28,15 @@ julia> round.(dmc_est.P, digits=2)
 ## Continuous time
 
 ```jldoctest
-julia> using Random; Random.seed!(63);
+using Random; Random.seed!(63)
 
-julia> cmc = ContinuousMarkovChain([0.3, 0.7], [-1. 1.; 2. -2.]);
+cmc = ContinuousMarkovChain([0.3, 0.7], [-1. 1.; 2. -2.])
+history = rand(cmc, 0., 1000.)
+cmc_est = fit(ContinuousMarkovChain, history)
+round.(cmc_est.Q, digits=2)
 
-julia> history = rand(cmc, 0., 1000.);
+# output
 
-julia> cmc_est = fit(ContinuousMarkovChain, history);
-
-julia> round.(cmc_est.Q, digits=2)
 2×2 Matrix{Float64}:
  -0.93   0.93
   1.87  -1.87

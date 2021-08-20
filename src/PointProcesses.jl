@@ -6,22 +6,29 @@ module PointProcesses
 ## Imports
 
 using DataStructures
-using Distributions
 using ForwardDiff
 using GalacticOptim
 using LinearAlgebra
 using LogExpFunctions
+using MeasureTheory
 using NamedTupleTools
 using OffsetArrays
 using Optim
 using Plots
 using Quadrature
 using Random
+using SimpleTraits
 using StatsPlots
 using TransformVariables
 using Zygote
 
+# Hidden names
 using Random: GLOBAL_RNG
+
+# Functions to extend
+import Base: eltype, length, rand
+import Distributions: fit, fit_mle, logpdf, pdf, suffstats
+import MeasureTheory: density, logdensity, sampletype, testvalue
 
 ## Includes and exports
 
@@ -75,17 +82,8 @@ export integrated_ground_intensity, check_residuals
 include("models/poisson.jl")
 export PoissonProcess
 
-include("models/poisson_inhomogeneous.jl")
-export InhomogeneousPoissonProcess
-
-include("models/poisson_multivariate.jl")
-export MultivariatePoissonProcess
-
 include("models/poisson_multivariate_naive.jl")
 export NaiveMultivariatePoissonProcess
-
-include("models/hawkes.jl")
-export MultivariateHawkesProcess
 
 # Hidden Markov models
 
@@ -108,8 +106,10 @@ export forward_backward, ryden
 
 # Utils
 
-include("utils/utils.jl")
+include("utils/overflow.jl")
 export all_minus_inf, all_plus_inf, all_zeros, all_nan
+
+include("utils/dists.jl")
 
 include("utils/categorical.jl")
 

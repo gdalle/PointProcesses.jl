@@ -13,7 +13,7 @@ struct DiscreteMarkovChain{T1<:AbstractVector{<:Real},T2<:AbstractMatrix{<:Real}
     P::T2
 end
 
-Base.eltype(::Type{<:DiscreteMarkovChain}) = Vector{Int}
+sampletype(::DiscreteMarkovChain) = Vector{Int}
 
 ## Access
 
@@ -25,21 +25,21 @@ transition_matrix(mc::DiscreteMarkovChain) = mc.P
 
 ## Simulation
 
-function Base.rand(rng::AbstractRNG, mc::DiscreteMarkovChain, T::Integer)
+function rand(rng::AbstractRNG, mc::DiscreteMarkovChain, T::Integer)
     states = Vector{Int}(undef, T)
-    states[1] = rand(rng, Categorical(mc.π0))
-    transitions = [Categorical(mc.P[s, :]) for s = 1:nb_states(mc)]  # TODO: @view
+    states[1] = rand(rng, Dists.Categorical(mc.π0))
+    transitions = [Dists.Categorical(mc.P[s, :]) for s = 1:nb_states(mc)]  # TODO: @view
     for t = 2:T
         states[t] = rand(rng, transitions[states[t-1]])
     end
     return states
 end
 
-Base.rand(mc::DiscreteMarkovChain, T::Integer) = rand(Random.GLOBAL_RNG, mc, T)
+rand(mc::DiscreteMarkovChain, T::Integer) = rand(GLOBAL_RNG, mc, T)
 
 ## Logpdf
 
-function Distributions.logpdf(mc::DiscreteMarkovChain, states::Vector{Integer})
+function logdensity(mc::DiscreteMarkovChain, states::Vector{Integer})
     T = length(states)
     l = log(mc.π0[states[1]])
     for t = 2:T
@@ -66,10 +66,10 @@ end
 
 ## Prior logpdf
 
-function Distributions.logpdf(prior::DiscreteMarkovChainPrior, mc::DiscreteMarkovChain)
-    l = logpdf(CategoricalPrior(prior.π0α), Categorical(mc.π0))
+function logdensity(prior::DiscreteMarkovChainPrior, mc::DiscreteMarkovChain)
+    l = logdensity(Dirichlet(prior.π0α), Categorical(mc.π0))
     for s = 1:nb_states(mc)
-        l += logpdf(CategoricalPrior(prior.Pα[s, :]), Categorical(mc.P[s, :]))
+        l += logdensity(Dirichlet(prior.Pα[s, :]), Categorical(mc.P[s, :]))
     end
     return l
 end
@@ -81,12 +81,12 @@ end
 
 Sufficient statistics for the likelihood of a `DiscreteMarkovChain`.
 """
-struct DiscreteMarkovChainStats <: SufficientStats
+struct DiscreteMarkovChainStats <: Dists.SufficientStats
     initialization::Vector{Float64}
     transition_count::Matrix{Float64}
 end
 
-function Distributions.suffstats(::Type{<:DiscreteMarkovChain}, states::Vector{<:Integer})
+function suffstats(::Type{<:DiscreteMarkovChain}, states::Vector{<:Integer})
     S = maximum(states)
     initialization = collect(1:S) .== states[1]
     transition_count = zeros(Int, S, S)
@@ -96,7 +96,7 @@ function Distributions.suffstats(::Type{<:DiscreteMarkovChain}, states::Vector{<
     return DiscreteMarkovChainStats(initialization, transition_count)
 end
 
-function Distributions.suffstats(
+function suffstats(
     ::Type{<:DiscreteMarkovChain},
     γ::AbstractMatrix,
     ξ::AbstractArray{<:Real,3},
@@ -110,18 +110,14 @@ function Distributions.suffstats(
     return DiscreteMarkovChainStats(initialization, transition_count)
 end
 
-function Distributions.suffstats(
-    ::Type{<:DiscreteMarkovChain},
-    prior::DiscreteMarkovChainPrior,
-    args...,
-)
+function suffstats(::Type{<:DiscreteMarkovChain}, prior::DiscreteMarkovChainPrior, args...)
     ss = suffstats(DiscreteMarkovChain, args...)
     ss.initialization .+= (prior.π0α .- 1)
     ss.transition_count .+= (prior.Pα .- 1)
     return ss
 end
 
-function Distributions.fit_mle(::Type{<:DiscreteMarkovChain}, ss::DiscreteMarkovChainStats)
+function fit_mle(::Type{<:DiscreteMarkovChain}, ss::DiscreteMarkovChainStats)
     π0 = ss.initialization
     π0 ./= sum(π0)
     P = ss.transition_count

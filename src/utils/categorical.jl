@@ -1,15 +1,26 @@
+## Warning: type piracy
+
 ## Prior likelihood
 
-function Distributions.logpdf(prior::Dirichlet, dist::Categorical)
-    return logpdf(prior, probs(dist))
+function logdensity(prior::Dists.Dirichlet, dist::Dists.Categorical)
+    return logdensity(prior, probs(dist))
 end
 
 ## Sufficient statistics with prior
 
-function Distributions.suffstats(::Type{<:Categorical}, prior::Dirichlet, x::AbstractArray{<:Integer})
-    return CategoricalStats(add_categorical_counts!(prior.alpha .- 1, x))
+function suffstats(
+    ::Type{<:Dists.Categorical},
+    prior::Dists.Dirichlet,
+    x::AbstractArray{<:Integer},
+)
+    return Dists.CategoricalStats(add_categorical_counts!(prior.alpha .- 1, x))
 end
 
-function Distributions.suffstats(::Type{<:Categorical}, prior::Dirichlet, x::AbstractArray{<:Integer}, w::AbstractArray{Float64})
-    return CategoricalStats(add_categorical_counts!(prior.alpha .- 1, x, w))
+function suffstats(
+    ::Type{<:Dists.Categorical},
+    prior::Dists.Dirichlet,
+    x::AbstractArray{<:Integer},
+    w::AbstractArray{Float64},
+)
+    return Dists.CategoricalStats(add_categorical_counts!(prior.alpha .- 1, x, w))
 end

@@ -42,7 +42,7 @@ Compare the distribution of inter-event times in a given history to the exponent
 """
 function qqplot_interevent_times(h::TemporalHistory)
     plot(
-        qqplot(Exponential, diff(vcat(0.0, h.times))),
+        qqplot(Dists.Exponential, diff(vcat(0.0, h.times))),
         xlabel = "Quantiles of exponential distribution",
         ylabel = "Quantiles of inter-event times",
         title = "Residual analysis",
