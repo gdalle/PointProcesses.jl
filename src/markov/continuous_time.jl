@@ -162,6 +162,6 @@ end
 
 ## Misc
 
-function discretize(mc::ContinuousMarkovChain, Δt)
+function discretize_chain(mc::ContinuousMarkovChain, Δt)
     return DiscreteMarkovChain(initial_distribution(mc), exp(rate_matrix(mc) * Δt))
 end

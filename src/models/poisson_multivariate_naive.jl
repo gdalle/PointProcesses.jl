@@ -12,6 +12,8 @@ struct NaiveMultivariatePoissonProcess{R} <: TemporalPointProcess{Int}
     λ::Vector{R}
 end
 
+intensity(pp::NaiveMultivariatePoissonProcess) = pp.λ
+
 ## Conversion utilities
 
 NaiveMultivariatePoissonProcess{R}(nt::NamedTuple) where {R} =
@@ -29,7 +31,7 @@ function intensity(pp::NaiveMultivariatePoissonProcess, h::TemporalHistory, t, m
 end
 
 function mark_distribution(pp::NaiveMultivariatePoissonProcess, h::TemporalHistory, t)
-    return Categorical(pp.λ / sum(pp.λ))
+    return Dists.Categorical(pp.λ / sum(pp.λ))
 end
 
 function ground_intensity(pp::NaiveMultivariatePoissonProcess, h::TemporalHistory, t)

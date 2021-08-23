@@ -17,12 +17,10 @@ mark_dist = Dists.Categorical([0.1, 0.3, 0.6])
 pp = PoissonProcess(5., mark_dist)
 h = rand(pp, 0., 100.)
 pp_est = fit(PoissonProcess{Dists.Categorical}, h)
-round.(Dists.probs(mark_distribution(pp_est)), digits=2)
+error = Dists.probs(mark_distribution(pp_est)) - Dists.probs(mark_distribution(pp))
+maximum(error) < 0.1
 
 # output
 
-3-element Vector{Float64}:
- 0.11
- 0.31
- 0.58
+true
 ```

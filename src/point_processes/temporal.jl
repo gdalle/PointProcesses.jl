@@ -62,7 +62,7 @@ function ground_intensity_bound(pp::TemporalPointProcess, h::TemporalHistory, t)
 
 ## Simulation with Ogata's algorithm
 
-sampletype(::TemporalPointProcess{M}) where {M} = TemporalHistory{M}
+MeasureTheory.sampletype(::TemporalPointProcess{M}) where {M} = TemporalHistory{M}
 
 """
     rand(rng, pp, tmin, tmax)
@@ -153,8 +153,8 @@ The default method uses [GalacticOptim.jl](https://github.com/SciML/GalacticOpti
 function Dists.fit(
     pp_init::PP,
     h::TemporalHistory{M};
-    adtype = GalacticOptim.AutoForwardDiff(),
-    alg = Optim.LBFGS(),
+    adtype = SciMLBase.NoAD(),
+    alg = Optim.NelderMead(),
 ) where {M,PP<:TemporalPointProcess}
     trans = build_transform(pp_init)
     θ_init = inverse(trans, ntfromstruct(pp_init))

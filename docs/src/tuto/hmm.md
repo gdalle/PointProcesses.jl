@@ -27,13 +27,13 @@ hmm_init = HiddenMarkovModel(tr_init, [em1_init, em2_init])
 
 hmm_est, logL_evolution = baum_welch(hmm_init, observations, iterations=100)
 
-round.(transition_matrix(hmm_est), digits=2)
+error = transition_matrix(hmm_est) - transition_matrix(hmm)
+
+maximum(error) < 0.1
 
 # output
 
-2×2 Matrix{Float64}:
- 0.9   0.1
- 0.23  0.77
+true
 ```
 
 ## Continuous time

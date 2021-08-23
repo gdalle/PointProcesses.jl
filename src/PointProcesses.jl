@@ -6,7 +6,6 @@ module PointProcesses
 ## Imports
 
 using DataStructures
-using ForwardDiff
 using GalacticOptim
 using LinearAlgebra
 using LogExpFunctions
@@ -17,10 +16,9 @@ using Optim
 using Plots
 using Quadrature
 using Random
-using SimpleTraits
+using SciMLBase
 using StatsPlots
 using TransformVariables
-using Zygote
 
 # Hidden names
 
@@ -28,18 +26,18 @@ using Random: GLOBAL_RNG
 
 # Functions to extend
 
-using Base: eltype, length, rand
-using Distributions: fit, fit_mle, suffstats
-using MeasureTheory: density, logdensity, sampletype, testvalue
+import Base: eltype, length, rand
+import Distributions: fit, fit_mle, suffstats
+import MeasureTheory: density, logdensity, sampletype, testvalue
 
 ## Includes and exports
 
 # Reexports
 
 export eltype, rand  # Base
-export params  # StatsBase
+export mean
 export logpdf, fit, fit_mle, suffstats  # Distributions
-export plot, scatter  # Plots
+export plot, scatter  # Plot
 
 # History
 
@@ -65,7 +63,7 @@ export DiscreteMarkovChainPrior, DiscreteMarkovChainStats
 
 include("markov/continuous_time.jl")
 export ContinuousMarkovChain
-export rate_matrix, rate_diag, discretize
+export rate_matrix, rate_diag, discretize_chain
 export ContinuousMarkovChainPrior, ContinuousMarkovChainStats
 
 # Point processes
