@@ -45,4 +45,4 @@ function Base.rand(rng::AbstractRNG, mmpp::MMPP{M}, tmin, tmax) where {M}
     return state_history, observations
 end
 
-rand(mmpp::MMPP, args...) = rand(GLOBAL_RNG, mmpp, args...)
+Base.rand(mmpp::MMPP, args...) = rand(GLOBAL_RNG, mmpp, args...)

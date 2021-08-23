@@ -2,13 +2,13 @@
 
 ## Prior likelihood
 
-function logdensity(prior::Dists.Dirichlet, dist::Dists.Categorical)
+function MeasureTheory.logdensity(prior::Dists.Dirichlet, dist::Dists.Categorical)
     return logdensity(prior, probs(dist))
 end
 
 ## Sufficient statistics with prior
 
-function suffstats(
+function Dists.suffstats(
     ::Type{<:Dists.Categorical},
     prior::Dists.Dirichlet,
     x::AbstractArray{<:Integer},
@@ -16,7 +16,7 @@ function suffstats(
     return Dists.CategoricalStats(add_categorical_counts!(prior.alpha .- 1, x))
 end
 
-function suffstats(
+function Dists.suffstats(
     ::Type{<:Dists.Categorical},
     prior::Dists.Dirichlet,
     x::AbstractArray{<:Integer},

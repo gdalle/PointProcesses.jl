@@ -117,7 +117,14 @@ function forward_backward_nolog!(α, β, c, γ, ξ, obs_density::AbstractMatrix,
 end
 
 
-function forward_backward_log!(logα, logβ, logγ, logξ, obs_logdensity::AbstractMatrix, hmm::HMM)
+function forward_backward_log!(
+    logα,
+    logβ,
+    logγ,
+    logξ,
+    obs_logdensity::AbstractMatrix,
+    hmm::HMM,
+)
     T, S = size(obs_logdensity, 1), nb_states(hmm.transitions)
     logP = log.(transition_matrix(hmm))
 
@@ -151,7 +158,11 @@ end
 
 ## Likelihood of observations
 
-function update_obs_density!(obs_density::AbstractMatrix, hmm::HMM, observations::AbstractVector)
+function update_obs_density!(
+    obs_density::AbstractMatrix,
+    hmm::HMM,
+    observations::AbstractVector,
+)
     T, S = length(observations), nb_states(hmm)
     for t = 1:T
         for s = 1:S

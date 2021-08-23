@@ -23,12 +23,14 @@ using TransformVariables
 using Zygote
 
 # Hidden names
+
 using Random: GLOBAL_RNG
 
 # Functions to extend
-import Base: eltype, length, rand
-import Distributions: fit, fit_mle, logpdf, pdf, suffstats
-import MeasureTheory: density, logdensity, sampletype, testvalue
+
+using Base: eltype, length, rand
+using Distributions: fit, fit_mle, suffstats
+using MeasureTheory: density, logdensity, sampletype, testvalue
 
 ## Includes and exports
 

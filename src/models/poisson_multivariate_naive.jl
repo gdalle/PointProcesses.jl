@@ -14,7 +14,8 @@ end
 
 ## Conversion utilities
 
-NaiveMultivariatePoissonProcess{R}(nt::NamedTuple) where {R} = NaiveMultivariatePoissonProcess(nt.λ)
+NaiveMultivariatePoissonProcess{R}(nt::NamedTuple) where {R} =
+    NaiveMultivariatePoissonProcess(nt.λ)
 
 function build_transform(pp::NaiveMultivariatePoissonProcess)
     M = length(pp.λ)

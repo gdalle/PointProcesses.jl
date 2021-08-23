@@ -32,22 +32,22 @@ end
 
 ## Simulation
 
-function rand(rng::AbstractRNG, pp::PoissonProcess, tmin::Real, tmax::Real)
+function Base.rand(rng::AbstractRNG, pp::PoissonProcess, tmin::Real, tmax::Real)
     N = rand(rng, Dists.Poisson(intensity(pp) * (tmax - tmin)))
     times = rand(rng, Dists.Uniform(tmin, tmax), N)
     marks = [rand(rng, mark_distribution(pp)) for _ = 1:N]
     return TemporalHistory(times, marks, tmin, tmax)
 end
 
-rand(pp::PoissonProcess, tmin::Real, tmax::Real) = rand(GLOBAL_RNG, pp, tmin, tmax)
+Base.rand(pp::PoissonProcess, tmin::Real, tmax::Real) = rand(GLOBAL_RNG, pp, tmin, tmax)
 
 ## Likelihood
 
-function logpdf(pp::PoissonProcess, h::TemporalHistory)
+function MeasureTheory.logdensity(pp::PoissonProcess, h::TemporalHistory)
     l = -intensity(pp) * duration(h)
     mark_dist = mark_distribution(pp)
     for m in event_marks(h)
-        l += logpdf(mark_dist, m)
+        l += logdensity(mark_dist, m)
     end
     return m
 end
@@ -62,21 +62,21 @@ end
 
 ## Prior likelihood
 
-function logpdf(prior::PoissonProcessPrior, pp::PoissonProcess)
-    lλ = logpdf(Dists.Gamma(prior.λα, 1 / prior.λβ), pp.λ)
-    ld = logpdf(prior.mark_dist_prior, pp.mark_dist)
+function MeasureTheory.logdensity(prior::PoissonProcessPrior, pp::PoissonProcess)
+    lλ = logdensity(Dists.Gamma(prior.λα, 1 / prior.λβ), pp.λ)
+    ld = logdensity(prior.mark_dist_prior, pp.mark_dist)
     return lλ + ld
 end
 
 ## Fitting
 
-function fit(::Type{<:PoissonProcess{D}}, history::TemporalHistory) where {D}
+function Dists.fit(::Type{<:PoissonProcess{D}}, history::TemporalHistory) where {D}
     λ = nb_events(history) / duration(history)
     mark_dist = fit(D, history.marks)
     return PoissonProcess(λ, mark_dist)
 end
 
-function fit(
+function Dists.fit(
     ::Type{<:PoissonProcess{D}},
     prior::PoissonProcessPrior,
     history::TemporalHistory,

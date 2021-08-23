@@ -20,7 +20,11 @@ end
 
 Plot the conditional intensity function of a temporal point process along a given history.
 """
-function plot_intensity(pp::TemporalPointProcess{M}, h::TemporalHistory{M}; npoints = 100) where {M}
+function plot_intensity(
+    pp::TemporalPointProcess{M},
+    h::TemporalHistory{M};
+    npoints = 100,
+) where {M}
     curve_times = h.tmin:(duration(h)/npoints):h.tmax
     curve_vals = [ground_intensity(pp, h, t) for t in curve_times]
     history_times = h.times

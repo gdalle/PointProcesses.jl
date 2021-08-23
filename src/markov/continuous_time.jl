@@ -13,7 +13,7 @@ struct ContinuousMarkovChain{T1<:AbstractVector{<:Real},T2<:AbstractMatrix{<:Rea
     Q::T2
 end
 
-sampletype(::ContinuousMarkovChain) = TemporalHistory{Int}
+MeasureTheory.sampletype(::ContinuousMarkovChain) = TemporalHistory{Int}
 
 ## Access
 
@@ -33,7 +33,7 @@ end
 
 ## Simulation
 
-function rand(rng::AbstractRNG, mc::ContinuousMarkovChain, tmin, tmax)
+function Base.rand(rng::AbstractRNG, mc::ContinuousMarkovChain, tmin, tmax)
     D = rate_negdiag(mc)
     P = transition_matrix(mc)
     transitions = [Dists.Categorical(P[s, :]) for s = 1:nb_states(mc)]  # TODO: @view
@@ -56,7 +56,7 @@ function rand(rng::AbstractRNG, mc::ContinuousMarkovChain, tmin, tmax)
     return h
 end
 
-rand(mc::ContinuousMarkovChain, tmin, tmax) = rand(GLOBAL_RNG, mc, tmin, tmax)
+Base.rand(mc::ContinuousMarkovChain, tmin, tmax) = rand(GLOBAL_RNG, mc, tmin, tmax)
 
 ## Prior
 
@@ -78,7 +78,10 @@ end
 
 ## Prior logpdf
 
-function logdensity(prior::ContinuousMarkovChainPrior, mc::ContinuousMarkovChain)
+function MeasureTheory.logdensity(
+    prior::ContinuousMarkovChainPrior,
+    mc::ContinuousMarkovChain,
+)
     l = logdensity(Dists.Dirichlet(prior.π0α), Dists.Categorical(mc.π0))
     Q = rate_matrix(mc)
     for i = 1:nb_states(mc), j = 1:nb_states(mc)
@@ -102,7 +105,7 @@ struct ContinuousMarkovChainStats <: Dists.SufficientStats
     duration::Vector{Float64}
 end
 
-function suffstats(::Type{ContinuousMarkovChain}, h::TemporalHistory{<:Integer})
+function Dists.suffstats(::Type{ContinuousMarkovChain}, h::TemporalHistory{<:Integer})
     states = h.marks
     S = maximum(states)
     initialization = collect(1:S) .== states[1]
@@ -116,7 +119,7 @@ function suffstats(::Type{ContinuousMarkovChain}, h::TemporalHistory{<:Integer})
     return ContinuousMarkovChainStats(initialization, transition_count, duration)
 end
 
-function suffstats(::Type{ContinuousMarkovChain}, m̂, D̂)
+function Dists.suffstats(::Type{ContinuousMarkovChain}, m̂, D̂)
     states = h.marks
     S = maximum(states)
     initialization = collect(1:S) .== states[1]
@@ -130,7 +133,7 @@ function suffstats(::Type{ContinuousMarkovChain}, m̂, D̂)
     return ContinuousMarkovChainStats(initialization, duration, transition_count)
 end
 
-function suffstats(
+function Dists.suffstats(
     ::Type{<:ContinuousMarkovChain},
     prior::ContinuousMarkovChainPrior,
     args...,
@@ -142,7 +145,7 @@ function suffstats(
     return ss
 end
 
-function fit_mle(::Type{<:ContinuousMarkovChain}, ss::ContinuousMarkovChainStats)
+function Dists.fit_mle(::Type{<:ContinuousMarkovChain}, ss::ContinuousMarkovChainStats)
     π0 = ss.initialization
     π0 ./= sum(π0)
     Q = ss.transition_count ./ ss.duration

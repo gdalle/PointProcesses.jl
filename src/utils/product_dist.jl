@@ -9,14 +9,11 @@ length(dist::ProductDistribution) = length(marginals(dist))
 
 ## Simulation
 
-function rand(
-    rng::AbstractRNG,
-    dist::ProductDistribution,
-)
+function rand(rng::AbstractRNG, dist::ProductDistribution)
     return [rand(rng, marginal(dist, i)) for i = 1:length(dist)]
 end
 
-rand(dist::ProductDistribution)= rand(GLOBAL_RNG, dist)
+rand(dist::ProductDistribution) = rand(GLOBAL_RNG, dist)
 
 ## Likelihood
 
@@ -36,10 +33,7 @@ struct ProductSufficientStats{T<:Dists.SufficientStats}
     ss_marginals::Vector{T}
 end
 
-function suffstats(
-    ::Type{<:ProductDistribution{T}},
-    x::AbstractMatrix,
-) where {T}
+function suffstats(::Type{<:ProductDistribution{T}}, x::AbstractMatrix) where {T}
     return ProductSufficientStats([suffstats(T, x[i, :] for i in size(x, 1))])
 end
 

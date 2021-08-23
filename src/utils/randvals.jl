@@ -33,5 +33,5 @@ Return a stochastic matrix of size `n` with random transition probability distri
 """
 function randtransmat(n)
     P = rand(n, n)
-    return P ./ sum(P, dims=2)
+    return P ./ sum(P, dims = 2)
 end

@@ -71,7 +71,7 @@ Simulate a temporal point process `pp` on interval `[tmin, tmax)` using Ogata's 
 
 [^Ogata_1981]: Ogata, Y. (1981), “On Lewis’ simulation method for point processes,” IEEE Transactions on Information Theory, 27, 23–31. https://doi.org/10.1109/TIT.1981.1056305.
 """
-function rand(rng::AbstractRNG, pp::TemporalPointProcess{M}, tmin, tmax) where {M}
+function Base.rand(rng::AbstractRNG, pp::TemporalPointProcess{M}, tmin, tmax) where {M}
     h = TemporalHistory(Float64[], M[], tmin, tmax)
     t = tmin
     while t < tmax
@@ -93,10 +93,10 @@ function rand(rng::AbstractRNG, pp::TemporalPointProcess{M}, tmin, tmax) where {
     return h
 end
 
-rand(rng::AbstractRNG, tpp::BoundedTemporalPointProcess) =
+Base.rand(rng::AbstractRNG, tpp::BoundedTemporalPointProcess) =
     rand(rng, tpp.pp, tpp.tmin, tpp.tmax)
 
-rand(tpp::TemporalPointProcess, args...) = rand(GLOBAL_RNG, tpp, args...)
+Base.rand(tpp::TemporalPointProcess, args...) = rand(GLOBAL_RNG, tpp, args...)
 
 ## Learning
 
@@ -150,7 +150,7 @@ Compute the optimal parameter for a temporal point process of type `typeof(pp0)`
 
 The default method uses [GalacticOptim.jl](https://github.com/SciML/GalacticOptim.jl) for numerical optimization, but it should be reimplemented for specific processes if explicit maximization is feasible.
 """
-function fit(
+function Dists.fit(
     pp_init::PP,
     h::TemporalHistory{M};
     adtype = GalacticOptim.AutoForwardDiff(),
