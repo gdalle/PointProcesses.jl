@@ -9,6 +9,8 @@ using Test
 
 Random.seed!(63)
 
+include("doctests.jl")
+
 include("history.jl")
 
 include("markov.jl")
@@ -20,5 +22,3 @@ include("models.jl")
 include("hmm.jl")
 
 include("utils.jl")
-
-include("doctests.jl")

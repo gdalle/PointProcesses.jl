@@ -1,9 +1,8 @@
 # General framework for point processes
 
-```@meta
-DocTestSetup = quote
-    using PointProcesses
-end
+```@setup point_processes
+using ForwardDiff, GalacticOptim, Optim, Random
+Random.seed!(63)
 ```
 
 The main goal of this package lies in point process simulation and inference. All point processes are subtypes of [`AbstractPointProcess{L,M}`](@ref), where `L` is the type of event locations and `M` is the type of event marks.
@@ -20,31 +19,21 @@ As long as these methods exist, the default simulation and inference routines sh
 
 As an example, we included a naive implementation of a Poisson process with categorical mark distribution, called [`NaiveMultivariatePoissonProcess`](@ref). Looking at its source code may help you understand the requirements of the interface. In the meantime, we can check that the implementation works:
 
-```jldoctest naive
-using Random, GalacticOptim; Random.seed!(63)
+```@repl point_processes
+using GalacticOptim, PointProcesses, Random; Random.seed!(63)
 
 pp = NaiveMultivariatePoissonProcess([1., 2., 3.])
 h = rand(pp, 0., 100.)
 pp_init = NaiveMultivariatePoissonProcess(ones(3))
 pp_est1 = fit(pp_init, h)
-error1 = intensity(pp_est1) - intensity(pp)
-maximum(error1) < 0.1
-
-# output
-
-true
+intensity(pp_est1)
 ```
 
 We can also tune the automatic differentiation method and the optimization algorithm:
 
-```jldoctest naive
+```@repl point_processes
 using ForwardDiff, Optim
 
 pp_est2 = fit(pp_init, h, adtype=GalacticOptim.AutoForwardDiff(), alg=Optim.LBFGS())
-error2 = intensity(pp_est2) - intensity(pp)
-maximum(error2) < 0.1
-
-# output
-
-true
+intensity(pp_est2)
 ```

@@ -1227,6 +1227,12 @@ version = "0.1.4"
 deps = ["InteractiveUtils", "Logging", "Random", "Serialization"]
 uuid = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
+[[TestEnv]]
+deps = ["Pkg"]
+git-tree-sha1 = "62f7f56dbc9d2d6b9cfd9745db4ee62293b7b9d0"
+uuid = "1e6cf692-eddd-4d53-88a5-2d735e33781b"
+version = "1.4.2"
+
 [[ThreadingUtilities]]
 deps = ["ManualMemory"]
 git-tree-sha1 = "03013c6ae7f1824131b2ae2fc1d49793b51e8394"
