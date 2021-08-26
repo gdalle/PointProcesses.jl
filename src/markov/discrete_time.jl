@@ -67,9 +67,9 @@ end
 ## Prior logpdf
 
 function MeasureTheory.logdensity(prior::DiscreteMarkovChainPrior, mc::DiscreteMarkovChain)
-    l = logdensity(Dirichlet(prior.π0α), Categorical(mc.π0))
+    l = logdensity(Dists.Dirichlet(prior.π0α), Dists.Categorical(mc.π0))
     for s = 1:nb_states(mc)
-        l += logdensity(Dirichlet(prior.Pα[s, :]), Categorical(mc.P[s, :]))
+        l += logdensity(Dists.Dirichlet(prior.Pα[s, :]), Dists.Categorical(mc.P[s, :]))
     end
     return l
 end
@@ -132,6 +132,6 @@ end
 ## Asymptotics
 
 function stationary_distribution(mc::DiscreteMarkovChain)
-    π = real.(eigvecs(matrix(transition_matrix(mc))')[:, end])
+    π = real.(eigvecs(transition_matrix(mc)')[:, end])
     return π / sum(π)
 end

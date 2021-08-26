@@ -22,11 +22,11 @@ function mark_distribution(pp::PoissonProcess)
     return pp.mark_dist
 end
 
-function intensity(pp::PoissonProcess, m = nothing)
+function intensity(pp::PoissonProcess, m = nothing)::Float64
     if isnothing(m)
         return pp.λ
     else
-        return pp.λ * pdf(mark_distribution(pp), m)
+        return pp.λ * density(mark_distribution(pp), m)
     end
 end
 
@@ -49,7 +49,7 @@ function MeasureTheory.logdensity(pp::PoissonProcess, h::TemporalHistory)
     for m in event_marks(h)
         l += logdensity(mark_dist, m)
     end
-    return m
+    return l
 end
 
 ## Prior
@@ -81,7 +81,7 @@ function Dists.fit(
     prior::PoissonProcessPrior,
     history::TemporalHistory,
 ) where {D}
-    λ = (nb_events(history) + prior.α - 1) / (duration(history) + prior.β)
+    λ = (nb_events(history) + prior.λα - 1) / (duration(history) + prior.λβ)
     mark_dist = fit(D, prior.mark_dist_prior, history.marks)
     return PoissonProcess(λ, mark_dist)
 end

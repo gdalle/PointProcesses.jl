@@ -36,7 +36,7 @@ function forward_backward(mmpp::MMPP, h::TemporalHistory)
     f = [renewal_density(mmpp, y[k], marks[k]) for k = 1:n]
     F̄ = renewal_void_probability(mmpp, y[n+1])
 
-    L = OffsetVector{Float64}(undef, 0:n+1)
+    L = OffsetVector{Vector{Float64}}(undef, 0:n+1)
     c = Vector{Float64}(undef, n + 1)
     L[0] = π0
     for k = 1:n+1
@@ -91,8 +91,8 @@ function ryden(mmpp::MMPP{M,Tr,Em}, h::TemporalHistory{M}; iterations) where {M,
         m̂, n̂, D̂, logL = forward_backward(mmpp, h)
         push!(logL_evolution, logL)
         new_transitions = fit(Tr, m̂ = m̂, D̂ = D̂)
-        new_emissions = [fit(Em, n̂ = n̂[s], D̂ = D̂[s]) for s = 1:nb_states(hmm)]  # TODO: @view
+        new_emissions = [fit(Em, n̂ = n̂[s], D̂ = D̂[s]) for s = 1:nb_states(mmpp)]  # TODO: @view
         mmpp = MMPP(new_transitions, new_emissions)
     end
-    return hmm, logL_evolution
+    return mmpp, logL_evolution
 end

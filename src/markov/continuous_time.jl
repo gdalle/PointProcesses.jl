@@ -86,7 +86,7 @@ function MeasureTheory.logdensity(
     Q = rate_matrix(mc)
     for i = 1:nb_states(mc), j = 1:nb_states(mc)
         if i != j
-            l += logpdf(Dists.Gamma(prior.Pα[i, i], 1 / prior.Pβ[i, j]), Q[i, j])
+            l += logdensity(Dists.Gamma(prior.Pα[i, i], 1 / prior.Pβ[i, j]), Q[i, j])
         end
     end
     return l
@@ -120,17 +120,7 @@ function Dists.suffstats(::Type{ContinuousMarkovChain}, h::TemporalHistory{<:Int
 end
 
 function Dists.suffstats(::Type{ContinuousMarkovChain}, m̂, D̂)
-    states = h.marks
-    S = maximum(states)
-    initialization = collect(1:S) .== states[1]
-    duration = zeros(Float64, S)
-    transition_count = zeros(Int, S, S)
-    for t = 1:length(states)-1
-        duration[states[t]] += h.times[t+1] - h.times[t]
-        transition_count[states[t], states[t+1]] += 1
-    end
-    duration[states[length(states)]] += h.tmax - h.times[length(states)]
-    return ContinuousMarkovChainStats(initialization, duration, transition_count)
+    error("not implemented")
 end
 
 function Dists.suffstats(
@@ -156,7 +146,7 @@ end
 ## Asymptotics
 
 function stationary_distribution(mc::ContinuousMarkovChain)
-    π = real.(eigvecs(matrix(rate_matrix(mc))')[:, end])
+    π = real.(eigvecs(rate_matrix(mc)')[:, end])
     return π / sum(π)
 end
 

@@ -1,5 +1,5 @@
 function forward_nolog!(α, c, obs_density::AbstractMatrix, hmm::HMM)
-    T, S = size(obs_logdensity, 1), nb_states(hmm)
+    T, S = size(obs_density, 1), nb_states(hmm)
     π0, P = initial_distribution(hmm), transition_matrix(hmm)
     for i = 1:S
         α[1, i] = π0[i] * obs_density[1, i]
@@ -10,7 +10,7 @@ function forward_nolog!(α, c, obs_density::AbstractMatrix, hmm::HMM)
     end
     for t = 1:T-1
         for j = 1:S
-            α[t+1, j] = sum(α[t, i] * P[i, j]) * obs_density[t+1, j]
+            α[t+1, j] = sum(α[t, i] * P[i, j] for i = 1:S) * obs_density[t+1, j]
         end
         c[t+1] = sum(@view α[t+1, :])  # scaling
         for j = 1:S
@@ -45,7 +45,7 @@ function forward_log!(logα, obs_logdensity::AbstractMatrix, hmm::HMM)
 end
 
 function backward_nolog!(β, c, obs_density::AbstractMatrix, hmm::HMM)
-    T, S = size(obs_logdensity, 1), nb_states(hmm)
+    T, S = size(obs_density, 1), nb_states(hmm)
     P = transition_matrix(hmm)
 
     for i = 1:S
@@ -86,10 +86,10 @@ function backward_log!(logβ, obs_logdensity::AbstractMatrix, hmm::HMM)
 end
 
 function forward_backward_nolog!(α, β, c, γ, ξ, obs_density::AbstractMatrix, hmm::HMM)
-    T, S = size(obs_logdensity, 1), nb_states(hmm)
+    T, S = size(obs_density, 1), nb_states(hmm)
 
-    forward_nolog!(α, c, hmm, obs_density)
-    backward_nolog!(β, c, hmm, obs_density)
+    forward_nolog!(α, c, obs_density, hmm)
+    backward_nolog!(β, c, obs_density, hmm)
 
     for t = 1:T
         for i = 1:S
@@ -262,7 +262,7 @@ function baum_welch(hmm::HMM, observations::AbstractVector; iterations, log = tr
     else
         α = Matrix{Float64}(undef, T, S)
         β = Matrix{Float64}(undef, T, S)
-        c = Vector{Float64}(undef, T, S)
+        c = Vector{Float64}(undef, T)
         γ = Matrix{Float64}(undef, T, S)
         ξ = Array{Float64,3}(undef, T - 1, S, S)
         obs_density = Matrix{Float64}(undef, T, S)

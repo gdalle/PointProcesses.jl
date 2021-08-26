@@ -3,7 +3,7 @@
 ## Prior likelihood
 
 function MeasureTheory.logdensity(prior::Dists.Dirichlet, dist::Dists.Categorical)
-    return logdensity(prior, probs(dist))
+    return logdensity(prior, Dists.probs(dist))
 end
 
 ## Sufficient statistics with prior
@@ -13,7 +13,7 @@ function Dists.suffstats(
     prior::Dists.Dirichlet,
     x::AbstractArray{<:Integer},
 )
-    return Dists.CategoricalStats(add_categorical_counts!(prior.alpha .- 1, x))
+    return Dists.CategoricalStats(Dists.add_categorical_counts!(prior.alpha .- 1, x))
 end
 
 function Dists.suffstats(
@@ -22,5 +22,5 @@ function Dists.suffstats(
     x::AbstractArray{<:Integer},
     w::AbstractArray{Float64},
 )
-    return Dists.CategoricalStats(add_categorical_counts!(prior.alpha .- 1, x, w))
+    return Dists.CategoricalStats(Dists.add_categorical_counts!(prior.alpha .- 1, x, w))
 end

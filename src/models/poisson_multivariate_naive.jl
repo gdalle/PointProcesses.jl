@@ -38,7 +38,7 @@ function ground_intensity(pp::NaiveMultivariatePoissonProcess, h::TemporalHistor
     return sum(pp.λ)
 end
 
-function ground_intensity_bound(pp::NaiveMultivariatePoissonProcess, h::TemporalHistory, t)
+function ground_intensity_bound(pp::NaiveMultivariatePoissonProcess, h::TemporalHistory, t)::Tuple{Float64, Float64}
     λg = ground_intensity(pp, h, t)
     return λg, Inf
 end
