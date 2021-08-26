@@ -1,6 +1,7 @@
 using Documenter
 using ForwardDiff
 using GalacticOptim
+using JETTest
 using MeasureTheory
 using Optim
 using PointProcesses

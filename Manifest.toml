@@ -45,9 +45,9 @@ version = "3.5.0+3"
 
 [[ArrayInterface]]
 deps = ["IfElse", "LinearAlgebra", "Requires", "SparseArrays", "Static"]
-git-tree-sha1 = "a4f25b43826d5847c04e925dd846692835956131"
+git-tree-sha1 = "baf4ef9082070477046bd98306952292bfcb0af9"
 uuid = "4fba245c-0d91-5ea0-9b3e-6abc04ee57a9"
-version = "3.1.24"
+version = "3.1.25"
 
 [[ArrayLayouts]]
 deps = ["FillArrays", "LinearAlgebra", "SparseArrays"]
@@ -87,9 +87,9 @@ version = "1.0.6+5"
 
 [[CPUSummary]]
 deps = ["Hwloc", "IfElse", "Static"]
-git-tree-sha1 = "147bcca99e098c0da48d7d9e108210704138f0f9"
+git-tree-sha1 = "ed720e2622820bf584d4ad90e6fcb93d95170b44"
 uuid = "2a0fbf3d-bb9c-48f3-b0a9-814d99fd7ab9"
-version = "0.1.2"
+version = "0.1.3"
 
 [[Cairo_jll]]
 deps = ["Artifacts", "Bzip2_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll", "JLLWrappers", "LZO_jll", "Libdl", "Pixman_jll", "Pkg", "Xorg_libXext_jll", "Xorg_libXrender_jll", "Zlib_jll", "libpng_jll"]
@@ -99,9 +99,9 @@ version = "1.16.0+6"
 
 [[ChainRules]]
 deps = ["ChainRulesCore", "Compat", "LinearAlgebra", "Random", "Statistics"]
-git-tree-sha1 = "0b986fbb7508a6294099eb109148d33132d50138"
+git-tree-sha1 = "aa1019559831f9bf0b829cb87e7c8cf931f0f2c6"
 uuid = "082447d4-558c-5d27-93f4-14fc19e9eca2"
-version = "1.9.0"
+version = "1.10.0"
 
 [[ChainRulesCore]]
 deps = ["Compat", "LinearAlgebra", "SparseArrays"]
@@ -114,6 +114,12 @@ deps = ["Distances", "LinearAlgebra", "NearestNeighbors", "Printf", "SparseArray
 git-tree-sha1 = "75479b7df4167267d75294d14b58244695beb2ac"
 uuid = "aaaa29a8-35af-508c-8bc3-b662a17a0fe5"
 version = "0.14.2"
+
+[[CodeTracking]]
+deps = ["InteractiveUtils", "UUIDs"]
+git-tree-sha1 = "9aa8a5ebb6b5bf469a7e0e2b5202cf6f8c291104"
+uuid = "da1fd8a2-8d9e-5ec2-8556-3022fb5608a2"
+version = "1.0.6"
 
 [[ColorSchemes]]
 deps = ["ColorTypes", "Colors", "FixedPointNumbers", "Random"]
@@ -308,6 +314,9 @@ deps = ["LinearAlgebra"]
 git-tree-sha1 = "26be48918640ce002f5833e8fc537b2ba7ed0234"
 uuid = "7034ab61-46d4-4ed7-9d0f-46aef9175898"
 version = "0.1.8"
+
+[[FileWatching]]
+uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[FillArrays]]
 deps = ["LinearAlgebra", "Random", "SparseArrays"]
@@ -514,6 +523,12 @@ git-tree-sha1 = "a3f24677c21f5bbe9d2a714f95dcd58337fb2856"
 uuid = "82899510-4779-5014-852e-03e436cf321d"
 version = "1.0.0"
 
+[[JET]]
+deps = ["InteractiveUtils", "JuliaInterpreter", "LoweredCodeUtils", "MacroTools", "Pkg", "Revise"]
+git-tree-sha1 = "a0aae98e5fda3f92e1aa001901fd086b54654122"
+uuid = "c3a54625-cd67-489e-a8e7-0a5a0ff4e31b"
+version = "0.4.6"
+
 [[JLLWrappers]]
 deps = ["Preferences"]
 git-tree-sha1 = "642a199af8b68253517b80bd3bfd17eb4e84df6e"
@@ -531,6 +546,12 @@ deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
 git-tree-sha1 = "d735490ac75c5cb9f1b00d8b5509c11984dc6943"
 uuid = "aacddb02-875f-59d6-b918-886e6ef4fbf8"
 version = "2.1.0+0"
+
+[[JuliaInterpreter]]
+deps = ["CodeTracking", "InteractiveUtils", "Random", "UUIDs"]
+git-tree-sha1 = "e273807f38074f033d94207a201e6e827d8417db"
+uuid = "aa1ae85d-cabe-5617-a682-6adf51b2e16a"
+version = "0.8.21"
 
 [[JuliaVariables]]
 deps = ["MLStyle", "NameResolution"]
@@ -698,6 +719,12 @@ deps = ["ArrayInterface", "DocStringExtensions", "IfElse", "LinearAlgebra", "Off
 git-tree-sha1 = "9f23789217866ad9ecd053857ef202de5edcac4b"
 uuid = "bdcacae8-1622-11e9-2a5c-532679323890"
 version = "0.12.65"
+
+[[LoweredCodeUtils]]
+deps = ["JuliaInterpreter"]
+git-tree-sha1 = "491a883c4fef1103077a7f648961adbf9c8dd933"
+uuid = "6f1432cf-f94c-5a45-995e-cdbf5db27b0b"
+version = "2.1.2"
 
 [[MKL_jll]]
 deps = ["Artifacts", "IntelOpenMP_jll", "JLLWrappers", "LazyArtifacts", "Libdl", "Pkg"]
@@ -1015,9 +1042,9 @@ version = "0.3.4"
 
 [[RecursiveArrayTools]]
 deps = ["ArrayInterface", "ChainRulesCore", "DocStringExtensions", "LinearAlgebra", "RecipesBase", "Requires", "StaticArrays", "Statistics", "ZygoteRules"]
-git-tree-sha1 = "82efc2429a2b2e72daf2322dbdf5fc60df6dc51f"
+git-tree-sha1 = "00bede2eb099dcc1ddc3f9ec02180c326b420ee2"
 uuid = "731186ca-8d62-57ce-b412-fbd966d074cd"
-version = "2.17.1"
+version = "2.17.2"
 
 [[RecursiveFactorization]]
 deps = ["LinearAlgebra", "LoopVectorization"]
@@ -1026,9 +1053,9 @@ uuid = "f2c3362d-daeb-58d1-803e-2bc74f2840b4"
 version = "0.1.13"
 
 [[Reexport]]
-git-tree-sha1 = "adcd36e8ba9665c88eb0bd156d4e2a19f9b0d889"
+git-tree-sha1 = "45e428421666073eab6f2da5c9d310d99bb12f9b"
 uuid = "189a3867-3050-52da-a836-e630ba90ab69"
-version = "1.2.0"
+version = "1.2.2"
 
 [[Requires]]
 deps = ["UUIDs"]
@@ -1041,6 +1068,12 @@ deps = ["DiffResults", "DiffRules", "ForwardDiff", "FunctionWrappers", "LinearAl
 git-tree-sha1 = "63ee24ea0689157a1113dbdab10c6cb011d519c4"
 uuid = "37e2e3b7-166d-5795-8a7a-e32c996b4267"
 version = "1.9.0"
+
+[[Revise]]
+deps = ["CodeTracking", "Distributed", "FileWatching", "JuliaInterpreter", "LibGit2", "LoweredCodeUtils", "OrderedCollections", "Pkg", "REPL", "Requires", "UUIDs", "Unicode"]
+git-tree-sha1 = "1947d2d75463bd86d87eaba7265b0721598dd803"
+uuid = "295af30f-e4ad-537b-8983-00126c2a3abe"
+version = "3.1.19"
 
 [[Rmath]]
 deps = ["Random", "Rmath_jll"]
@@ -1166,9 +1199,9 @@ version = "0.1.18"
 
 [[StructArrays]]
 deps = ["Adapt", "DataAPI", "StaticArrays", "Tables"]
-git-tree-sha1 = "000e168f5cc9aded17b6999a560b7c11dda69095"
+git-tree-sha1 = "1700b86ad59348c0f9f68ddc95117071f947072d"
 uuid = "09ab397b-f2b6-538f-b94a-2f83cf4a842a"
-version = "0.6.0"
+version = "0.6.1"
 
 [[SuiteSparse]]
 deps = ["Libdl", "LinearAlgebra", "Serialization", "SparseArrays"]
@@ -1209,6 +1242,12 @@ version = "0.1.4"
 [[Test]]
 deps = ["InteractiveUtils", "Logging", "Random", "Serialization"]
 uuid = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[[TestEnv]]
+deps = ["Pkg"]
+git-tree-sha1 = "62f7f56dbc9d2d6b9cfd9745db4ee62293b7b9d0"
+uuid = "1e6cf692-eddd-4d53-88a5-2d735e33781b"
+version = "1.4.2"
 
 [[ThreadingUtilities]]
 deps = ["ManualMemory"]
@@ -1263,9 +1302,9 @@ version = "1.0.3"
 
 [[VectorizationBase]]
 deps = ["ArrayInterface", "CPUSummary", "HostCPUFeatures", "Hwloc", "IfElse", "Libdl", "LinearAlgebra", "Static"]
-git-tree-sha1 = "83c4730dc505ece20445c0f87478629b0877ba3d"
+git-tree-sha1 = "5e6e23728d6c8d26d2826f6cb2cd21892a958a43"
 uuid = "3d5dd08c-fd9d-11e8-17fa-ed2836048c2f"
-version = "0.20.35"
+version = "0.20.38"
 
 [[Wayland_jll]]
 deps = ["Artifacts", "Expat_jll", "JLLWrappers", "Libdl", "Libffi_jll", "Pkg", "XML2_jll"]
