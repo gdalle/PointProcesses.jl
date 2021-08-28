@@ -7,10 +7,10 @@ authors:
     family-names: Dalle
     given-names: Guillaume
     orcid: "https://orcid.org/0000-0003-4866-1687"
-cff-version: "1.1.0"
+cff-version: 1.1.0
 license: MIT
 message: "If you use this software, please cite it using these metadata."
 repository-code: "https://github.com/gdalle/PointProcesses.jl"
 title: "PointProcesses.jl"
-version: "v0.2.0"
+version: v0.2.0
 ...
