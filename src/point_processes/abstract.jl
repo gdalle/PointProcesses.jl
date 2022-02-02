@@ -1,9 +1,9 @@
 """
-    AbstractPointProcess{L, M}
+    AbstractPointProcess{M,L}
 
-The common supertype of all point processes with location type `L` and mark type `M`.
+The common supertype of all point processes with mark type `M` and location type `L`.
 """
-abstract type AbstractPointProcess{L,M} <: AbstractMeasure end
+abstract type AbstractPointProcess{M,L} <: AbstractMeasure end
 
 """
     build_transform(pp)

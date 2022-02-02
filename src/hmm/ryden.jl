@@ -24,7 +24,7 @@ function stationary_distribution(mmpp::MMPP)
     return stationary_distribution(DiscreteMarkovChain(ones(nb_states(mmpp)), P))
 end
 
-function forward_backward(mmpp::MMPP, h::TemporalHistory)
+function forward_backward(mmpp::MMPP, h::History)
     S = nb_states(mmpp)
     π0 = stationary_distribution(mmpp)
 
@@ -85,7 +85,7 @@ function forward_backward(mmpp::MMPP, h::TemporalHistory)
     return m̂, n̂, D̂, logL
 end
 
-function ryden(mmpp::MMPP{M,Tr,Em}, h::TemporalHistory{M}; iterations) where {M,Tr,Em}
+function ryden(mmpp::MMPP{M,Tr,Em}, h::History{M}; iterations) where {M,Tr,Em}
     logL_evolution = Float64[]
     for _ = 1:iterations
         m̂, n̂, D̂, logL = forward_backward(mmpp, h)

@@ -3,7 +3,7 @@
 
 Plot an event history with its marks if those are of a real subtype.
 """
-function plot_events(h::TemporalHistory{M}) where {M<:Real}
+function plot_events(h::History{M}) where {M<:Real}
     scatter(
         h.times,
         h.marks,
@@ -22,7 +22,7 @@ Plot the conditional intensity function of a temporal point process along a give
 """
 function plot_intensity(
     pp::TemporalPointProcess{M},
-    h::TemporalHistory{M};
+    h::History{M};
     npoints = 100,
 ) where {M}
     curve_times = h.tmin:(duration(h)/npoints):h.tmax
@@ -44,9 +44,9 @@ end
 
 Compare the distribution of inter-event times in a given history to the exponential distribution.
 """
-function qqplot_interevent_times(h::TemporalHistory)
+function qqplot_interevent_times(h::History)
     plot(
-        qqplot(Dists.Exponential, diff(vcat(0., event_times(h)))),
+        qqplot(Exponential, diff(vcat(0., event_times(h)))),
         xlabel = "Quantiles of exponential distribution",
         ylabel = "Quantiles of inter-event times",
         title = "Residual analysis",

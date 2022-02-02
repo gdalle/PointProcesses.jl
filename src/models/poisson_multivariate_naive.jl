@@ -26,19 +26,19 @@ end
 
 ## Intensity functions
 
-function intensity(pp::NaiveMultivariatePoissonProcess, h::TemporalHistory, t, m)
+function intensity(pp::NaiveMultivariatePoissonProcess, h::History, t, m)
     return pp.λ[m]
 end
 
-function mark_distribution(pp::NaiveMultivariatePoissonProcess, h::TemporalHistory, t)
-    return Dists.Categorical(pp.λ / sum(pp.λ))
+function mark_distribution(pp::NaiveMultivariatePoissonProcess, h::History, t)
+    return Categorical(pp.λ / sum(pp.λ))
 end
 
-function ground_intensity(pp::NaiveMultivariatePoissonProcess, h::TemporalHistory, t)
+function ground_intensity(pp::NaiveMultivariatePoissonProcess, h::History, t)
     return sum(pp.λ)
 end
 
-function ground_intensity_bound(pp::NaiveMultivariatePoissonProcess, h::TemporalHistory, t)::Tuple{Float64, Float64}
+function ground_intensity_bound(pp::NaiveMultivariatePoissonProcess, h::History, t)::Tuple{Float64, Float64}
     λg = ground_intensity(pp, h, t)
     return λg, Inf
 end

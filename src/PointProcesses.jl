@@ -3,121 +3,115 @@ A package for point process modeling, simulation and inference.
 """
 module PointProcesses
 
-## Imports
+# Imports
 
 using DataStructures
-using GalacticOptim
+using DensityInterface
+using Distributions
 using LinearAlgebra
 using LogExpFunctions
-using MeasureTheory
 using NamedTupleTools
 using OffsetArrays
-using Optim
-using Plots
-using Quadrature
 using Random
-using SciMLBase
-using StatsPlots
-using TransformVariables
-
-# Hidden names
-
 using Random: GLOBAL_RNG
+using Requires
+using TransformVariables
+using UnPack
 
-# Functions to extend
+## Hidden names
 
-import Base: eltype, length, rand
-import Distributions: fit, fit_mle, suffstats
-import MeasureTheory: density, logdensity, sampletype, testvalue
+# import Base: eltype, length, rand
+# import Distributions: fit, fit_mle, suffstats
 
-## Includes and exports
+# Exports
 
-# Reexports
+## Reexports
 
 export eltype, rand  # Base
 export mean
-export logpdf, fit, fit_mle, suffstats  # Distributions
+export fit, fit_mle, suffstats  # Distributions
 export plot, scatter  # Plot
 
-# History
+## History
 
-include("history/abstract.jl")
-export AbstractHistory
-
-include("history/temporal.jl")
-export TemporalHistory
+export History
 export event_times, event_marks, min_time, max_time
-export nb_events, has_events, duration, time_change
+export nb_events, has_events, duration
+export time_change
 
-# Markov processes
+## Markov processes
 
-include("markov/abstract.jl")
-export AbstractMarkovChain
-export nb_states
-export AbstractMarkovChainPrior
+export DiscreteMarkovChain, DiscreteMarkovChainPrior, DiscreteMarkovChainStats
+export initial_distribution, transition_matrix, stationary_distribution
+
+export ContinuousMarkovChain, ContinuousMarkovChainPrior, ContinuousMarkovChainStats
+export rate_matrix, rate_diag, discretize_chain
+
+## Point processes
+
+# export AbstractPointProcess, build_transform
+
+# export TemporalPointProcess, BoundedTemporalPointProcess
+# export intensity, mark_distribution, ground_intensity, ground_intensity_bound
+# export MultivariateTemporalPointProcess, all_marks, all_mark_probabilities
+# export integrated_ground_intensity, check_residuals
+
+## Models
+
+# export PoissonProcess
+
+# export NaiveMultivariatePoissonProcess
+
+## Hidden Markov models
+
+# export HiddenMarkovModel
+# export transitions, emissions, emission
+
+# export forward_nolog!, forward_log!
+# export backward_nolog!, backward_log!
+# export forward_backward_nolog!, forward_backward_log!
+# export update_obs_pdf!, update_obs_logpdf!
+# export baum_welch!, baum_welch
+
+# export MarkovModulatedPoissonProcess
+
+# export forward_backward, ryden
+
+## Utils
+
+# export all_minus_inf, all_plus_inf, all_zeros, all_nan
+# export uniformprobvec, randprobvec
+# export uniformtransmat, randtransmat
+
+# Includes
+
+## Unconditional
+
+include("history/history.jl")
 
 include("markov/discrete_time.jl")
-export DiscreteMarkovChain
-export initial_distribution, transition_matrix, stationary_distribution
-export DiscreteMarkovChainPrior, DiscreteMarkovChainStats
-
 include("markov/continuous_time.jl")
-export ContinuousMarkovChain
-export rate_matrix, rate_diag, discretize_chain
-export ContinuousMarkovChainPrior, ContinuousMarkovChainStats
 
-# Point processes
+# include("point_processes/temporal.jl")
+# include("models/poisson.jl")
+# include("models/poisson_multivariate_naive.jl")
 
-include("point_processes/abstract.jl")
-export AbstractPointProcess, build_transform
+# include("hmm/hmm.jl")
+# include("hmm/baum_welch.jl")
+# include("hmm/mmpp.jl")
+# include("hmm/ryden.jl")
 
-include("point_processes/temporal.jl")
-export TemporalPointProcess, BoundedTemporalPointProcess
-export intensity, mark_distribution, ground_intensity, ground_intensity_bound
-export MultivariateTemporalPointProcess, all_marks, all_mark_probabilities
-export integrated_ground_intensity, check_residuals
+# include("utils/overflow.jl")
+# include("utils/dists.jl")
+# include("utils/categorical.jl")
+# include("utils/randvals.jl")
 
-# Models
+## Conditional dependencies
 
-include("models/poisson.jl")
-export PoissonProcess
-
-include("models/poisson_multivariate_naive.jl")
-export NaiveMultivariatePoissonProcess
-
-# Hidden Markov models
-
-include("hmm/hmm.jl")
-export HiddenMarkovModel
-export transitions, emissions, emission
-
-include("hmm/baum_welch.jl")
-export forward_nolog!, forward_log!
-export backward_nolog!, backward_log!
-export forward_backward_nolog!, forward_backward_log!
-export update_obs_pdf!, update_obs_logpdf!
-export baum_welch!, baum_welch
-
-include("hmm/mmpp.jl")
-export MarkovModulatedPoissonProcess
-
-include("hmm/ryden.jl")
-export forward_backward, ryden
-
-# Utils
-
-include("utils/overflow.jl")
-export all_minus_inf, all_plus_inf, all_zeros, all_nan
-
-include("utils/dists.jl")
-
-include("utils/categorical.jl")
-
-include("utils/plot.jl")
-export plot_events, plot_intensity, qqplot_interevent_times
-
-include("utils/randvals.jl")
-export uniformprobvec, randprobvec
-export uniformtransmat, randtransmat
+function __init__()
+    @require Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80" include("utils/plot.jl")
+    @require Quadrature = "67601950-bd08-11e9-3c89-fd23fb4432d2" include("point_processes/integration.jl")
+    @require GalacticOptim = "a75be94c-b780-496d-a8a9-0878b188d577" include("point_processes/optimization.jl")
+end
 
 end

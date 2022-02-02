@@ -29,7 +29,7 @@ end
 
 ## Sufficient statistics
 
-struct ProductSufficientStats{T<:Dists.SufficientStats}
+struct ProductSufficientStats{T<:SufficientStats}
     ss_marginals::Vector{T}
 end
 

@@ -34,7 +34,7 @@ nb_states(mmpp::MMPP) = length(emissions(mmpp))
 function Base.rand(rng::AbstractRNG, mmpp::MMPP{M}, tmin, tmax) where {M}
     state_history = rand(rng, transitions(mmpp), tmin, tmax)
     transition_times, states = event_times(state_history), event_marks(state_history)
-    observations = TemporalHistory(Float64[], M[], tmin, tmax)
+    observations = History(Float64[], M[], tmin, tmax)
     for k = 1:length(transition_times)
         local_s = states[k]
         local_tmin = transition_times[k]

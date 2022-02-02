@@ -14,7 +14,7 @@ const MvCategoricalPrior = ProductDistribution{Dirichlet}
 
 # ## MLE
 
-# function Distributions.fit_mle(
+# function fit_mle(
 #     ::Type{<:MvCategorical},
 #     ks::AbstractVector{Integer},
 #     x::AbstractMatrix{Integer},
@@ -24,7 +24,7 @@ const MvCategoricalPrior = ProductDistribution{Dirichlet}
 #     return MvCategorical(p)
 # end
 
-# function Distributions.fit_mle(
+# function fit_mle(
 #     ::Type{<:MvCategorical},
 #     ks::AbstractVector{Integer},
 #     x::AbstractMatrix{Integer},
@@ -36,12 +36,12 @@ const MvCategoricalPrior = ProductDistribution{Dirichlet}
 # end
 
 
-# function Distributions.fit_mle(::Type{<:MvCategorical}, x::AbstractMatrix{Integer})
+# function fit_mle(::Type{<:MvCategorical}, x::AbstractMatrix{Integer})
 #     ks = vec(maximum(x, dims = 2))
 #     return fit_mle(MvCategorical, ks, x)
 # end
 
-# function Distributions.fit_mle(
+# function fit_mle(
 #     ::Type{<:MvCategorical},
 #     x::AbstractMatrix{Integer},
 #     w::AbstractVector{Real},
