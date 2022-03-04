@@ -43,7 +43,7 @@ Sufficient statistics for the likelihood of a `DiscreteMarkovChain`.
 """
 Base.@kwdef struct DiscreteMarkovChainStats{
     R1<:Real,R2<:Real,V1<:AbstractVector{R1},M2<:AbstractMatrix{R2}
-} <: SufficientStats
+}
     initialization::V1
     transition_count::M2
 end
@@ -91,35 +91,28 @@ function Distributions.suffstats(
     for t in 1:(T - 1)
         transition_count[x[t], x[t + 1]] += 1
     end
-    return DiscreteMarkovChainStats(initialization, transition_count)
+    return DiscreteMarkovChainStats(;
+        initialization=initialization, transition_count=transition_count
+    )
 end
 
-function Distributions.suffstats(
-    ::Type{<:DiscreteMarkovChain}, γ::AbstractMatrix, ξ::AbstractArray{<:Real,3}
-)
-    T, S, _ = size(ξ)
-    initialization = γ[1, :]
-    transition_count = zeros(Float64, S, S)
-    for i in 1:S, j in 1:S
-        transition_count[i, j] = sum(@view ξ[:, i, j])
-    end
-    return DiscreteMarkovChainStats(initialization, transition_count)
-end
-
-function Distributions.suffstats(
-    ::Type{<:DiscreteMarkovChain}, prior::DiscreteMarkovChainPrior, args...
-)
-    ss = suffstats(DiscreteMarkovChain, args...)
-    ss.initialization .+= (prior.π0α .- 1)
-    ss.transition_count .+= (prior.Pα .- 1)
-    return ss
-end
+# function Distributions.suffstats(
+#     ::Type{<:DiscreteMarkovChain}, γ::AbstractMatrix{<:Real}, ξ::AbstractArray{<:Real,3}
+# )
+#     T, S, _ = size(ξ)
+#     initialization = γ[1, :]
+#     transition_count = zeros(Float64, S, S)
+#     for i in 1:S, j in 1:S
+#         transition_count[i, j] = sum(@view ξ[:, i, j])
+#     end
+#     return DiscreteMarkovChainStats(;
+#         initialization=initialization, transition_count=transition_count
+#     )
+# end
 
 ## Densities
 
-function DensityInterface.logdensityof(
-    mc::DiscreteMarkovChain, x::AbstractVector{<:Integer}
-)
+function DensityInterface.logdensityof(mc::DiscreteMarkovChain, x::AbstractVector)
     T = length(x)
     l = log(mc.π0[x[1]])
     for t in 2:T
@@ -143,10 +136,17 @@ end
 function Distributions.fit_mle(::Type{<:DiscreteMarkovChain}, ss::DiscreteMarkovChainStats)
     π0 = ss.initialization ./ sum(ss.initialization)
     P = ss.transition_count ./ sum(ss.transition_count; dims=2)
-    return DiscreteMarkovChain(π0, P)
+    return DiscreteMarkovChain(; π0=π0, P=P)
 end
 
 function Distributions.fit_mle(mctype::Type{<:DiscreteMarkovChain}, args...; kwargs...)
     ss = suffstats(mctype, args...; kwargs...)
+    return fit_mle(mctype, ss)
+end
+
+function fit_map(mctype::Type{<:DiscreteMarkovChain}, prior::DiscreteMarkovChainPrior, args...; kwargs...)
+    ss = suffstats(mctype, args...; kwargs...)
+    ss.initialization .+= (prior.π0α .- 1)
+    ss.transition_count .+= (prior.Pα .- 1)
     return fit_mle(mctype, ss)
 end

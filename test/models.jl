@@ -1,10 +1,12 @@
 @testset verbose = true "Models" begin
-    @testset "Poisson" begin
-        mark_dist = Dists.Categorical([0.1, 0.3, 0.6])
-        pp = PoissonProcess(5.0, mark_dist)
-        h = rand(pp, 0.0, 100.0)
-        pp_est = fit(PoissonProcess{Dists.Categorical}, h)
-        error = Dists.probs(mark_distribution(pp_est)) - Dists.probs(mark_distribution(pp))
-        @test maximum(error) < 0.1
+    @testset "Multivariate Poisson" begin
+        pp = MultivariatePoissonProcess(rand(10))
+        h = rand(pp, 0.0, 1000.0)
+        pp_est = fit_mle(MultivariatePoissonProcess, h)
+        error = pp_est.λ - pp.λ
+        @test maximum(error) < 0.2
+    end
+
+    @testset "Generic Poisson" begin
     end
 end

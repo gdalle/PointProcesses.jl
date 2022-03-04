@@ -22,17 +22,17 @@ makedocs(;
     ),
     pages = [
         "Home" => "index.md",
-        "Tutorial" => [
-            "Event history" => "tuto/history.md",
-            "Point processes" => "tuto/point_processes.md",
-            "Built-in models" => "tuto/models.md",
-            "Markov chains" => "tuto/markov.md",
-            "Hidden Markov models" => "tuto/hmm.md",
-            "Utilities" => "tuto/utils.md",
+        "Tutorials" => [
+            # "Event history" => "tuto/history.md",
+            # "Point processes" => "tuto/point_processes.md",
+            # "Built-in models" => "tuto/models.md",
+            # "Markov chains" => "tuto/markov.md",
+            # "Hidden Markov models" => "tuto/hmm.md",
+            # "Utilities" => "tuto/utils.md",
         ],
         "API reference" => "api.md",
         "Roadmap" => "roadmap.md",
     ],
 )
 
-deploydocs(; repo = "github.com/gdalle/PointProcesses.jl", devbranch = "master")
+deploydocs(; repo = "github.com/gdalle/PointProcesses.jl", devbranch = "dev")

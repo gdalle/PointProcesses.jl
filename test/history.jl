@@ -1,5 +1,5 @@
 @testset verbose = true "History" begin
-    history = TemporalHistory([0.2, 0.8, 1.1], ["a", "b", "c"], 0.0, 2.0);
+    history = History([0.2, 0.8, 1.1], ["a", "b", "c"], 0.0, 2.0);
     @test duration(history) == 2.
     @test nb_events(history) == 3
     @test nb_events(history, 1.0, 2.0) == 1

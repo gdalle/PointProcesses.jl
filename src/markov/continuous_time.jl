@@ -53,9 +53,9 @@ Base.@kwdef struct ContinuousMarkovChainStats{
     R2<:Real,
     R3<:Real,
     V1<:AbstractVector{R1},
-    V2<:AbstractMatrix{R2},
+    V2<:AbstractVector{R2},
     M3<:AbstractMatrix{R3},
-} <: SufficientStats
+}
     initialization::V1
     duration::V2
     transition_count::M3
@@ -68,20 +68,7 @@ initial_distribution(mc::ContinuousMarkovChain) = mc.π0
 rate_matrix(mc::ContinuousMarkovChain) = mc.Q
 rate_negdiag(mc::ContinuousMarkovChain) = -diag(rate_matrix(mc))
 
-## Asymptotics
-
-function stationary_distribution(mc::ContinuousMarkovChain)
-    π = real.(eigvecs(rate_matrix(mc)')[:, end])
-    return π / sum(π)
-end
-
-## Misc
-
-function discretize_chain(mc::ContinuousMarkovChain, Δt)
-    return DiscreteMarkovChain(initial_distribution(mc), exp(rate_matrix(mc) * Δt))
-end
-
-function underlying_transition_matrix(mc::ContinuousMarkovChain)
+function embedded_transition_matrix(mc::ContinuousMarkovChain)
     P = rate_matrix(mc) ./ rate_negdiag(mc)
     P[diagind(P)] .= zero(eltype(P))
     return P
@@ -91,11 +78,11 @@ end
 
 function Base.rand(rng::AbstractRNG, mc::ContinuousMarkovChain, tmin, tmax)
     D = rate_negdiag(mc)
-    P = transition_matrix(mc)
+    P = embedded_transition_matrix(mc)
     transitions = [Categorical(P[s, :]) for s in 1:nb_states(mc)]
     waiting_times = [Exponential(1 / D[s]) for s in 1:nb_states(mc)]
 
-    h = History(Float64[], Int[], tmin, tmax)
+    h = History(; times=Float64[], marks=Int[], tmin=tmin, tmax=tmax)
     s = rand(rng, Categorical(mc.π0))
     push!(h, tmin, s)
     t = tmin
@@ -119,6 +106,13 @@ end
 Base.rand(mc::ContinuousMarkovChain, tmin, tmax) = rand(GLOBAL_RNG, mc, tmin, tmax)
 Base.rand(prior::ContinuousMarkovChainPrior) = rand(GLOBAL_RNG, prior)
 
+## Asymptotics
+
+function stationary_distribution(mc::ContinuousMarkovChain)
+    π = real.(eigvecs(rate_matrix(mc)')[:, end])
+    return π / sum(π)
+end
+
 ## Sufficient statistics
 
 function Distributions.suffstats(::Type{ContinuousMarkovChain}, h::History{<:Integer})
@@ -132,29 +126,15 @@ function Distributions.suffstats(::Type{ContinuousMarkovChain}, h::History{<:Int
         transition_count[states[t], states[t + 1]] += 1
     end
     duration[states[length(states)]] += h.tmax - h.times[length(states)]
-    return ContinuousMarkovChainStats(initialization, transition_count, duration)
-end
-
-function Distributions.suffstats(::Type{ContinuousMarkovChain}, m̂, D̂)
-    return error("not implemented")
-end
-
-function Distributions.suffstats(
-    ::Type{<:ContinuousMarkovChain}, prior::ContinuousMarkovChainPrior, args...
-)
-    ss = suffstats(ContinuousMarkovChain, args...)
-    ss.initialization .+= (prior.π0α .- 1)
-    ss.transition_count .+= (prior.Pα .- 1)
-    ss.duration .+= prior.Pβ
-    return ss
+    return ContinuousMarkovChainStats(;
+        initialization=initialization, duration=duration, transition_count=transition_count
+    )
 end
 
 ## Densities
 
-function DensityInterface.logdensityof(
-    mc::ContinuousMarkovChain, h::History
-)
-    error("not implemented")
+function DensityInterface.logdensityof(mc::ContinuousMarkovChain, h::History{<:Integer})
+    return error("not implemented")
 end
 
 function DensityInterface.logdensityof(
@@ -172,9 +152,30 @@ end
 
 ## Fit
 
-function Distributions.fit_mle(::Type{<:ContinuousMarkovChain}, ss::ContinuousMarkovChainStats)
+function Distributions.fit_mle(
+    ::Type{<:ContinuousMarkovChain}, ss::ContinuousMarkovChainStats
+)
     π0 = ss.initialization ./ sum(ss.initialization)
     Q = ss.transition_count ./ ss.duration
     Q[diagind(Q)] .= -vec(sum(Q; dims=2)) + Q[diagind(Q)]
-    return ContinuousMarkovChain(π0, Q)
+    return ContinuousMarkovChain(; π0=π0, Q=Q)
+end
+
+function Distributions.fit_mle(mctype::Type{<:ContinuousMarkovChain}, args...; kwargs...)
+    ss = suffstats(mctype, args...; kwargs...)
+    return fit_mle(mctype, ss)
+end
+
+function fit_map(mctype::Type{<:ContinuousMarkovChain}, prior::ContinuousMarkovChainPrior, args...; kwargs...)
+    ss = suffstats(mctype, args...; kwargs...)
+    ss.initialization .+= (prior.π0α .- 1)
+    ss.transition_count .+= (prior.Pα .- 1)
+    ss.duration .+= prior.Pβ
+    return fit_mle(mctype, ss)
+end
+
+## Misc
+
+function discretize_chain(mc::ContinuousMarkovChain, Δt)
+    return DiscreteMarkovChain(; π0=initial_distribution(mc), P=exp(rate_matrix(mc) * Δt))
 end

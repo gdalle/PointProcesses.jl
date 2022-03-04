@@ -52,3 +52,14 @@ function qqplot_interevent_times(h::History)
         title = "Residual analysis",
     )
 end
+
+@doc raw"""
+    check_residuals(pp, h)
+
+Check whether the point process `pp` is a good fit for history `h` by applying Ogata's time rescaling method: if $(t_i)_i$ is a temporal point process with intensity $\lambda(t)$, then $(\Lambda(t_i))_i$ is a standard temporal Poisson process.
+"""
+function check_residuals(pp::TemporalPointProcess, h::History)
+    Λ(t) = integrated_ground_intensity(pp, h, t)
+    h_rescaled = time_change(h, Λ)
+    return qqplot_interevent_times(h_rescaled)
+end

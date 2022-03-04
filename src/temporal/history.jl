@@ -10,7 +10,7 @@ Linear event histories with marks of type `M` and locations of real type `T`.
 - `tmin::T`: start time
 - `tmax::T`: end time
 """
-mutable struct History{M,T} <: AbstractHistory{M,T}
+Base.@kwdef mutable struct History{M,T<:Real}
     times::Vector{T}
     marks::Vector{M}
     tmin::T

@@ -1,25 +1,14 @@
 using Documenter
-using ForwardDiff
-using GalacticOptim
-using JETTest
-using MeasureTheory
-using Optim
 using PointProcesses
 using Random
 using Test
 
-Random.seed!(63)
-
-include("doctests.jl")
-
-include("history.jl")
-
-include("markov.jl")
-
-include("point_processes.jl")
-
-include("models.jl")
-
-include("hmm.jl")
-
-include("utils.jl")
+@testset verbose = true "PointProcesses.jl" begin
+    include("history.jl")
+    include("markov.jl")
+    include("point_processes.jl")
+    include("models.jl")
+    # include("hmm.jl")
+    # include("utils.jl")
+    # include("doctests.jl")
+end
