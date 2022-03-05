@@ -1,9 +1,9 @@
 """
-    simulate_ogata(rng, pp, tmin, tmax)
+    rand(rng, pp, tmin, tmax)
 
 Simulate a temporal point process `pp` on interval `[tmin, tmax)` using Ogata's algorithm.
 """
-function simulate_ogata(rng::AbstractRNG, pp::TemporalPointProcess{M}, tmin, tmax) where {M}
+function Base.rand(rng::AbstractRNG, pp::TemporalPointProcess{M}, tmin, tmax) where {M}
     h = History(times=Float64[], marks=M[], tmin=tmin, tmax=tmax)
     t = tmin
     while t < tmax
@@ -25,10 +25,10 @@ function simulate_ogata(rng::AbstractRNG, pp::TemporalPointProcess{M}, tmin, tma
     return h
 end
 
-function simulate_ogata(rng::AbstractRNG, tpp::BoundedTemporalPointProcess)
-    return simulate_ogata(rng, tpp.pp, tpp.tmin, tpp.tmax)
+function Base.rand(rng::AbstractRNG, tpp::BoundedTemporalPointProcess)
+    return rand(rng, tpp.pp, tpp.tmin, tpp.tmax)
 end
 
-function simulate_ogata(tpp::TemporalPointProcess, args...; kwargs...)
-    return simulate_ogata(GLOBAL_RNG, tpp, args...; kwargs...)
+function Base.rand(tpp::TemporalPointProcess, args...; kwargs...)
+    return rand(GLOBAL_RNG, tpp, args...; kwargs...)
 end

@@ -41,6 +41,9 @@ function ground_intensity_bound(pp::MultivariatePoissonProcess, t=nothing, h=not
     return ground_intensity(pp, t, h), Inf
 end
 
+function integrated_ground_intensity(pp::MultivariatePoissonProcess, h)
+    return ground_intensity(pp) * duration(h)
+end
 
 ## Simulation
 
@@ -54,16 +57,6 @@ end
 
 function Base.rand(pp::MultivariatePoissonProcess, tmin::Real, tmax::Real)
     return rand(GLOBAL_RNG, pp, tmin, tmax)
-end
-
-## Likelihood
-
-function DensityInterface.logdensityof(pp::MultivariatePoissonProcess, h::History)
-    l = -ground_intensity(pp) * duration(h)
-    for m in event_marks(h)
-        l += log_intensity(pp, m)
-    end
-    return l
 end
 
 ## Prior likelihood

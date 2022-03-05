@@ -14,7 +14,6 @@ using OffsetArrays
 using ProgressMeter
 using Random
 using Random: GLOBAL_RNG
-using Requires
 using UnicodePlots
 using UnPack
 
@@ -24,10 +23,11 @@ using UnPack
 
 ## Reexports
 
-export eltype, rand  # Base
-export mean  # Statistics
+export rand  # Base
 export fit, fit_mle, suffstats  # Distributions
-export plot, scatter  # Plot
+export logdensityof # DensityInterface
+
+export fit_map
 
 ## History
 
@@ -40,6 +40,7 @@ export time_change
 
 export DiscreteMarkovChain, DiscreteMarkovChainPrior
 export initial_distribution, transition_matrix, stationary_distribution
+export nb_states
 
 export ContinuousMarkovChain, ContinuousMarkovChainPrior
 export rate_matrix, rate_diag, discretize_chain
@@ -49,6 +50,8 @@ export rate_matrix, rate_diag, discretize_chain
 export TemporalPointProcess, BoundedTemporalPointProcess
 export intensity, log_intensity, mark_distribution
 export ground_intensity, ground_intensity_bound
+export integrated_ground_intensity
+export simulate_ogata
 
 ## Models
 
@@ -80,7 +83,6 @@ export uniformtransmat, randtransmat
 include("temporal/history.jl")
 include("temporal/point_processes.jl")
 include("temporal/simulation.jl")
-include("temporal/integration.jl")
 
 include("markov/discrete_time.jl")
 include("markov/continuous_time.jl")
@@ -99,12 +101,5 @@ include("hmm/baum_welch.jl")
 include("utils/overflow.jl")
 include("utils/randvals.jl")
 # include("utils/categorical.jl")
-
-## Conditional dependencies
-
-function __init__()
-    @require Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80" include("temporal/plot.jl")
-    @require Quadrature = "67601950-bd08-11e9-3c89-fd23fb4432d2" include("temporal/integration.jl")
-end
 
 end

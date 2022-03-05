@@ -1,19 +1,26 @@
 @testset verbose = true "Markov" begin
-
     @testset "Discrete" begin
-        dmc = DiscreteMarkovChain([0.3, 0.7], [0.9 0.1; 0.2 0.8])
+        dmc = DiscreteMarkovChain(; π0=[0.3, 0.7], P=[0.9 0.1; 0.2 0.8])
+        @test nb_states(dmc) == 2
+        @test stationary_distribution(dmc) ≈ [0.2 / (0.1 + 0.2), 0.1 / (0.1 + 0.2)]
+
         states = rand(dmc, 1000)
-        dmc_est = fit_mle(DiscreteMarkovChain, states)
-        error = transition_matrix(dmc_est) - transition_matrix(dmc)
-        @test maximum(error) < 0.2
+        dmc_est_mle = fit_mle(DiscreteMarkovChain, states)
+        error_mle = abs.(transition_matrix(dmc_est_mle) - transition_matrix(dmc))
+        @test mean(error_mle) < 0.1
+
+        prior = DiscreteMarkovChainPrior(π0α=[1., 1.], Pα=1000*ones(2, 2))
+        dmc_est_map = fit_map(DiscreteMarkovChain, prior, states)
+        error_map =abs.(transition_matrix(dmc_est_map) - transition_matrix(dmc))
+        @test mean(error_map) > mean(error_mle)
+
     end
 
     @testset "Continuous" begin
-        cmc = ContinuousMarkovChain([0.3, 0.7], [-1. 1.; 2. -2.])
-        history = rand(cmc, 0., 1000.)
+        cmc = ContinuousMarkovChain(; π0=[0.3, 0.7], Q=[-1.0 1.0; 2.0 -2.0])
+        history = rand(cmc, 0.0, 1000.0)
         cmc_est = fit_mle(ContinuousMarkovChain, history)
         error = rate_matrix(cmc_est) - rate_matrix(cmc)
-        @test maximum(error) < 0.2
+        @test mean(error) < 0.1
     end
-
 end

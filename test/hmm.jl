@@ -17,18 +17,18 @@
     transition_error1 = abs.(transition_matrix(hmm_est1) - transition_matrix(hmm))
     transition_error2 = abs.(transition_matrix(hmm_est2) - transition_matrix(hmm))
 
-    @test maximum(transition_error1) < 0.1
-    @test maximum(transition_error2) < 0.1
+    @test mean(transition_error1) < 0.1
+    @test mean(transition_error2) < 0.1
 
     μ_error1 = abs.([emission(hmm_est1, s).μ - emission(hmm, s).μ for s = 1:2])
     μ_error2 = abs.([emission(hmm_est2, s).μ - emission(hmm, s).μ for s = 1:2])
 
-    @test maximum(μ_error1) < 0.1
-    @test maximum(μ_error2) < 0.1
+    @test mean(μ_error1) < 0.1
+    @test mean(μ_error2) < 0.1
 
     σ_error1 = abs.([emission(hmm_est1, s).σ - emission(hmm, s).σ for s = 1:2])
     σ_error2 = abs.([emission(hmm_est2, s).σ - emission(hmm, s).σ for s = 1:2])
 
-    @test maximum(σ_error1) < 0.1
-    @test maximum(σ_error2) < 0.1
+    @test mean(σ_error1) < 0.1
+    @test mean(σ_error2) < 0.1
 end

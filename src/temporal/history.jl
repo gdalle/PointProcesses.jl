@@ -78,13 +78,11 @@ end
 Add all the events of `h2` at the end of `h1`.
 """
 function Base.append!(h1::History, h2::History)
-    if has_events(h1) && has_events(h2)
-        @assert maximum(event_times(h1)) < minimum(event_times(h2))
-    end
-    for (t, m) in zip(event_times(h2), event_marks(h2))
-        push!(h1, t, m)
-    end
-    return nothing
+    max_time(h1) ≈ min_time(h2) || return false
+    append!(h1.times, h2.times)
+    append!(h1.marks, h2.marks)
+    h1.tmax = h2.tmax
+    return true
 end
 
 @doc raw"""
@@ -92,10 +90,10 @@ end
 
 Apply the time rescaling $t \mapsto \Lambda(t)$ to history `h`.
 """
-function time_change(h::History, Λ::Function)
+function time_change(h::History, Λ)
     new_times = Λ.(event_times(h))
     new_marks = copy(event_marks(h))
     new_tmin = Λ(min_time(h))
     new_tmax = Λ(max_time(h))
-    return History(new_times, new_marks, new_tmin, new_tmax)
+    return History(times=new_times, marks=new_marks, tmin=new_tmin, tmax=new_tmax)
 end
