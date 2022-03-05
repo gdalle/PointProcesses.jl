@@ -1,15 +1,15 @@
 """
-    HMM{Tr<:DiscreteMarkovChain,Em}
+    HMM{TransitionsType,EmissionsType}
 
 Hidden Markov Model with arbitrary transition model (must be a discrete Markov chain) and emission distributions.
 
 # Fields
-- `transitions::Tr`: state evolution process.
-- `emissions::Vector{Em}`: one emission distribution per state.
+- `transitions::TransitionsType`: state evolution process.
+- `emissions::Vector{EmissionsType}`: one emission distribution per state.
 """
-struct HiddenMarkovModel{Tr<:DiscreteMarkovChain,Em} <: AbstractMeasure
-    transitions::Tr
-    emissions::Vector{Em}
+struct HiddenMarkovModel{TransitionsType,EmissionsType}
+    transitions::TransitionsType
+    emissions::Vector{EmissionsType}
 end
 
 const HMM = HiddenMarkovModel
@@ -21,7 +21,7 @@ initial_distribution(hmm::HMM) = initial_distribution(transitions(hmm))
 transition_matrix(hmm::HMM) = transition_matrix(transitions(hmm))
 
 emissions(hmm::HMM) = hmm.emissions
-emission(hmm::HMM, s::Int) = hmm.emissions[s]
+emission(hmm::HMM, s::Integer) = hmm.emissions[s]
 nb_states(hmm::HMM) = length(emissions(hmm))
 
 ## Simulation

@@ -1,4 +1,5 @@
 using Documenter
+using Distributions
 using PointProcesses
 using Random
 using Test
@@ -8,7 +9,6 @@ using Test
     include("markov.jl")
     include("point_processes.jl")
     include("models.jl")
-    # include("hmm.jl")
-    # include("utils.jl")
-    # include("doctests.jl")
+    include("hmm.jl")
+    # include("mmpp.jl")
 end

@@ -96,19 +96,19 @@ function Distributions.suffstats(
     )
 end
 
-# function Distributions.suffstats(
-#     ::Type{<:DiscreteMarkovChain}, γ::AbstractMatrix{<:Real}, ξ::AbstractArray{<:Real,3}
-# )
-#     T, S, _ = size(ξ)
-#     initialization = γ[1, :]
-#     transition_count = zeros(Float64, S, S)
-#     for i in 1:S, j in 1:S
-#         transition_count[i, j] = sum(@view ξ[:, i, j])
-#     end
-#     return DiscreteMarkovChainStats(;
-#         initialization=initialization, transition_count=transition_count
-#     )
-# end
+function Distributions.suffstats(
+    ::Type{<:DiscreteMarkovChain}; γ::AbstractMatrix{<:Real}, ξ::AbstractArray{<:Real,3}
+)
+    T, S, _ = size(ξ)
+    initialization = γ[1, :]
+    transition_count = zeros(Float64, S, S)
+    for i in 1:S, j in 1:S, t = 1:T
+        transition_count[i, j] += ξ[t, i, j]
+    end
+    return DiscreteMarkovChainStats(;
+        initialization=initialization, transition_count=transition_count
+    )
+end
 
 ## Densities
 

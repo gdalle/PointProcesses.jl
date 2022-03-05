@@ -11,9 +11,11 @@ using Distributions
 using LinearAlgebra
 using LogExpFunctions
 using OffsetArrays
+using ProgressMeter
 using Random
 using Random: GLOBAL_RNG
 using Requires
+using UnicodePlots
 using UnPack
 
 ## Hidden names
@@ -55,14 +57,12 @@ export MultivariatePoissonProcess
 
 ## Hidden Markov models
 
-# export HiddenMarkovModel
-# export transitions, emissions, emission
+export HiddenMarkovModel
+export transitions, emissions, emission
 
-# export forward_nolog!, forward_log!
-# export backward_nolog!, backward_log!
-# export forward_backward_nolog!, forward_backward_log!
-# export update_obs_pdf!, update_obs_logpdf!
-# export baum_welch!, baum_welch
+export forward!, backward!, update_obs_density!
+export forward_log!, backward_log!, update_obs_logdensity!
+export baum_welch!, baum_welch_log!, baum_welch
 
 # export MarkovModulatedPoissonProcess
 
@@ -70,9 +70,8 @@ export MultivariatePoissonProcess
 
 ## Utils
 
-# export all_minus_inf, all_plus_inf, all_zeros, all_nan
-# export uniformprobvec, randprobvec
-# export uniformtransmat, randtransmat
+export uniformprobvec, randprobvec
+export uniformtransmat, randtransmat
 
 # Includes
 
@@ -89,14 +88,17 @@ include("markov/continuous_time.jl")
 include("models/poisson_generic.jl")
 include("models/poisson_multivariate.jl")
 
-# include("hmm/hmm.jl")
-# include("hmm/baum_welch.jl")
-# include("hmm/mmpp.jl")
-# include("hmm/ryden.jl")
+include("hmm/hmm.jl")
+include("hmm/forward_backward.jl")
+include("hmm/forward_backward_log.jl")
+include("hmm/baum_welch.jl")
 
-# include("utils/overflow.jl")
+# include("mmpp/mmpp.jl")
+# include("mmpp/ryden.jl")
+
+include("utils/overflow.jl")
+include("utils/randvals.jl")
 # include("utils/categorical.jl")
-# include("utils/randvals.jl")
 
 ## Conditional dependencies
 

@@ -20,7 +20,7 @@ end
 
 function all_zeros(x)
     for y in x
-        if 1 / abs(x) < typemax(x)
+        if 1 / abs(y) < typemax(y)
             return false
         end
     end

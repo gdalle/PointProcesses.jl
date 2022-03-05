@@ -1,5 +1,3 @@
-## Simulation with Ogata's algorithm
-
 """
     simulate_ogata(rng, pp, tmin, tmax)
 
