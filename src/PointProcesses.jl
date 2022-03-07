@@ -51,7 +51,7 @@ export TemporalPointProcess, BoundedTemporalPointProcess
 export intensity, log_intensity, mark_distribution
 export ground_intensity, ground_intensity_bound
 export integrated_ground_intensity
-export simulate_ogata
+export check_residuals
 
 ## Models
 
@@ -65,7 +65,7 @@ export transitions, emissions, emission
 
 export forward!, backward!, update_obs_density!
 export forward_log!, backward_log!, update_obs_logdensity!
-export baum_welch!, baum_welch_log!, baum_welch
+export baum_welch_multiple_sequences, baum_welch_multiple_sequences_log, baum_welch
 
 # export MarkovModulatedPoissonProcess
 
@@ -100,6 +100,7 @@ include("hmm/baum_welch.jl")
 
 include("utils/overflow.jl")
 include("utils/randvals.jl")
+include("utils/plot.jl")
 # include("utils/categorical.jl")
 
 end

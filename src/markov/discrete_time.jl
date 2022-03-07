@@ -97,13 +97,32 @@ function Distributions.suffstats(
 end
 
 function Distributions.suffstats(
-    ::Type{<:DiscreteMarkovChain}; γ::AbstractMatrix{<:Real}, ξ::AbstractArray{<:Real,3}
+    ::Type{<:DiscreteMarkovChain}, γ::AbstractMatrix{<:Real}, ξ::AbstractArray{<:Real,3}
 )
-    T, S, _ = size(ξ)
+    T, S = size(γ)
     initialization = γ[1, :]
     transition_count = zeros(Float64, S, S)
-    for i in 1:S, j in 1:S, t = 1:T
+    for i in 1:S, j in 1:S, t in 1:(T - 1)
         transition_count[i, j] += ξ[t, i, j]
+    end
+    return DiscreteMarkovChainStats(;
+        initialization=initialization, transition_count=transition_count
+    )
+end
+
+function Distributions.suffstats(
+    ::Type{<:DiscreteMarkovChain},
+    γ::Vector{<:AbstractMatrix{<:Real}},
+    ξ::Vector{<:AbstractArray{<:Real,3}},
+)
+    K = length(γ)
+    T = [size(γ[k], 1) for k in 1:K]
+    S = size(γ[1], 2)
+
+    initialization = sum(γ[k][1, :] for k in 1:K)
+    transition_count = zeros(Float64, S, S)
+    for i in 1:S, j in 1:S, k in 1:K, t in 1:(T[k] - 1)
+        transition_count[i, j] += ξ[k][t, i, j]
     end
     return DiscreteMarkovChainStats(;
         initialization=initialization, transition_count=transition_count
@@ -144,7 +163,9 @@ function Distributions.fit_mle(mctype::Type{<:DiscreteMarkovChain}, args...; kwa
     return fit_mle(mctype, ss)
 end
 
-function fit_map(mctype::Type{<:DiscreteMarkovChain}, prior::DiscreteMarkovChainPrior, args...; kwargs...)
+function fit_map(
+    mctype::Type{<:DiscreteMarkovChain}, prior::DiscreteMarkovChainPrior, args...; kwargs...
+)
     ss = suffstats(mctype, args...; kwargs...)
     ss.initialization .+= (prior.π0α .- 1)
     ss.transition_count .+= (prior.Pα .- 1)

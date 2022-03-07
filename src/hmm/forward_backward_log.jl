@@ -80,7 +80,7 @@ end
 ## Likelihood of observations
 
 function update_obs_logdensity!(
-    obs_logdensity::AbstractMatrix, hmm::HMM, observations::AbstractVector
+    obs_logdensity::AbstractMatrix, observations::AbstractVector, hmm::HMM
 )
     T, S = length(observations), nb_states(hmm)
     for t in 1:T

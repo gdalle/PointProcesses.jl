@@ -93,7 +93,7 @@ end
 ## Likelihood of observations
 
 function update_obs_density!(
-    obs_density::AbstractMatrix, hmm::HMM, observations::AbstractVector
+    obs_density::AbstractMatrix, observations::AbstractVector, hmm::HMM
 )
     T, S = length(observations), nb_states(hmm)
     for t in 1:T
