@@ -1,61 +1,61 @@
-struct ProductDistribution{D} <: AbstractMeasure
+struct ProductDistribution{D}
     marginals::Vector{D}
 end
 
 marginals(dist::ProductDistribution) = dist.marginals
 marginal(dist::ProductDistribution, i::Integer) = dist.marginals[i]
 
-length(dist::ProductDistribution) = length(marginals(dist))
+Base.length(dist::ProductDistribution) = length(marginals(dist))
 
 ## Simulation
 
-function rand(rng::AbstractRNG, dist::ProductDistribution)
-    return [rand(rng, marginal(dist, i)) for i = 1:length(dist)]
+function Base.rand(rng::AbstractRNG, dist::ProductDistribution)
+    return [rand(rng, marginal(dist, i)) for i in 1:length(dist)]
 end
 
-rand(dist::ProductDistribution) = rand(GLOBAL_RNG, dist)
+Base.rand(dist::ProductDistribution) = rand(GLOBAL_RNG, dist)
 
 ## Likelihood
 
-function logdensity(dist::ProductDistribution, x::AbstractVector)
-    return sum(logdensity(marginal(dist, i), x[i]) for i = 1:length(dist))
+function DensityInterface.logdensityof(dist::ProductDistribution, x::AbstractVector)
+    return sum(logdensityof(marginal(dist, i), x[i]) for i in 1:length(dist))
 end
 
 ## Prior likelihood
 
-function logdensity(prior::ProductDistribution, dist::ProductDistribution)
-    return sum(logdensity(marginal(prior, i), marginal(dist, i)) for i = 1:length(dist))
+function DensityInterface.logdensityof(
+    prior::ProductDistribution, dist::ProductDistribution
+)
+    return sum(logdensityof(marginal(prior, i), marginal(dist, i)) for i in 1:length(dist))
 end
 
 ## Sufficient statistics
 
-struct ProductSufficientStats{T<:SufficientStats}
+struct ProductSufficientStats{T}
     ss_marginals::Vector{T}
 end
 
-function suffstats(::Type{<:ProductDistribution{T}}, x::AbstractMatrix) where {T}
+function Distributions.suffstats(
+    ::Type{<:ProductDistribution{T}}, x::AbstractMatrix
+) where {T}
     return ProductSufficientStats([suffstats(T, x[i, :] for i in size(x, 1))])
 end
 
-function suffstats(
-    ::Type{<:ProductDistribution{T}},
-    x::AbstractMatrix,
-    w::AbstractVector,
+function Distributions.suffstats(
+    ::Type{<:ProductDistribution{T}}, x::AbstractMatrix, w::AbstractVector
 ) where {T}
     return ProductSufficientStats([suffstats(T, x[i, :], w) for i in size(x, 1)])
 end
 
-function suffstats(
-    ::Type{<:ProductDistribution{T}},
-    prior::ProductDistribution{S},
-    x::AbstractMatrix,
+function Distributions.suffstats(
+    ::Type{<:ProductDistribution{T}}, prior::ProductDistribution{S}, x::AbstractMatrix
 ) where {T,S}
     return ProductSufficientStats([
         suffstats(T, marginal(prior, i), x[i, :]) for i in size(x, 1)
     ])
 end
 
-function suffstats(
+function Distributions.suffstats(
     ::Type{<:ProductDistribution{T}},
     prior::ProductDistribution{S},
     x::AbstractMatrix,
@@ -68,11 +68,11 @@ end
 
 ## Fitting
 
-function fit(pdtype::Type{<:ProductDistribution}, args...; kwargs...)
+function Distributions.fit(pdtype::Type{<:ProductDistribution}, args...; kwargs...)
     return fit_mle(pdtype, args..., kwargs...)
 end
 
-function fit_mle(pdtype::Type{<:ProductDistribution}, args...; kwargs...)
+function Distributions.fit_mle(pdtype::Type{<:ProductDistribution}, args...; kwargs...)
     ss = suffstats(pdtype, args...; kwargs...)
     return fit_mle(pdtype, ss)
 end

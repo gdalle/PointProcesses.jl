@@ -97,3 +97,15 @@ function time_change(h::History, Λ)
     new_tmax = Λ(max_time(h))
     return History(times=new_times, marks=new_marks, tmin=new_tmin, tmax=new_tmax)
 end
+
+function split_into_chunks(h::History{M}, chunk_duration) where {M}
+    chunks = History{M}[]
+    limits = min_time(h):chunk_duration:max_time(h)
+    for (a, b) in zip(limits[1:end-1], limits[2:end])
+        times = [t for t in event_times(h) if a <= t < b]
+        marks = [m for (t, m) in zip(event_times(h), event_marks(h)) if a <= t < b]
+        chunk = History(times=times, marks=marks, tmin=a, tmax=b)
+        push!(chunks, chunk)
+    end
+    return chunks
+end

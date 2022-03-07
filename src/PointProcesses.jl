@@ -34,7 +34,7 @@ export fit_map
 export History
 export event_times, event_marks, min_time, max_time
 export nb_events, has_events, duration
-export time_change
+export time_change, split_into_chunks
 
 ## Markov processes
 
@@ -101,6 +101,6 @@ include("hmm/baum_welch.jl")
 include("utils/overflow.jl")
 include("utils/randvals.jl")
 include("utils/plot.jl")
-# include("utils/categorical.jl")
+include("utils/product_dist.jl")
 
 end
