@@ -4,18 +4,18 @@
         pp = MultivariatePoissonProcess(rand(10))
         h = rand(pp, 0.0, 1000.0)
         pp_est = fit_mle(MultivariatePoissonProcess, h)
-        error = abs.(pp_est.λ - pp.λ)
-        @test mean(error) < 0.1
+        error = mean(abs, pp_est.λ - pp.λ)
+        @test error < 0.1
     end
 
     @testset "Multivariate Poisson - generic" begin
         pp = PoissonProcess(λ=1., mark_dist=Categorical(randprobvec(10)))
         h = rand(pp, 0.0, 1000.0)
         pp_est = fit_mle(PoissonProcess{Categorical}, h)
-        λ_error = abs.(pp_est.λ - pp.λ)
-        @test mean(λ_error) < 0.1
-        p_error = abs.(pp_est.mark_dist.p - pp.mark_dist.p)
-        @test mean(p_error) < 0.1
+        λ_error = mean(abs, pp_est.λ - pp.λ)
+        @test λ_error < 0.1
+        p_error = mean(abs, pp_est.mark_dist.p - pp.mark_dist.p)
+        @test p_error < 0.1
     end
 
     @testset "Multivariate Poisson - naive" begin
@@ -50,8 +50,8 @@
         pp = MyPoissonProcess(rand(10))
         h = rand(pp, 0.0, 1000.0)
         pp_est = fit_mle(MultivariatePoissonProcess, h)
-        error = abs.(pp_est.λ - pp.λ)
-        @test mean(error) < 0.1
+        error = mean(abs, pp_est.λ - pp.λ)
+        @test error < 0.1
         logL = logdensityof(pp, h)
         logL_ref = logdensityof(MultivariatePoissonProcess(pp.λ), h)
         @test logL ≈ logL_ref

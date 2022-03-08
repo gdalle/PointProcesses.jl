@@ -12,7 +12,13 @@ struct HiddenMarkovModel{TransitionsType,EmissionsType}
     emissions::Vector{EmissionsType}
 end
 
+struct HiddenMarkovModelPrior{TransitionsPriorType,EmissionsPriorType}
+    transitions_prior::TransitionsPriorType
+    emissions_prior::Vector{EmissionsPriorType}
+end
+
 const HMM = HiddenMarkovModel
+const HMMPrior = HiddenMarkovModelPrior
 
 ## Access
 

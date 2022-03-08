@@ -98,6 +98,11 @@ function time_change(h::History, Λ)
     return History(times=new_times, marks=new_marks, tmin=new_tmin, tmax=new_tmax)
 end
 
+@doc raw"""
+    split_into_chunks(h, chunk_duration)
+
+Split `h` into a vector of consecutive histories with individual duration `chunk_duration`.
+"""
 function split_into_chunks(h::History{M}, chunk_duration) where {M}
     chunks = History{M}[]
     limits = min_time(h):chunk_duration:max_time(h)

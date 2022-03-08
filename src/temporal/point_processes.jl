@@ -71,14 +71,14 @@ function ground_intensity_bound(pp::TemporalPointProcess, t, h) end
 ## Learning
 
 @doc raw"""
-    integrated_ground_intensity(pp, h[, t])
+    integrated_ground_intensity(pp, h, a, b)
 
-Compute the integrated ground intensity (or compensator) $\Lambda(t|h)$ for a temporal point process `pp` applied to history `h`:
+Compute the integrated ground intensity (or compensator) $\Lambda(t|h)$ for a temporal point process `pp` applied to history `h` on interval $[a, b]$:
 ```math
-    \Lambda(h) = \int \lambda_g(t|h) \mathrm{d}t.
+    \Lambda(h) = \int_a^b \lambda_g(t|h) \mathrm{d}t.
 ```
 """
-function integrated_ground_intensity(pp, h) end
+function integrated_ground_intensity(pp::TemporalPointProcess, h, a, b) end
 
 @doc raw"""
     logdensityof(pp, h)
@@ -91,7 +91,7 @@ Compute the log probability density function for a temporal point process `pp` a
 The default method uses a loop over events combined with [`integrated_ground_intensity`](@ref), but it should be reimplemented for specific processes if faster computation is possible.
 """
 function DensityInterface.logdensityof(pp::TemporalPointProcess, h)
-    l = -integrated_ground_intensity(pp, h)
+    l = -integrated_ground_intensity(pp, h, min_time(h), max_time(h))
     for (t, m) in zip(event_times(h), event_marks(h))
         l += log_intensity(pp, m, t, h)
     end
