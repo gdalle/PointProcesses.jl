@@ -8,6 +8,7 @@ module PointProcesses
 using DataStructures
 using DensityInterface
 using Distributions
+using FillArrays
 using LinearAlgebra
 using LogExpFunctions
 using OffsetArrays
@@ -32,7 +33,7 @@ export fit_map
 ## History
 
 export History
-export event_times, event_marks, min_time, max_time
+export event_times, event_marks, min_time, max_time, times_and_marks
 export nb_events, has_events, duration
 export time_change, split_into_chunks
 

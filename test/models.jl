@@ -39,10 +39,10 @@
             return ground_intensity(pp, t, h), Inf
         end
 
-        function PointProcesses.integrated_ground_intensity(pp::MyPoissonProcess, h)
+        function PointProcesses.integrated_ground_intensity(pp::MyPoissonProcess, h, a, b)
             par = [pp]
             f = (t, par) -> ground_intensity(par[1], h, t)
-            prob = QuadratureProblem(f, min_time(h), max_time(h), par)
+            prob = QuadratureProblem(f, a, b, par)
             sol = solve(prob, HCubatureJL())
             return sol.u
         end

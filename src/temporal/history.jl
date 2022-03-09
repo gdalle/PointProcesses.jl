@@ -21,6 +21,8 @@ event_times(h::History) = h.times
 
 event_marks(h::History) = h.marks
 
+times_and_marks(h::History) = zip(event_times(h), event_marks(h))
+
 """
     min_time(h)
 

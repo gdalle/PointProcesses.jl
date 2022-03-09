@@ -104,6 +104,13 @@ function Distributions.suffstats(
     return MultivariatePoissonProcessStats(; nb_events=ne, duration=d)
 end
 
+function Distributions.suffstats(
+    pptype::Type{<:MultivariatePoissonProcess},
+    histories::AbstractVector{<:History},
+)
+    return suffstats(pptype, histories, Ones(size(histories)))
+end
+
 ## Fitting
 
 function Distributions.fit_mle(
