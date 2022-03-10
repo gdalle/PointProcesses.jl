@@ -23,9 +23,9 @@ julia> pp_est = fit(MultivariatePoissonProcess, history);
 
 julia> round.(pp_est.λ, digits=2)
 3-element Vector{Float64}:
- 0.49
- 0.96
- 2.0
+ 0.46
+ 1.01
+ 1.98
 ```
 
 ### General Poisson processes
@@ -45,9 +45,9 @@ julia> pp_est = fit(PoissonProcess{Int,Categorical}, h);
 
 julia> round.(probs(mark_distribution(pp_est)), digits=2)
 3-element Vector{Float64}:
- 0.14
- 0.28
- 0.57
+ 0.15
+ 0.23
+ 0.62
 ```
 
 Going further, using our custom [`MvCategorical`](@ref) distribution, we can create Poisson processes with multi-dimensional integer marks.
@@ -63,8 +63,8 @@ julia> h = rand(pp, 0., 100.);
 
 julia> event_marks(h)[1:4]
 4-element Vector{Vector{Int64}}:
- [1, 2]
+ [2, 3]
+ [2, 3]
  [1, 3]
- [1, 2]
- [1, 3]
+ [2, 3]
 ```

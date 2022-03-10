@@ -21,8 +21,8 @@ julia> dmc_est = fit(DiscreteMarkovChain, states);
 
 julia> round.(dmc_est.P, digits=2)
 2×2 Matrix{Float64}:
- 0.9   0.1
- 0.25  0.75
+ 0.91  0.09
+ 0.21  0.79
 ```
 
 ## Continuous time
@@ -38,6 +38,6 @@ julia> cmc_est = fit(ContinuousMarkovChain, history);
 
 julia> round.(cmc_est.Q, digits=2)
 2×2 Matrix{Float64}:
- -0.93   0.93
-  1.87  -1.87
+ -0.94   0.94
+  1.96  -1.96
 ```

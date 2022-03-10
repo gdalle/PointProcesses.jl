@@ -33,13 +33,13 @@ true
 julia> round.(transition_matrix(hmm_est), digits=2)
 2×2 Matrix{Float64}:
  0.9   0.1
- 0.23  0.77
+ 0.21  0.79
 
 julia> round(mean(emission(hmm_est, 1)), digits=2)
-1.02
+1.01
 
 julia> round(mean(emission(hmm_est, 2)), digits=2)
-1.99
+1.98
 ```
 
 ## Continuous time
