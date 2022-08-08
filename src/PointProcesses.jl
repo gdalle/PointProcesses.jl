@@ -1,21 +1,17 @@
 """
-A package for point process modeling, simulation and inference.
+A package for temporal point process modeling, simulation and inference.
 """
 module PointProcesses
 
 # Imports
 
-using DataStructures
-using DensityInterface
-using Distributions
+using DensityInterface: DensityInterface, densityof, logdensityof
+using Distributions: Distributions, UnivariateDistribution, MultivariateDistribution
+using Distributions: Categorical, Exponential, Poisson, Uniform
+using Distributions: fit_mle, suffstats
 using LinearAlgebra
-using LogExpFunctions
-using OffsetArrays
-using ProgressMeter
 using Random
 using Random: GLOBAL_RNG
-using UnicodePlots
-using UnPack
 
 ## Hidden names
 
@@ -24,9 +20,8 @@ using UnPack
 ## Reexports
 
 export rand  # Base
-export fit, fit_mle, suffstats  # Distributions
-export logdensityof # DensityInterface
-
+export fit_mle, suffstats  # Distributions
+export logdensityof, densityof # DensityInterface
 export fit_map
 
 ## History
@@ -34,72 +29,41 @@ export fit_map
 export History
 export event_times, event_marks, min_time, max_time
 export nb_events, has_events, duration
-export time_change
-
-## Markov processes
-
-export DiscreteMarkovChain, DiscreteMarkovChainPrior
-export initial_distribution, transition_matrix, stationary_distribution
-export nb_states
-
-export ContinuousMarkovChain, ContinuousMarkovChainPrior
-export rate_matrix, rate_diag, discretize_chain
+export time_change, split_into_chunks
 
 ## Point processes
 
-export TemporalPointProcess, BoundedTemporalPointProcess
-export intensity, log_intensity, mark_distribution
-export ground_intensity, ground_intensity_bound
+export AbstractPointProcess
+export BoundedPointProcess
+export ground_intensity, mark_distribution
+export intensity, log_intensity
+export ground_intensity_bound
 export integrated_ground_intensity
-export simulate_ogata
+export check_residuals
 
 ## Models
 
-export PoissonProcess
+export AbstractPoissonProcess
 export MultivariatePoissonProcess
-
-## Hidden Markov models
-
-export HiddenMarkovModel
-export transitions, emissions, emission
-
-export forward!, backward!, update_obs_density!
-export forward_log!, backward_log!, update_obs_logdensity!
-export baum_welch!, baum_welch_log!, baum_welch
-
-# export MarkovModulatedPoissonProcess
-
-# export forward_backward, ryden
-
-## Utils
-
-export uniformprobvec, randprobvec
-export uniformtransmat, randtransmat
+export MarkedPoissonProcess
 
 # Includes
 
-## Unconditional
+include("history.jl")
+include("abstract_point_process.jl")
+include("simulation.jl")
+include("bounded.jl")
 
-include("temporal/history.jl")
-include("temporal/point_processes.jl")
-include("temporal/simulation.jl")
+include("poisson/abstract_poisson_process.jl")
+include("poisson/simulation.jl")
 
-include("markov/discrete_time.jl")
-include("markov/continuous_time.jl")
+include("poisson/multivariate/multivariate_poisson_process.jl")
+include("poisson/multivariate/suffstats.jl")
+include("poisson/multivariate/prior.jl")
+include("poisson/multivariate/fit.jl")
 
-include("models/poisson_generic.jl")
-include("models/poisson_multivariate.jl")
-
-include("hmm/hmm.jl")
-include("hmm/forward_backward.jl")
-include("hmm/forward_backward_log.jl")
-include("hmm/baum_welch.jl")
-
-# include("mmpp/mmpp.jl")
-# include("mmpp/ryden.jl")
-
-include("utils/overflow.jl")
-include("utils/randvals.jl")
-# include("utils/categorical.jl")
+include("poisson/marked/marked_poisson_process.jl")
+include("poisson/marked/suffstats.jl")
+include("poisson/marked/fit.jl")
 
 end

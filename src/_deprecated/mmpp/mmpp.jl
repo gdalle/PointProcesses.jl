@@ -8,9 +8,7 @@ Markov-Modulated Poisson Process with mark type `M`.
 - `emissions::Vector{Em}`: one emission distribution per state.
 """
 struct MarkovModulatedPoissonProcess{
-    M,
-    Tr<:ContinuousMarkovChain,
-    Em<:TemporalPointProcess{M},
+    M,Tr<:ContinuousMarkovChain,Em<:TemporalPointProcess{M}
 } <: AbstractMeasure
     transitions::Tr
     emissions::Vector{Em}
@@ -35,10 +33,10 @@ function Base.rand(rng::AbstractRNG, mmpp::MMPP{M}, tmin, tmax) where {M}
     state_history = rand(rng, transitions(mmpp), tmin, tmax)
     transition_times, states = event_times(state_history), event_marks(state_history)
     observations = History(Float64[], M[], tmin, tmax)
-    for k = 1:length(transition_times)
+    for k in 1:length(transition_times)
         local_s = states[k]
         local_tmin = transition_times[k]
-        local_tmax = k < length(transition_times) ? transition_times[k+1] : tmax
+        local_tmax = k < length(transition_times) ? transition_times[k + 1] : tmax
         local_observations = rand(rng, emission(mmpp, local_s), local_tmin, local_tmax)
         append!(observations, local_observations)
     end

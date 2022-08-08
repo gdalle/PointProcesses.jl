@@ -7,6 +7,6 @@
 [![Build Status](https://github.com/gdalle/PointProcesses.jl/workflows/CI/badge.svg)](https://github.com/gdalle/PointProcesses.jl/actions)
 [![Codecov](https://codecov.io/gh/gdalle/PointProcesses.jl/branch/dev/graph/badge.svg?token=ic5RSs629v)](https://codecov.io/gh/gdalle/PointProcesses.jl)
 
-A package for point process modeling, simulation and inference.
+A package for temporal point process modeling, simulation and inference.
 
-This package is in very early stages of development, so if you have suggestions or comments, feel free to open an issue!
+> This package is in very early stages of development, so if you have suggestions or comments, feel free to open an issue!

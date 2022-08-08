@@ -166,7 +166,12 @@ function Distributions.fit_mle(mctype::Type{<:ContinuousMarkovChain}, args...; k
     return fit_mle(mctype, ss)
 end
 
-function fit_map(mctype::Type{<:ContinuousMarkovChain}, prior::ContinuousMarkovChainPrior, args...; kwargs...)
+function fit_map(
+    mctype::Type{<:ContinuousMarkovChain},
+    prior::ContinuousMarkovChainPrior,
+    args...;
+    kwargs...,
+)
     ss = suffstats(mctype, args...; kwargs...)
     ss.initialization .+= (prior.π0α .- 1)
     ss.transition_count .+= (prior.Pα .- 1)
