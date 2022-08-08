@@ -152,5 +152,5 @@ function split_into_chunks(h::History{M}, chunk_duration) where {M}
     return chunks
 end
 
-maximum_mark(h::History) = maximum(event_marks(h))
-minimum_mark(h::History) = minimum(event_marks(h))
+maximum_mark(h::History; init) = maximum(event_marks(h); init=init)
+minimum_mark(h::History; init) = minimum(event_marks(h); init=init)

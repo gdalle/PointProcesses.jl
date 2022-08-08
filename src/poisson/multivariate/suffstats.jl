@@ -16,7 +16,7 @@ end
 function Distributions.suffstats(
     ::Type{MultivariatePoissonProcess{R}}, history::History{<:Integer,<:Real}
 ) where {R}
-    M = maximum_mark(history)
+    M = maximum_mark(history; init=0)
     nb_events = zeros(Int, M)
     for m in event_marks(history)
         nb_events[m] += 1
@@ -29,7 +29,7 @@ function Distributions.suffstats(
     histories::AbstractVector{<:History{<:Integer,<:Real}},
     weights::AbstractVector{W},
 ) where {R,W<:Real}
-    M = mapreduce(maximum_mark, max, histories)
+    M = maximum(maximum_mark(h; init=0) for h in histories)
     total_nb_events = zeros(W, M)
     total_duration = zero(W)
     for (history, weight) in zip(histories, weights)
