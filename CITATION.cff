@@ -12,5 +12,5 @@ license: MIT
 message: "If you use this software, please cite it using these metadata."
 repository-code: "https://github.com/gdalle/PointProcesses.jl"
 title: "PointProcesses.jl"
-version: v0.3.0
+version: v0.3.1
 ...

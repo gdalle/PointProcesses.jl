@@ -39,6 +39,7 @@ export ground_intensity, mark_distribution
 export intensity, log_intensity
 export ground_intensity_bound
 export integrated_ground_intensity
+export simulate_ogata
 export check_residuals
 
 ## Models
