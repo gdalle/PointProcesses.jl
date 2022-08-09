@@ -1,6 +1,6 @@
 <img src="docs/src/assets/logo-dark.svg" align="right" />
 
-# PointProcesses
+# PointProcesses.jl
 
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://gdalle.github.io/PointProcesses.jl/stable)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://gdalle.github.io/PointProcesses.jl/dev)
