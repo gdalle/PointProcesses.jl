@@ -18,4 +18,4 @@ makedocs(;
     pages=["Home" => "index.md", "API reference" => "api.md"],
 )
 
-deploydocs(; repo="github.com/gdalle/PointProcesses.jl", devbranch="dev")
+deploydocs(; repo="github.com/gdalle/PointProcesses.jl", devbranch="main")
