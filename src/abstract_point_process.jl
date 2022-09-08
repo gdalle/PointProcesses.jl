@@ -19,14 +19,18 @@ The ground intensity quantifies the instantaneous risk of an event with any mark
 λg(t|h) = Σₘ λ(t,m|h)
 ```
 """
-function ground_intensity(pp::AbstractPointProcess, t, h) end
+function ground_intensity(pp::PP, t, h) where {PP<:AbstractPointProcess}
+    return error("Not implemented for $PP")
+end
 
 """
     mark_distribution(pp, t, h)
 
 Compute the distribution of marks for a temporal point process `pp` knowing that an event takes place at time `t` after history `h`.
 """
-function mark_distribution(pp::AbstractPointProcess, t, h) end
+function mark_distribution(pp::PP, t, h) where {PP<:AbstractPointProcess}
+    return error("Not implemented for $PP")
+end
 
 """
     intensity(pp, m, t, h)
@@ -57,7 +61,9 @@ Compute a local upper bound on the ground intensity for a temporal point process
 
 Return a tuple of the form `(B, L)` satisfying `λg(t|h) ≤ B` for all `u ∈ [t, t+L)`.
 """
-function ground_intensity_bound(pp::AbstractPointProcess, t, h) end
+function ground_intensity_bound(pp::PP, t, h) where {PP<:AbstractPointProcess}
+    return error("Not implemented for $PP")
+end
 
 ## Learning
 
@@ -69,7 +75,9 @@ Compute the integrated ground intensity (or compensator) `Λ(t|h)` for a tempora
 Λ(h) = ∫ λg(t|h) dt
 ```
 """
-function integrated_ground_intensity(pp::AbstractPointProcess, h, a, b) end
+function integrated_ground_intensity(pp::PP, h, a, b) where {PP<:AbstractPointProcess}
+    return error("Not implemented for $PP")
+end
 
 """
     logdensityof(pp, h)
@@ -94,4 +102,6 @@ end
 Check whether the point process `pp` is a good fit for history `h` by applying Ogata's time rescaling method.
 If `(tₖ)ₖ` is a temporal point process with intensity `λ`, then `(Λ(tₖ))ₖ` is a standard temporal Poisson process.
 """
-check_residuals(pp::AbstractPointProcess, h) = error("Not implemented yet.")
+function check_residuals(pp::AbstractPointProcess, h)
+    return error("Work in progress.")
+end
