@@ -16,7 +16,7 @@ DocMeta.setdocmeta!(PointProcesses, :DocTestSetup, :(using PointProcesses); recu
         Aqua.test_all(PointProcesses; ambiguities=false)
     end
     @testset verbose = true "Formatting" begin
-        @test format(PointProcesses; verbose=true, overwrite=false)
+        @test format(PointProcesses; verbose=false, overwrite=false)
     end
     @testset verbose = true "Doctests" begin
         doctest(PointProcesses)
