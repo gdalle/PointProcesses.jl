@@ -2,8 +2,13 @@ abstract type AbstractPoissonProcess{M} <: AbstractPointProcess{M} end
 
 ## Defining AbstractPoissonProcess interface
 
-function ground_intensity(pp::AbstractPoissonProcess) end
-function mark_distribution(pp::AbstractPoissonProcess) end
+function ground_intensity(::PP) where {PP<:AbstractPoissonProcess}
+    return error("Not implemented for $PP")
+end
+
+function mark_distribution(::PP) where {PP<:AbstractPoissonProcess}
+    return error("Not implemented for $PP")
+end
 
 function intensity(pp::AbstractPoissonProcess, m)
     return ground_intensity(pp) * densityof(mark_distribution(pp), m)

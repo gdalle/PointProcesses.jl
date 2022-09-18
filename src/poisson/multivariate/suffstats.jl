@@ -1,11 +1,11 @@
-struct MultivariatePoissonProcessStats{R1<:Real,R2<:Real}
+struct MultivariatePoissonProcessStats{R1,R2}
     nb_events::Vector{R1}
     duration::R2
 end
 
 function add_suffstats(
     ss1::MultivariatePoissonProcessStats{R1,R2}, ss2::MultivariatePoissonProcessStats{R1,R2}
-) where {R1<:Real,R2<:Real}
+) where {R1,R2}
     nb_events = ss1.nb_events .+ ss2.nb_events
     duration = ss1.duration + ss2.duration
     return MultivariatePoissonProcessStats{R1,R2}(nb_events, duration)
@@ -14,7 +14,7 @@ end
 ## Compute sufficient stats
 
 function Distributions.suffstats(
-    ::Type{MultivariatePoissonProcess{R}}, history::History{<:Integer,<:Real}
+    ::Type{MultivariatePoissonProcess{R}}, history::History{<:Integer}
 ) where {R}
     M = maximum_mark(history; init=0)
     nb_events = zeros(Int, M)
@@ -26,9 +26,9 @@ end
 
 function Distributions.suffstats(
     ::Type{MultivariatePoissonProcess{R}},
-    histories::AbstractVector{<:History{<:Integer,<:Real}},
+    histories::AbstractVector{<:History{<:Integer}},
     weights::AbstractVector{W},
-) where {R,W<:Real}
+) where {R,W}
     M = maximum(maximum_mark(h; init=0) for h in histories)
     total_nb_events = zeros(W, M)
     total_duration = zero(W)

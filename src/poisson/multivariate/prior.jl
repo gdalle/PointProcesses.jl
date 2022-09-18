@@ -1,4 +1,4 @@
-struct MultivariatePoissonProcessPrior{R1<:Real,R2<:Real}
+struct MultivariatePoissonProcessPrior{R1,R2}
     λ_α::Vector{R1}
     λ_β::Vector{R2}
 end

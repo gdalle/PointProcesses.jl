@@ -5,7 +5,7 @@ Simulate a temporal point process `pp` on interval `[tmin, tmax)` using Ogata's 
 """
 function simulate_ogata(
     rng::AbstractRNG, pp::AbstractPointProcess{M}, tmin::T, tmax::T
-) where {M,T<:Real}
+) where {M,T}
     h = History(; times=T[], marks=M[], tmin=tmin, tmax=tmax)
     t = tmin
     while t < tmax

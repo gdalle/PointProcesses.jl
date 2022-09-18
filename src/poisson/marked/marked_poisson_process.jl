@@ -8,7 +8,7 @@ Homogeneous temporal Poisson process with arbitrary mark distribution.
 - `λ::R`: event rate.
 - `mark_dist::D`: mark distribution with sample type `M`.
 """
-Base.@kwdef struct MarkedPoissonProcess{R<:Real,M,D} <: AbstractPoissonProcess{M}
+Base.@kwdef struct MarkedPoissonProcess{R,M,D} <: AbstractPoissonProcess{M}
     λ::R
     mark_dist::D
 end

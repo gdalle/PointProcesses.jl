@@ -1,4 +1,4 @@
-Base.@kwdef struct MarkedPoissonProcessStats{R1<:Real,R2<:Real,DSS}
+Base.@kwdef struct MarkedPoissonProcessStats{R1,R2,DSS}
     nb_events::R1
     duration::R2
     mark_dist_suffstats::DSS

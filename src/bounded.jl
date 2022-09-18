@@ -3,7 +3,7 @@
 
 Store a temporal point process `P` with pre-defined start and end times.
 """
-struct BoundedPointProcess{M,P<:AbstractPointProcess{M},T<:Real} <: AbstractPointProcess{M}
+struct BoundedPointProcess{M,P<:AbstractPointProcess{M},T} <: AbstractPointProcess{M}
     pp::P
     tmin::T
     tmax::T

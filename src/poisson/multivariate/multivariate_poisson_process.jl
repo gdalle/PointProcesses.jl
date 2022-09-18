@@ -7,7 +7,7 @@ Multivariate homogeneous temporal Poisson process.
 
 - `λ::Vector{R}`: event rates.
 """
-struct MultivariatePoissonProcess{R<:Real} <: AbstractPoissonProcess{Int}
+struct MultivariatePoissonProcess{R} <: AbstractPoissonProcess{Int}
     λ::Vector{R}
 end
 
