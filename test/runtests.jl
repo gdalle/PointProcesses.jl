@@ -12,13 +12,13 @@ Random.seed!(63)
 DocMeta.setdocmeta!(PointProcesses, :DocTestSetup, :(using PointProcesses); recursive=true)
 
 @testset verbose = true "PointProcesses.jl" begin
-    @testset verbose = true "Code quality (Aqua.jl)" begin
+    @testset verbose = false "Code quality (Aqua.jl)" begin
         Aqua.test_all(PointProcesses; ambiguities=false)
     end
-    @testset verbose = true "Formatting" begin
+    @testset verbose = false "Formatting" begin
         @test format(PointProcesses; verbose=false, overwrite=false)
     end
-    @testset verbose = true "Doctests" begin
+    @testset verbose = false "Doctests" begin
         doctest(PointProcesses)
     end
     @testset verbose = true "History" begin
