@@ -3,4 +3,4 @@
 *.jl.mem
 /docs/build/
 **/Manifest.toml
-test/scratchpad.jl
+.vscode
