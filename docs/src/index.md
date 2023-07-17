@@ -15,3 +15,11 @@ To install the current development version, run this code instead:
 ```julia
 import Pkg; Pkg.add(url="https://github.com/gdalle/PointProcesses.jl")
 ```
+
+## Mathematical background
+
+Temporal point processes are a way to describe collections of events with time stamps.
+Please refer to the tutorial [rasmussen2018](@cite) for details.
+
+```@bibliography
+```

@@ -9,5 +9,5 @@ function Base.rand(
 end
 
 function Base.rand(pp::AbstractPoissonProcess, tmin::Real, tmax::Real)
-    return rand(GLOBAL_RNG, pp, tmin, tmax)
+    return rand(default_rng(), pp, tmin, tmax)
 end

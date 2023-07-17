@@ -3,40 +3,38 @@ struct MultivariatePoissonProcessStats{R1<:Real,R2<:Real}
     duration::R2
 end
 
-function add_suffstats(
-    ss1::MultivariatePoissonProcessStats{R1,R2}, ss2::MultivariatePoissonProcessStats{R1,R2}
-) where {R1<:Real,R2<:Real}
-    nb_events = ss1.nb_events .+ ss2.nb_events
-    duration = ss1.duration + ss2.duration
-    return MultivariatePoissonProcessStats{R1,R2}(nb_events, duration)
-end
-
 ## Compute sufficient stats
 
 function Distributions.suffstats(
-    ::Type{MultivariatePoissonProcess{R}}, history::History{<:Integer,<:Real}
+    ::Type{MultivariatePoissonProcess{R}}, h::History{<:Integer}
 ) where {R}
-    M = maximum_mark(history; init=0)
-    nb_events = zeros(Int, M)
-    for m in event_marks(history)
+    m_max = max_mark(h; init=0)
+    nb_events = zeros(Int, m_max)
+    for m in event_marks(h)
         nb_events[m] += 1
     end
-    return MultivariatePoissonProcessStats(nb_events, duration(history))
+    return MultivariatePoissonProcessStats(nb_events, duration(h))
 end
 
 function Distributions.suffstats(
     ::Type{MultivariatePoissonProcess{R}},
-    histories::AbstractVector{<:History{<:Integer,<:Real}},
+    histories::AbstractVector{<:History{<:Integer}},
     weights::AbstractVector{W},
-) where {R,W<:Real}
-    M = maximum(maximum_mark(h; init=0) for h in histories)
-    total_nb_events = zeros(W, M)
+) where {R,W}
+    m_max = maximum(max_mark(h; init=0) for h in histories)
+    total_nb_events = zeros(W, m_max)
     total_duration = zero(W)
-    for (history, weight) in zip(histories, weights)
-        total_duration += weight * duration(history)
-        for m in event_marks(history)
-            total_nb_events[m] += weight
+    for (h, w) in zip(histories, weights)
+        total_duration += w * duration(h)
+        for m in event_marks(h)
+            total_nb_events[m] += w
         end
     end
     return MultivariatePoissonProcessStats(total_nb_events, total_duration)
+end
+
+function Distributions.suffstats(
+    ::Type{MultivariatePoissonProcess{R}}, histories::AbstractVector{<:History{<:Integer}}
+) where {R}
+    return suffstats(MultivariatePoissonProcess{R}, histories, ones(length(histories)))
 end
