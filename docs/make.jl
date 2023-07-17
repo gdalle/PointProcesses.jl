@@ -1,11 +1,15 @@
 push!(LOAD_PATH, "../src/")
 
 using Documenter
+using DocumenterCitations
 using PointProcesses
+
+bib = CitationBibliography(joinpath(@__DIR__, "src", "refs.bib"); style=:authoryear)
 
 DocMeta.setdocmeta!(PointProcesses, :DocTestSetup, :(using PointProcesses); recursive=true)
 
-makedocs(;
+makedocs(
+    bib;
     modules=[PointProcesses],
     authors="Guillaume Dalle",
     repo="https://github.com/gdalle/PointProcesses.jl/blob/{commit}{path}#{line}",

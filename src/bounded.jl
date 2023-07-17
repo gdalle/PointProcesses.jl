@@ -1,7 +1,15 @@
 """
-    BoundedPointProcess{M,P,T}
+    BoundedPointProcess{M,P,T} <: AbstractPointProcess{M}
 
-Store a temporal point process `P` with pre-defined start and end times.
+Temporal point process `P` with pre-defined start and end times.
+
+Implements some fallbacks for the `AbstractPointProcess` interface which accept fewer arguments.
+
+# Fields
+
+- `pp::P`: underlying point process
+- `tmin::T`: start time
+- `tmax::T`: end time
 """
 struct BoundedPointProcess{M,P<:AbstractPointProcess{M},T<:Real} <: AbstractPointProcess{M}
     pp::P
@@ -12,6 +20,11 @@ end
 min_time(bpp::BoundedPointProcess) = bpp.tmin
 max_time(bpp::BoundedPointProcess) = bpp.tmax
 
+"""
+    rand([rng,], bpp::BoundedPointProcess)
+
+Simulate a point process on a predefined time interval.
+"""
 function Base.rand(rng::AbstractRNG, bpp::BoundedPointProcess)
     return rand(rng, bpp.pp, min_time(bpp), max_time(bpp))
 end

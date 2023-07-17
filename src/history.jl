@@ -1,7 +1,7 @@
 """
-    History{M,T}
+    History{M,T<:Real}
 
-Linear event histories with marks of type `M` and locations of type `T`, usually times represented as real numbers.
+Linear event histories with marks of type `M` and temporal locations of type `T`.
 
 # Fields
 
@@ -10,7 +10,7 @@ Linear event histories with marks of type `M` and locations of type `T`, usually
 - `tmin::T`: start time
 - `tmax::T`: end time
 """
-mutable struct History{M,T}
+mutable struct History{M,T<:Real}
     times::Vector{T}
     marks::Vector{M}
     tmin::T
@@ -26,14 +26,14 @@ function Base.show(io::IO, h::History{M,T}) where {M,T}
 end
 
 """
-    event_times(h::History)
+    event_times(h)
 
 Return the sorted vector of event times for `h`.
 """
 event_times(h::History) = h.times
 
 """
-    event_marks(h::History)
+    event_marks(h)
 
 Return the vector of event marks for `h`, sorted according to their event times.
 """
@@ -54,16 +54,21 @@ Return the end time of `h` (not the same as the last event time).
 max_time(h::History) = h.tmax
 
 """
-    nb_events(h::History)
+    nb_events(h)
 
 Count events in `h`.
 """
 nb_events(h::History) = length(h.marks)
 
+"""
+    length(h)
+
+Alias for `nb_events(h)`.
+"""
 Base.length(h::History) = nb_events(h)
 
 """
-    nb_events(h::History, tmin, tmax)
+    nb_events(h, tmin, tmax)
 
 Count events in `h` during the interval `[tmin, tmax)`.
 """
@@ -74,28 +79,28 @@ function nb_events(h::History{M,T}, tmin, tmax) where {M,T}
 end
 
 """
-    has_events(h::History)
+    has_events(h)
 
 Check the presence of events in `h`.
 """
 has_events(h::History) = nb_events(h) > 0
 
 """
-    has_events(h::History, tmin, tmax)
+    has_events(h, tmin, tmax)
 
 Check the presence of events in `h` during the interval `[tmin, tmax)`.
 """
 has_events(h::History, tmin, tmax) = nb_events(h, tmin, tmax) > 0
 
 """
-    duration(h::History)
+    duration(h)
 
 Compute the difference `h.tmax - h.tmin`.
 """
 duration(h::History) = max_time(h) - min_time(h)
 
 """
-    push!(h::History, t, m)
+    push!(h, t, m)
 
 Add event `(t, m)` at the end of history `h`.
 """
@@ -110,7 +115,7 @@ function Base.push!(h::History, t, m; check=true)
 end
 
 """
-    append!(h1::History, h2::History)
+    append!(h1, h2)
 
 Add all the events of `h2` at the end of `h1`.
 """
@@ -142,7 +147,10 @@ Split `h` into a vector of consecutive histories with individual duration `chunk
 """
 function split_into_chunks(h::History{M}, chunk_duration) where {M}
     chunks = History{M}[]
-    limits = min_time(h):chunk_duration:max_time(h)
+    limits = collect(min_time(h):chunk_duration:max_time(h))
+    if !(limits[end] ≈ max_time(h))
+        push!(limits, max_time(h))
+    end
     for (a, b) in zip(limits[1:(end - 1)], limits[2:end])
         times = [t for t in event_times(h) if a <= t < b]
         marks = [m for (t, m) in zip(event_times(h), event_marks(h)) if a <= t < b]
@@ -152,5 +160,16 @@ function split_into_chunks(h::History{M}, chunk_duration) where {M}
     return chunks
 end
 
-maximum_mark(h::History; init) = maximum(event_marks(h); init=init)
-minimum_mark(h::History; init) = minimum(event_marks(h); init=init)
+"""
+    max_mark(h; [init])
+
+Return the largest event mark if it is larger than `init`, and `init` otherwise.
+"""
+max_mark(h::History; init=first(event_marks(h))) = maximum(event_marks(h); init=init)
+
+"""
+    min_mark(h; [init])
+
+Return the smallest event mark if it is smaller than `init`, and `init` otherwise.
+"""
+min_mark(h::History; init=first(event_marks(h))) = minimum(event_marks(h); init=init)

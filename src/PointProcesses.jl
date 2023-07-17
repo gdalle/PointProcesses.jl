@@ -10,10 +10,11 @@ module PointProcesses
 using DensityInterface: DensityInterface, densityof, logdensityof
 using Distributions: Distributions, UnivariateDistribution, MultivariateDistribution
 using Distributions: Categorical, Exponential, Poisson, Uniform
-using Distributions: fit_mle, suffstats
-using LinearAlgebra
-using Random
-using Random: GLOBAL_RNG
+using Distributions: fit, suffstats
+using LinearAlgebra: dot
+using Random: rand
+using Random: AbstractRNG, default_rng
+using StatsAPI: StatsAPI, fit
 
 ## Hidden names
 
@@ -21,15 +22,14 @@ using Random: GLOBAL_RNG
 
 ## Reexports
 
-export rand  # Base
-export fit_mle, suffstats  # Distributions
 export logdensityof, densityof # DensityInterface
+export fit # StatsAPI
 export fit_map
 
 ## History
 
 export History
-export event_times, event_marks, min_time, max_time
+export event_times, event_marks, min_time, max_time, min_mark, max_mark
 export nb_events, has_events, duration
 export time_change, split_into_chunks
 
@@ -42,12 +42,11 @@ export intensity, log_intensity
 export ground_intensity_bound
 export integrated_ground_intensity
 export simulate_ogata
-export check_residuals
 
 ## Models
 
 export AbstractPoissonProcess
-export MultivariatePoissonProcess
+export MultivariatePoissonProcess, MultivariatePoissonProcessPrior
 export MarkedPoissonProcess
 
 # Includes

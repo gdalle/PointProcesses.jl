@@ -27,10 +27,15 @@ function simulate_ogata(
     return h
 end
 
+"""
+    rand([rng,] pp, tmin, tmax)
+
+Alias for `simulate_ogata`.
+"""
 function Base.rand(rng::AbstractRNG, pp::AbstractPointProcess, tmin, tmax)
     return simulate_ogata(rng, pp, tmin, tmax)
 end
 
 function Base.rand(pp::AbstractPointProcess, args...; kwargs...)
-    return rand(GLOBAL_RNG, pp, args...; kwargs...)
+    return rand(default_rng(), pp, args...; kwargs...)
 end

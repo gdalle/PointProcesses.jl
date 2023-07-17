@@ -1,6 +1,6 @@
 ## Fit from sufficient stats
 
-function Distributions.fit_mle(
+function StatsAPI.fit(
     ::Type{MultivariatePoissonProcess{R}}, ss::MultivariatePoissonProcessStats
 ) where {R}
     λ = convert(Vector{R}, ss.nb_events ./ ss.duration)
@@ -16,16 +16,16 @@ function fit_map(
     posterior_nb_events = ss.nb_events .+ λ_α .- one(eltype(λ_α))
     posterior_duration = ss.duration + λ_β
     ss_posterior = MultivariatePoissonProcessStats(posterior_nb_events, posterior_duration)
-    return fit_mle(pptype, ss_posterior)
+    return fit(pptype, ss_posterior)
 end
 
 ## Fit from observations
 
-function Distributions.fit_mle(
+function StatsAPI.fit(
     pptype::Type{MultivariatePoissonProcess{R}}, args...; kwargs...
 ) where {R}
     ss = suffstats(pptype, args...; kwargs...)
-    return fit_mle(pptype, ss)
+    return fit(pptype, ss)
 end
 
 function fit_map(
