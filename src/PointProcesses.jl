@@ -7,7 +7,7 @@ module PointProcesses
 
 # Imports
 
-using DensityInterface: DensityInterface, densityof, logdensityof
+using DensityInterface: DensityInterface, HasDensity, densityof, logdensityof
 using Distributions: Distributions, UnivariateDistribution, MultivariateDistribution
 using Distributions: Categorical, Exponential, Poisson, Uniform
 using Distributions: fit, suffstats
