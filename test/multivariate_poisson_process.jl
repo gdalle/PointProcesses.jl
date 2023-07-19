@@ -1,3 +1,4 @@
+using DensityInterface
 using ForwardDiff
 using PointProcesses
 using Random
@@ -32,6 +33,7 @@ f(λ) = logdensityof(MultivariatePoissonProcess(λ), h1)
 gf = ForwardDiff.gradient(f, 3 * ones(10))
 gz = Zygote.gradient(f, 3 * ones(10))[1]
 
+@test DensityKind(pp) == HasDensity()
 @test λ_error1 < 0.1
 @test λ_error2 < 0.1
 @test λ_error3 < 0.1

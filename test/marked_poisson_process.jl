@@ -1,3 +1,4 @@
+using DensityInterface
 using Distributions
 using ForwardDiff
 using PointProcesses
@@ -26,6 +27,7 @@ f(λ) = logdensityof(MarkedPoissonProcess(λ, Categorical([0.1, 0.3, 0.6])), h1)
 gf = ForwardDiff.derivative(f, 3)
 gz = Zygote.gradient(f, 3)[1]
 
+@test DensityKind(pp) == HasDensity()
 @test λ_error1 < 0.1
 @test λ_error2 < 0.1
 @test p_error1 < 0.1
