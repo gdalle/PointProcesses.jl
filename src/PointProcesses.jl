@@ -54,7 +54,7 @@ export MarkedPoissonProcess
 include("history.jl")
 include("abstract_point_process.jl")
 include("simulation.jl")
-include("bounded.jl")
+include("bounded_point_process.jl")
 
 include("poisson/abstract_poisson_process.jl")
 include("poisson/simulation.jl")
@@ -65,7 +65,6 @@ include("poisson/multivariate/prior.jl")
 include("poisson/multivariate/fit.jl")
 
 include("poisson/marked/marked_poisson_process.jl")
-include("poisson/marked/suffstats.jl")
 include("poisson/marked/fit.jl")
 
 end
