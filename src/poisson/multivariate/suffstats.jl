@@ -6,17 +6,6 @@ end
 ## Compute sufficient stats
 
 function Distributions.suffstats(
-    ::Type{MultivariatePoissonProcess{R}}, h::History{<:Integer}
-) where {R}
-    m_max = max_mark(h; init=0)
-    nb_events = zeros(Int, m_max)
-    for m in event_marks(h)
-        nb_events[m] += 1
-    end
-    return MultivariatePoissonProcessStats(nb_events, duration(h))
-end
-
-function Distributions.suffstats(
     ::Type{MultivariatePoissonProcess{R}},
     histories::AbstractVector{<:History{<:Integer}},
     weights::AbstractVector{W},
@@ -36,5 +25,12 @@ end
 function Distributions.suffstats(
     ::Type{MultivariatePoissonProcess{R}}, histories::AbstractVector{<:History{<:Integer}}
 ) where {R}
-    return suffstats(MultivariatePoissonProcess{R}, histories, ones(length(histories)))
+    weights = ones(length(histories))
+    return suffstats(MultivariatePoissonProcess{R}, histories, weights)
+end
+
+function Distributions.suffstats(
+    pptype::Type{MultivariatePoissonProcess{R}}, h::History{<:Integer}
+) where {R}
+    return suffstats(pptype, [h])
 end
