@@ -11,10 +11,15 @@ rng = Random.seed!(63)
 
 pp = MultivariatePoissonProcess(rand(rng, 10))
 bpp = BoundedPointProcess(MultivariatePoissonProcess(rand(rng, 10)), 0.0, 1000.0)
+pp0 = MultivariatePoissonProcess(zeros(10))
+bpp0 = BoundedPointProcess(pp0, 0.0, 1000.0)
 
 h1 = rand(rng, pp, 0.0, 1000.0)
 h2 = simulate_ogata(rng, pp, 0.0, 1000.0)
 h2bis = rand(rng, bpp)
+h3 = rand(rng, pp0, 0.0, 1000.0)
+h4 = simulate_ogata(rng, pp0, 0.0, 1000.0)
+h4bis = rand(rng, bpp0)
 
 pp_est1 = fit(MultivariatePoissonProcess{Float32}, [h1, h1])
 pp_est2 = fit(MultivariatePoissonProcess{Float32}, [h2, h2])
@@ -33,6 +38,12 @@ f(λ) = logdensityof(MultivariatePoissonProcess(λ), h1)
 gf = ForwardDiff.gradient(f, 3 * ones(10))
 gz = Zygote.gradient(f, 3 * ones(10))[1]
 
+@test issorted(event_times(h1))
+@test issorted(event_times(h2))
+@test issorted(event_times(h2bis))
+@test !has_events(h3)
+@test !has_events(h4)
+@test !has_events(h4bis)
 @test DensityKind(pp) == HasDensity()
 @test λ_error1 < 0.1
 @test λ_error2 < 0.1
