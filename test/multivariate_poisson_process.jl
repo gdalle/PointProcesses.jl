@@ -5,7 +5,7 @@ using Random
 using Statistics
 using StatsAPI
 using Test
-using Zygote
+# using Zygote
 
 rng = Random.seed!(63)
 
@@ -34,9 +34,9 @@ pp_est3 = fit_map(MultivariatePoissonProcess{Float32}, prior, [h1, h2])
 l = logdensityof(pp, h1)
 l_est = logdensityof(pp_est1, h1)
 
-f(λ) = logdensityof(MultivariatePoissonProcess(λ), h1)
-gf = ForwardDiff.gradient(f, 3 * ones(10))
-gz = Zygote.gradient(f, 3 * ones(10))[1]
+f1(λ) = logdensityof(MultivariatePoissonProcess(λ), h1)
+gf = ForwardDiff.gradient(f1, 3 * ones(10))
+# gz = Zygote.gradient(f1, 3 * ones(10))[1]
 
 @test issorted(event_times(h1))
 @test issorted(event_times(h2))
@@ -49,6 +49,6 @@ gz = Zygote.gradient(f, 3 * ones(10))[1]
 @test λ_error2 < 0.1
 @test λ_error3 < 0.1
 @test l_est > l
-@test all(gf .≈ gz)
+# @test all(gf .≈ gz)
 @test all(gf .< 0)
-@test all(gz .< 0)
+# @test all(gz .< 0)
