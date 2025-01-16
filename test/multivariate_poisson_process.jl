@@ -29,7 +29,7 @@ pp_est3 = fit_map(MultivariatePoissonProcess{Float32}, prior, [h1, h2])
 l = logdensityof(pp, h1)
 l_est = logdensityof(pp_est1, h1)
 
-f(λ) = logdensityof(MultivariatePoissonProcess(λ), h1)
+f1(λ) = logdensityof(MultivariatePoissonProcess(λ), h1)
 gf = ForwardDiff.gradient(f, 3 * ones(10))
 # gz = Zygote.gradient(f, 3 * ones(10))[1]
 
