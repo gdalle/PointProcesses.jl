@@ -30,8 +30,8 @@ l = logdensityof(pp, h1)
 l_est = logdensityof(pp_est1, h1)
 
 f1(λ) = logdensityof(MultivariatePoissonProcess(λ), h1)
-gf = ForwardDiff.gradient(f, 3 * ones(10))
-# gz = Zygote.gradient(f, 3 * ones(10))[1]
+gf = ForwardDiff.gradient(f1, 3 * ones(10))
+# gz = Zygote.gradient(f1, 3 * ones(10))[1]
 
 @test DensityKind(pp) == HasDensity()
 @test λ_error1 < 0.1
