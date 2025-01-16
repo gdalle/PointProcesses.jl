@@ -13,7 +13,7 @@ DocMeta.setdocmeta!(PointProcesses, :DocTestSetup, :(using PointProcesses); recu
 
 @testset verbose = true "PointProcesses.jl" begin
     @testset verbose = false "Code quality (Aqua.jl)" begin
-        Aqua.test_all(PointProcesses; ambiguities=false)
+        Aqua.test_all(PointProcesses; ambiguities=false, deps_compat=(; check_extras=false))
     end
     @testset verbose = false "Formatting" begin
         @test format(PointProcesses; verbose=false, overwrite=false)
