@@ -26,8 +26,8 @@ l = logdensityof(pp, h1)
 l_est = logdensityof(pp_est1, h1)
 
 f2(λ) = logdensityof(MarkedPoissonProcess(λ, Categorical([0.1, 0.3, 0.6])), h1)
-gf = ForwardDiff.derivative(f, 3)
-# gz = Zygote.gradient(f, 3)[1]
+gf = ForwardDiff.derivative(f2, 3)
+# gz = Zygote.gradient(f2, 3)[1]
 
 @test DensityKind(pp) == HasDensity()
 @test λ_error1 < 0.1
