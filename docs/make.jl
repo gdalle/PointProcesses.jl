@@ -7,12 +7,12 @@ bib = CitationBibliography(joinpath(@__DIR__, "src", "refs.bib"); style=:authory
 DocMeta.setdocmeta!(PointProcesses, :DocTestSetup, :(using PointProcesses); recursive=true)
 
 makedocs(
-    bib;
     modules=[PointProcesses],
     authors="Guillaume Dalle",
     sitename="PointProcesses.jl",
     format=Documenter.HTML(),
     pages=["Home" => "index.md", "API reference" => "api.md"],
+    plugins=[bib],
 )
 
 deploydocs(; repo="github.com/gdalle/PointProcesses.jl", devbranch="main")
