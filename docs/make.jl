@@ -6,7 +6,7 @@ bib = CitationBibliography(joinpath(@__DIR__, "src", "refs.bib"); style=:authory
 
 DocMeta.setdocmeta!(PointProcesses, :DocTestSetup, :(using PointProcesses); recursive=true)
 
-makedocs(
+makedocs(;
     modules=[PointProcesses],
     authors="Guillaume Dalle",
     sitename="PointProcesses.jl",
