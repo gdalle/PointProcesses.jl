@@ -3,7 +3,7 @@ function Base.rand(
 ) where {M,T<:Real}
     mark_dist = mark_distribution(pp)
     N = rand(rng, Poisson(float(ground_intensity(pp) * (tmax - tmin))))
-    times = sort(rand(rng, Uniform(tmin, tmax), N))
+    times = sort!(rand(rng, Uniform(tmin, tmax), N))
     marks = M[rand(rng, mark_dist) for n in 1:N]
     return History(; times=times, marks=marks, tmin=tmin, tmax=tmax)
 end
