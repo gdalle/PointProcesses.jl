@@ -10,9 +10,12 @@ using Test
 rng = Random.seed!(63)
 
 pp = MarkedPoissonProcess(1.0, Categorical([0.1, 0.3, 0.6]))
+pp0 = MarkedPoissonProcess(0.0, Categorical([0.1, 0.3, 0.6]))
 
 h1 = rand(rng, pp, 0.0, 1000.0)
 h2 = simulate_ogata(rng, pp, 0.0, 1000.0)
+h3 = rand(rng, pp0, 0.0, 1000.0)
+h4 = simulate_ogata(rng, pp0, 0.0, 1000.0)
 
 pp_est1 = fit(MarkedPoissonProcess{Int,Float32,Categorical}, [h1, h1])
 pp_est2 = fit(MarkedPoissonProcess{Int,Float32,Categorical}, [h2, h2])
@@ -29,6 +32,10 @@ f2(λ) = logdensityof(MarkedPoissonProcess(λ, Categorical([0.1, 0.3, 0.6])), h1
 gf = ForwardDiff.derivative(f2, 3)
 # gz = Zygote.gradient(f2, 3)[1]
 
+@test issorted(event_times(h1))
+@test issorted(event_times(h2))
+@test !has_events(h3)
+@test !has_events(h4)
 @test DensityKind(pp) == HasDensity()
 @test λ_error1 < 0.1
 @test λ_error2 < 0.1

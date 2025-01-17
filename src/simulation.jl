@@ -10,12 +10,13 @@ function simulate_ogata(
     t = tmin
     while t < tmax
         B, L = ground_intensity_bound(pp, t + eps(t), h)
-        τ = B > 0 ? rand(rng, Exponential(inv(B))) : Inf
+        τ = B > 0 ? rand(rng, Exponential(inv(B))) : typemax(inv(B))
         if τ > L
             t = t + L
         elseif τ <= L
-            U = rand(rng, T)
-            if U < ground_intensity(pp, t + τ, h) / B
+            U_max = ground_intensity(pp, t + τ, h) / B
+            U = rand(rng, typeof(U_max))
+            if U < U_max
                 m = rand(rng, mark_distribution(pp, t + τ, h))
                 if t + τ < tmax
                     push!(h, t + τ, m)
