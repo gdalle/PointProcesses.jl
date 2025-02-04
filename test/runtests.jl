@@ -5,6 +5,7 @@ using JuliaFormatter
 using PointProcesses
 using Random
 using Statistics
+using Suppressor
 using Test
 
 Random.seed!(63)
