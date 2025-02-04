@@ -14,8 +14,9 @@ function simulate_ogata(
         if τ > L
             t = t + L
         elseif τ <= L
-            U = rand(rng)
-            if U < ground_intensity(pp, t + τ, h) / B
+            U_max = ground_intensity(pp, t + τ, h) / B
+            U = rand(rng, typeof(U_max))
+            if U < U_max
                 m = rand(rng, mark_distribution(pp, t + τ, h))
                 if t + τ < tmax
                     push!(h, t + τ, m)
