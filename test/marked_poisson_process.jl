@@ -11,6 +11,7 @@ rng = Random.seed!(63)
 
 pp = MarkedPoissonProcess(1.0, Categorical([0.1, 0.3, 0.6]))
 pp0 = MarkedPoissonProcess(0.0, Categorical([0.1, 0.3, 0.6]))
+ppvec = MarkedPoissonProcess(2.0, MvNormal(Matrix(I, 2, 2)))
 
 h1 = rand(rng, pp, 0.0, 1000.0)
 h2 = simulate_ogata(rng, pp, 0.0, 1000.0)
@@ -45,3 +46,5 @@ gf = ForwardDiff.derivative(f2, 3)
 # @test all(gf .≈ gz)
 @test all(gf .< 0)
 # @test all(gz .< 0)
+@test (@capture_out show(pp)) ==
+    "MarkedPoissonProcess(1.0, Categorical{Float64, Vector{Float64}}(support=Base.OneTo(3), p=[0.1, 0.3, 0.6]))"
