@@ -53,4 +53,4 @@ gf = ForwardDiff.gradient(f1, 3 * ones(10))
 @test all(gf .< 0)
 # @test all(gz .< 0)
 string(pp0) ==
-    "MultivariatePoissonProcess([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])"
+"MultivariatePoissonProcess([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])"

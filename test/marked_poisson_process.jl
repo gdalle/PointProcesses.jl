@@ -47,4 +47,4 @@ gf = ForwardDiff.derivative(f2, 3)
 @test all(gf .< 0)
 # @test all(gz .< 0)
 string(pp) ==
-    "MarkedPoissonProcess(1.0, Categorical{Float64, Vector{Float64}}(support=Base.OneTo(3), p=[0.1, 0.3, 0.6]))"
+"MarkedPoissonProcess(1.0, Categorical{Float64, Vector{Float64}}(support=Base.OneTo(3), p=[0.1, 0.3, 0.6]))"
