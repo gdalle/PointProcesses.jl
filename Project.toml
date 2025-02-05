@@ -39,6 +39,7 @@ test = [
     "Documenter",
     "ForwardDiff",
     "JuliaFormatter",
+    "LinearAlgebra",
     "Random",
     "Statistics",
     "Test",
