@@ -14,7 +14,7 @@ push!(h, 1.7, "d")
 
 h2 = History([2.3], ["e"], 2.0, 2.5)
 
-@test (@capture_out show(h2)) ==
+@test string(h2) ==
     "History{String,Float64} with 1 events on interval [2.0, 2.5)"
 @test append!(h, h2)
 @test nb_events(h) == 5
