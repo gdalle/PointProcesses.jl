@@ -8,7 +8,7 @@ function simulate_ogata(
 ) where {T<:Real}
     h = History(; times=T[], marks=[], tmin=tmin, tmax=tmax)
     M = typeof(rand(mark_distribution(pp, zero(T), h)))
-    h.marks = M[]
+    h = History(; times=T[], marks=M[], tmin=tmin, tmax=tmax)
     t = tmin
     while t < tmax
         B, L = ground_intensity_bound(pp, t + eps(t), h)
