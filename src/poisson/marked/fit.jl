@@ -1,8 +1,8 @@
 function StatsAPI.fit(
-    ::Type{MarkedPoissonProcess{M,R,D}},
+    ::Type{MarkedPoissonProcess{R,D}},
     histories::AbstractVector{<:History},
     weights::AbstractVector{<:Real};
-) where {R,M,D}
+) where {R,D}
     nb_events_total = sum(nb_events, histories)
     duration_total = sum(duration, histories)
     event_marks_concat = mapreduce(event_marks, vcat, histories)
@@ -11,7 +11,7 @@ function StatsAPI.fit(
     )
     λ = convert(R, nb_events_total / duration_total)
     mark_dist = fit(D, event_marks_concat, weights_concat)
-    return MarkedPoissonProcess{M}(λ, mark_dist)
+    return MarkedPoissonProcess(λ, mark_dist)
 end
 
 function StatsAPI.fit(

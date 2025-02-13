@@ -1,9 +1,9 @@
 """
-    AbstractPointProcess{M}
+    AbstractPointProcess
 
-Common interface for all temporal point processes with mark type `M`.
+Common interface for all temporal point processes.
 """
-abstract type AbstractPointProcess{M} end
+abstract type AbstractPointProcess end
 
 @inline DensityInterface.DensityKind(::AbstractPointProcess) = HasDensity()
 

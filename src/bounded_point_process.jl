@@ -1,5 +1,5 @@
 """
-    BoundedPointProcess{M,P,T} <: AbstractPointProcess{M}
+    BoundedPointProcess{P,T} <: AbstractPointProcess{}
 
 Temporal point process `P` with pre-defined start and end times.
 
@@ -11,7 +11,7 @@ Implements some fallbacks for the `AbstractPointProcess` interface which accept 
 - `tmin::T`: start time
 - `tmax::T`: end time
 """
-struct BoundedPointProcess{M,P<:AbstractPointProcess{M},T<:Real} <: AbstractPointProcess{M}
+struct BoundedPointProcess{P<:AbstractPointProcess,T<:Real} <: AbstractPointProcess
     pp::P
     tmin::T
     tmax::T

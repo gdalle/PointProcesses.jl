@@ -1,11 +1,11 @@
 """
-    AbstractPoissonProcess{M} <: AbstractPointProcess{M}
+    AbstractPoissonProcess <: AbstractPointProcess
 
 Common interface for all temporal Poisson processes, that is, temporal point processes for which the intensity is not a function of past history.
 
 Implements some fallbacks for the `AbstractPointProcess` interface which accept fewer arguments.
 """
-abstract type AbstractPoissonProcess{M} <: AbstractPointProcess{M} end
+abstract type AbstractPoissonProcess <: AbstractPointProcess end
 
 ## Defining AbstractPoissonProcess interface
 
@@ -27,7 +27,7 @@ mark_distribution(pp::AbstractPoissonProcess, t, h) = mark_distribution(pp)
 intensity(pp::AbstractPoissonProcess, m, t, h) = intensity(pp, m)
 log_intensity(pp::AbstractPoissonProcess, m, t, h) = log_intensity(pp, m)
 
-function ground_intensity_bound(pp::AbstractPoissonProcess{M}, t::T, h) where {M,T}
+function ground_intensity_bound(pp::AbstractPoissonProcess, t::T, h) where {T}
     B = ground_intensity(pp)
     L = typemax(T)
     return (B, L)
