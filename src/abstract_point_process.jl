@@ -29,15 +29,6 @@ Compute the distribution of marks for a temporal point process `pp` knowing that
 function mark_distribution end
 
 """
-    mark_type(pp)
-
-Return the type of the marks for a temporal point process `pp`.
-"""
-function mark_type(pp::AbstractPointProcess)
-    return typeof(rand(mark_distribution(pp, 0, [])))
-end
-
-"""
     intensity(pp, m, t, h)
 
 Compute the conditional intensity for a temporal point process `pp` applied to history `h` and event `(t, m)`.
