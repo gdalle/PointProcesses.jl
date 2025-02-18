@@ -1,0 +1,24 @@
+"""
+    PoissonProcessPrior{R1,R2}
+
+Gamma prior on all the event rates of a `HomogeneousPoissonProcess`.
+
+# Fields
+
+- `α::Vector{R1}`
+- `β::R2`
+"""
+struct PoissonProcessPrior{R1<:Real,R2<:Real}
+    α::Vector{R1}
+    β::R2
+end
+
+function DensityInterface.logdensityof(
+    prior::PoissonProcessPrior, pp::PoissonProcess
+)
+    l = sum(
+        logdensityof(Gamma(prior.α[m], inv(prior.β); check_args=false), pp.λ[m]) for
+        m in 1:length(pp)
+    )
+    return l
+end

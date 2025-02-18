@@ -1,0 +1,60 @@
+using DensityInterface
+using ForwardDiff
+using PointProcesses
+using Random
+using Statistics
+using StatsAPI
+using Test
+# using Zygote
+
+# TODO : test each line w.r.t. multivariate_poisson_process.jl
+
+rng = Random.seed!(63)
+
+λ = rand(rng,10)
+pp = HomogeneousPoissonProcess(sum(λ), Categorical(λ ./ sum(λ)))
+λ = rand(rng,10)
+bpp = BoundedPointProcess(HomogeneousPoissonProcess(sum(λ), Categorical(λ ./ sum(λ))), 0.0, 1000.0)
+pp0 = HomogeneousPoissonProcess(0.0, Categorical(fill(1/10, 10)))
+bpp0 = BoundedPointProcess(pp0, 0.0, 1000.0)
+
+h1 = rand(rng, pp, 0.0, 1000.0)
+h2 = simulate_ogata(rng, pp, 0.0, 1000.0)
+h2bis = rand(rng, bpp)
+h3 = rand(rng, pp0, 0.0, 1000.0)
+h4 = simulate_ogata(rng, pp0, 0.0, 1000.0)
+h4bis = rand(rng, bpp0)
+
+pp_est1 = fit(MultivariateHomogeneousPoissonProcess{Float32}, [h1, h1])
+pp_est2 = fit(MultivariateHomogeneousPoissonProcess{Float32}, [h2, h2])
+
+prior = MultivariateHomogeneousPoissonProcessPrior(ones(10), 0.0)
+pp_est3 = fit_map(MultivariateHomogeneousPoissonProcess{Float32}, prior, [h1, h2])
+
+λ_error1 = mean(abs, pp_est1.λ - pp.λ)
+λ_error2 = mean(abs, pp_est2.λ - pp.λ)
+λ_error3 = mean(abs, pp_est3.λ - pp.λ)
+
+l = logdensityof(pp, h1)
+l_est = logdensityof(pp_est1, h1)
+
+f1(λ) = logdensityof(MultivariateHomogeneousPoissonProcess(λ), h1)
+gf = ForwardDiff.gradient(f1, 3 * ones(10))
+# gz = Zygote.gradient(f1, 3 * ones(10))[1]
+
+@test issorted(event_times(h1))
+@test issorted(event_times(h2))
+@test issorted(event_times(h2bis))
+@test !has_events(h3)
+@test !has_events(h4)
+@test !has_events(h4bis)
+@test DensityKind(pp) == HasDensity()
+@test λ_error1 < 0.1
+@test λ_error2 < 0.1
+@test λ_error3 < 0.1
+@test l_est > l
+# @test all(gf .≈ gz)
+@test all(gf .< 0)
+# @test all(gz .< 0)
+@test (@capture_out show(pp0)) ==
+    "MultivariateHomogeneousPoissonProcess([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])"
