@@ -9,7 +9,7 @@ module PointProcesses
 
 using DensityInterface: DensityInterface, HasDensity, densityof, logdensityof
 using Distributions: Distributions, UnivariateDistribution, MultivariateDistribution
-using Distributions: Categorical, Exponential, Poisson, Uniform
+using Distributions: Categorical, Exponential, Poisson, Uniform, Dirac
 using Distributions: fit, suffstats
 using LinearAlgebra: dot
 using Random: rand
@@ -25,6 +25,7 @@ using StatsAPI: StatsAPI, fit
 export logdensityof, densityof # DensityInterface
 export fit # StatsAPI
 export fit_map
+export convert
 
 ## History
 
@@ -48,6 +49,7 @@ export simulate_ogata
 export AbstractPoissonProcess
 export MultivariatePoissonProcess, MultivariatePoissonProcessPrior
 export MarkedPoissonProcess
+export PoissonProcess
 
 # Includes
 
@@ -56,6 +58,7 @@ include("abstract_point_process.jl")
 include("simulation.jl")
 include("bounded_point_process.jl")
 
+include("poisson/poisson_process.jl")
 include("poisson/abstract_poisson_process.jl")
 include("poisson/simulation.jl")
 
