@@ -8,10 +8,10 @@ end
 ## Compute sufficient stats
 
 function Distributions.suffstats(
-    ::Type{PoissonProcess{M,R,D}},
+    ::Type{<:PoissonProcess},
     histories::AbstractVector{<:History},
     weights::AbstractVector{W},
-) where {R,W,M,D}
+) where {W}
     total_duration = mapreduce(
         (h, w) -> w * duration(h), +, histories, weights; init=zero(W)
     )
@@ -22,20 +22,16 @@ function Distributions.suffstats(
     total_weights = reduce(
         vcat, (fill(w, nb_events(h)) for (w, h) in zip(weights, histories))
     )
-    return PoissonProcessStats(
-        total_nb_events, total_duration, total_marks, total_weights
-    )
+    return PoissonProcessStats(total_nb_events, total_duration, total_marks, total_weights)
 end
 
 function Distributions.suffstats(
-    pptype::Type{PoissonProcess{M,R,D}}, histories::AbstractVector{<:History}
-) where {M,R,D}
+    pptype::Type{<:PoissonProcess}, histories::AbstractVector{<:History}
+)
     weights = ones(length(histories))
     return suffstats(pptype, histories, weights)
 end
 
-function Distributions.suffstats(
-    pptype::Type{PoissonProcess{M,R,D}}, h::History
-) where {M,R,D}
+function Distributions.suffstats(pptype::Type{<:PoissonProcess}, h::History)
     return suffstats(pptype, [h])
 end
