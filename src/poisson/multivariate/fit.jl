@@ -13,7 +13,8 @@ function fit_map(
     ss::MultivariatePoissonProcessStats,
 ) where {R}
     (; λ_α, λ_β) = prior
-    posterior_nb_events = ss.nb_events .+ λ_α .- one(eltype(λ_α))
+    posterior_nb_events = ss.nb_events .+ λ_α
+    ## Note that there was a -1 above but I think it was a mistake
     posterior_duration = ss.duration + λ_β
     ss_posterior = MultivariatePoissonProcessStats(posterior_nb_events, posterior_duration)
     return fit(pptype, ss_posterior)
