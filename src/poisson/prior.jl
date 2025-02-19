@@ -1,7 +1,7 @@
 """
     PoissonProcessPrior{R1,R2}
 
-Gamma prior on all the event rates of a `HomogeneousPoissonProcess`.
+Gamma prior on all the event rates of a `MultivariatePoissonProcess`.
 
 # Fields
 
@@ -17,7 +17,7 @@ function DensityInterface.logdensityof(
     prior::PoissonProcessPrior, pp::PoissonProcess
 )
     l = sum(
-        logdensityof(Gamma(prior.α[m], inv(prior.β); check_args=false), pp.λ[m]) for
+        logdensityof(Gamma(prior.α[m], inv(prior.β); check_args=false), intensity(pp, m)) for
         m in 1:length(pp)
     )
     return l
