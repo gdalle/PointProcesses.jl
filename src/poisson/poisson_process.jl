@@ -25,23 +25,39 @@ end
 ## Alias 
 # TODO : uncomment
 # const UnivariatePoissonProcess{R<:Real} = PoissonProcess{R, Dirac{Nothing}}
-# const MultivariatePoissonProcess{R<:Real} = PoissonProcess{R, Categorical{P,Ps}} where {P<:Real,Ps<:AbstractVector{P}}
+# const MultivariatePoissonProcess{R<:Real} = PoissonProcess{R, Categorical{R,Vector{R}}}
 
 ## Constructors
 function PoissonProcess(λ::Real, mark_dist; check_args::Bool=true)
-    check_args && λ ≤ zero(λ) && throw(DomainError("the condition λ > 0 is not satisfied"))
-    return PoissonProcess{typeof(λ), typeof(mark_dist)}(λ, mark_dist)
+    check_args &&
+        λ < zero(λ) &&
+        throw(
+            DomainError(
+                "λ = $λ", "PoissonProcess: the ground intensity λ must be non negative."
+            ),
+        )
+    return PoissonProcess{typeof(λ),typeof(mark_dist)}(λ, mark_dist)
 end
 
 function PoissonProcess(λ::Integer, mark_dist; check_args::Bool=true)
     return PoissonProcess(float(λ), mark_dist; check_args=check_args)
 end
 
-function PoissonProcess(λ::Vector{R}; check_args::Bool=true) where R<:Real 
-    check_args && any(λ .≤ zero(λ)) && throw(DomainError("the condition λ > 0 is not satisfied for all dimensions"))
-    return PoissonProcess(sum(λ), Categorical(λ / sum(λ)))
+function PoissonProcess(λ::Vector{R}; check_args::Bool=true) where {R<:Real}
+    check_args &&
+        any(λ .< zero(λ)) &&
+        throw(
+            DomainError(
+                "λ = $λ",
+                "PoissonProcess: the condition λ ≥ 0 is not satisfied for all dimensions.",
+            ),
+        )
+    return PoissonProcess(sum(λ), Categorical(λ / sum(λ)); check_args=check_args)
 end
-PoissonProcess(λ::R) where R<:Real = PoissonProcess(λ, Dirac(nothing))
+
+function PoissonProcess(λ::R; check_args::Bool=true) where {R<:Real}
+    return PoissonProcess(λ, Dirac(nothing); check_args=check_args)
+end
 PoissonProcess() = PoissonProcess(1.0)
 
 ## Access
