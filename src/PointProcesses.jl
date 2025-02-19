@@ -39,7 +39,7 @@ export time_change, split_into_chunks
 export AbstractPointProcess
 export BoundedPointProcess
 export ground_intensity, mark_distribution
-export intensity, log_intensity
+export intensity, log_intensity, intensity_vector
 export ground_intensity_bound
 export integrated_ground_intensity
 export simulate_ogata

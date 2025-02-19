@@ -5,7 +5,7 @@ Homogeneous temporal Poisson process with arbitrary mark distribution.
 
 # Fields
 
-- `λ::R`: event rate.
+- `λ::R`: ground intensity.
 - `mark_dist::D`: mark distribution.
 
 # Constructor
@@ -47,6 +47,12 @@ PoissonProcess() = PoissonProcess(1.0)
 ## Access
 ground_intensity(pp::PoissonProcess) = pp.λ
 mark_distribution(pp::PoissonProcess) = pp.mark_dist
+# TODO: Replace PoissonProcess{R,Categorical{R,Vector{R}}} by
+# MultivariatePoissonProcess{R}
+# when everything else is OK
+function intensity_vector(pp::PoissonProcess{R,Categorical{R,Vector{R}}}) where {R}
+    return ground_intensity(pp) .* probs(mark_distribution(pp))
+end
 
 ## Intensity functions
 function intensity(pp::PoissonProcess, m)
