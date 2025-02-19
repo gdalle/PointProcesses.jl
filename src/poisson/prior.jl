@@ -13,12 +13,10 @@ struct PoissonProcessPrior{R1<:Real,R2<:Real}
     β::R2
 end
 
-function DensityInterface.logdensityof(
-    prior::PoissonProcessPrior, pp::PoissonProcess
-)
+function DensityInterface.logdensityof(prior::PoissonProcessPrior, pp::PoissonProcess)
     l = sum(
-        logdensityof(Gamma(prior.α[m], inv(prior.β); check_args=false), intensity(pp, m)) for
-        m in 1:length(pp)
+        logdensityof(Gamma(prior.α[m], inv(prior.β); check_args=false), intensity(pp, m))
+        for m in 1:length(pp)
     )
     return l
 end

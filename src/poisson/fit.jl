@@ -8,9 +8,7 @@ function StatsAPI.fit(
     return PoissonProcess(λ, mark_dist)
 end
 
-function StatsAPI.fit(
-    pptype::Type{<:PoissonProcess}, args...; kwargs...
-)
+function StatsAPI.fit(pptype::Type{<:PoissonProcess}, args...; kwargs...)
     ss = suffstats(pptype, args...; kwargs...)
     return fit(pptype, ss)
 end
@@ -33,7 +31,7 @@ function fit_map(
 end
 
 function fit_map(
-    pptype::Type{<:PoissonProcess{R,Categorical{R,Vector{R}}} where R<:Real},
+    pptype::Type{<:PoissonProcess{R,Categorical{R,Vector{R}}} where {R<:Real}},
     prior::PoissonProcessPrior,
     args...;
     kwargs...,
