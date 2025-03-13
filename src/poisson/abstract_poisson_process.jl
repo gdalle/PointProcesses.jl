@@ -24,6 +24,7 @@ end
 
 ground_intensity(pp::AbstractPoissonProcess, t, h) = ground_intensity(pp)
 mark_distribution(pp::AbstractPoissonProcess, t, h) = mark_distribution(pp)
+mark_distribution(pp::AbstractPoissonProcess, t) = mark_distribution(pp) # For simulate_ogata
 intensity(pp::AbstractPoissonProcess, m, t, h) = intensity(pp, m)
 log_intensity(pp::AbstractPoissonProcess, m, t, h) = log_intensity(pp, m)
 
