@@ -31,6 +31,7 @@ end
 
 ground_intensity(bpp::BoundedPointProcess, t, h) = ground_intensity(bpp.pp, t, h)
 mark_distribution(bpp::BoundedPointProcess, t, h) = mark_distribution(bpp.pp, t, h)
+mark_distribution(bpp::BoundedPointProcess, t) = mark_distribution(bpp.pp, t) # For simulate_ogata
 intensity(bpp::BoundedPointProcess, m, t, h) = intensity(bpp.pp, m, t, h)
 log_intensity(bpp::BoundedPointProcess, m, t, h) = log_intensity(bpp.pp, m, t, h)
 

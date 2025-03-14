@@ -15,6 +15,7 @@ h = rand(rng, bpp)
 @test max_time(bpp) == 1000.0
 @test ground_intensity(bpp, 0, h) == sum(intensities)
 @test mark_distribution(bpp, 100.0, h) == Categorical(intensities / sum(intensities))
+@test mark_distribution(bpp, 0.0) == Categorical(intensities / sum(intensities))
 @test intensity(bpp, 1, 0, h) == intensities[1]
 @test log_intensity(bpp, 2, 1.0, h) == log(intensities[2])
 
