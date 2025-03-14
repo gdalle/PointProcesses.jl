@@ -81,6 +81,8 @@ fit_map
 
 ```@docs
 AbstractPoissonProcess
+PoissonProcess
+PoissonProcessPrior
 ```
 
 ### Multivariate
