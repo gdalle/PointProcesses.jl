@@ -18,8 +18,8 @@ h2 = simulate_ogata(rng, pp, 0.0, 1000.0)
 h3 = rand(rng, pp0, 0.0, 1000.0)
 h4 = simulate_ogata(rng, pp0, 0.0, 1000.0)
 
-pp_est1 = fit(MarkedPoissonProcess{Int,Float32,Categorical}, [h1, h1])
-pp_est2 = fit(MarkedPoissonProcess{Int,Float32,Categorical}, [h2, h2])
+pp_est1 = fit(MarkedPoissonProcess{Float32,Categorical}, [h1, h1])
+pp_est2 = fit(MarkedPoissonProcess{Float32,Categorical}, [h2, h2])
 
 λ_error1 = mean(abs, pp_est1.λ - pp.λ)
 λ_error2 = mean(abs, pp_est2.λ - pp.λ)
