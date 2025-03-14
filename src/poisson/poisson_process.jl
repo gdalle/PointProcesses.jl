@@ -89,6 +89,7 @@ Base.convert(::Type{PoissonProcess{R,D}}, pp::PoissonProcess{R,D}) where {R<:Rea
 
 ground_intensity(pp::PoissonProcess, t, h) = ground_intensity(pp)
 mark_distribution(pp::PoissonProcess, t, h) = mark_distribution(pp)
+mark_distribution(pp::PoissonProcess, t) = mark_distribution(pp) # For simulate_ogata
 intensity(pp::PoissonProcess, m, t, h) = intensity(pp, m)
 log_intensity(pp::PoissonProcess, m, t, h) = log_intensity(pp, m)
 
